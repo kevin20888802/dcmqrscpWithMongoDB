@@ -1,1 +1,0 @@
-D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\zlib_obj.dir\Debug\zlib_obj.lib

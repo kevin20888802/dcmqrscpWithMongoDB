@@ -1,7 +1,0 @@
-﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/dcmnet/apps/CMakeLists.txt
-  storescp.cc
-D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\apps\storescp.cc(1979,25): warning C4456: 'dataset' 的宣告會隱藏先前的區域宣告
-D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\apps\storescp.cc(1792,19): message : 請參閱 'dataset' 的宣告
-D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\apps\storescp.cc(1980,22): warning C4456: 'accessionNumber' 的宣告會隱藏先前的區域宣告
-D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\apps\storescp.cc(1794,16): message : 請參閱 'accessionNumber' 的宣告
-  storescp.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\Debug\storescp.exe
