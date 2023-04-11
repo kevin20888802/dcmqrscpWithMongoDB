@@ -1,0 +1,10 @@
+^D:\PROGRAMMING\C++\DCMQRSCPWITHMONGODB\DCMQRSCPMONGODB\CMAKEFILES\C10B1D42940A38EC823F7D241CF184EA\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/dcmqrscpMongoDB.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

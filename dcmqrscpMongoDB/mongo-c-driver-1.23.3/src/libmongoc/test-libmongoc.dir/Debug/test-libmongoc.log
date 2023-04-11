@@ -1,0 +1,225 @@
+﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libmongoc/CMakeLists.txt
+  corpus-test.c
+  test-atomic.c
+  test-b64.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-b64.c(39,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-bson.c
+  test-bcon-basic.c
+  test-bcon-extract.c
+  test-bson-cmp.c
+  test-bson-corpus.c
+  test-bson-error.c
+  test-bson-version.c
+  test-clock.c
+  test-decimal128.c
+  test-endian.c
+  test-iso8601.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-iso8601.c(14,40): warning C4267: '函式': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-iso8601.c(59,39): warning C4267: '函式': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+  test-iter.c
+  test-json.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(2682,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(2688,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(2912,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(2915,7): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(2947,49): warning C4267: '函式': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(2955,48): warning C4267: '函式': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\tests\test-json.c(3047,31): warning C4244: '正在初始化': 將 'double' 轉換為 'const uint8_t'，由於類型不同，可能導致資料遺失
+  test-oid.c
+  test-reader.c
+  test-string.c
+  test-utf8.c
+  正在產生程式碼...
+  正在編譯...
+  test-value.c
+  test-writer.c
+  bson-match.c
+  bson-parser.c
+  bson-val.c
+  debug-stream.c
+  json-test-monitoring.c
+  json-test-operations.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\json-test-operations.c(2160,52): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\json-test-operations.c(2215,52): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\json-test-operations.c(2255,18): warning C4244: '=': 將 'int64_t' 轉換為 'uint32_t'，由於類型不同，可能導致資料遺失
+  json-test.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\json-test.c(1680,18): warning C4018: '<': signed/unsigned 不相符
+  future-functions.c
+  future-value.c
+  future.c
+  mock-rs.c
+  mock-server.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\mock_server\mock-server.c(367,55): warning C4267: '函式': 將 'size_t' 轉換為 'mongoc_socklen_t'，資料可能遺失
+  request.c
+  sync-queue.c
+  test-conveniences.c
+  test-happy-eyeballs.c
+  test-libmongoc.c
+  test-mongoc-aggregate.c
+  正在產生程式碼...
+  正在編譯...
+  test-mongoc-array.c
+  test-mongoc-async.c
+  test-mongoc-aws.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(200,7): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(208,46): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(216,46): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(225,43): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(234,7): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(240,7): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(246,43): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(251,46): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-aws.c(263,14): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  test-mongoc-background-monitoring.c
+  test-mongoc-buffer.c
+  test-mongoc-bulk.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-bulk.c(3736,48): warning C4267: '-=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-bulk.c(3741,50): warning C4267: '-=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-bulk.c(3750,69): warning C4267: '-=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-bulk.c(3755,48): warning C4267: '-=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-change-stream.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-change-stream.c(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+  test-mongoc-client-pool.c
+  test-mongoc-client-session.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-client-session.c(2779,7): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-client-session.c(2782,7): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-client.c
+  test-mongoc-cluster.c
+  test-mongoc-cmd.c
+  test-mongoc-collection-find-with-opts.c
+  test-mongoc-collection-find.c
+  test-mongoc-collection.c
+  test-mongoc-command-monitoring.c
+  test-mongoc-connection-uri.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-connection-uri.c(177,20): warning C4244: '=': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  test-mongoc-counters.c
+  test-mongoc-crud.c
+  test-mongoc-cursor.c
+  正在產生程式碼...
+  正在編譯...
+  test-mongoc-database.c
+  test-mongoc-dns.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-dns.c(140,11): warning C4244: '=': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-dns.c(174,28): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'const int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-dns.c(521,29): warning C4267: '=': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  test-mongoc-error.c
+  test-mongoc-exhaust.c
+  test-mongoc-find-and-modify.c
+  test-mongoc-generation-map.c
+  test-mongoc-gridfs-bucket.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-gridfs-bucket.c(123,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-gridfs-file-page.c
+  test-mongoc-gridfs.c
+  test-mongoc-handshake.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-handshake.c(594,26): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-handshake.c(604,29): warning C4267: '+=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-handshake.c(607,36): warning C4267: '+=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-hedged-reads.c
+  test-mongoc-http.c
+  test-mongoc-interrupt.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-interrupt.c(87,4): warning C4244: '正在初始化': 將 'uint64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-interrupt.c(95,4): warning C4244: '正在初始化': 將 'uint64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-interrupt.c(102,4): warning C4244: '正在初始化': 將 'uint64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-interrupt.c(123,7): warning C4244: '正在初始化': 將 'uint64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-interrupt.c(137,7): warning C4244: '正在初始化': 將 'uint64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  test-mongoc-linux-distro-scanner.c
+  test-mongoc-list.c
+  test-mongoc-loadbalanced.c
+  test-mongoc-log.c
+  test-mongoc-long-namespace.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-long-namespace.c(97,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-long-namespace.c(101,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-long-namespace.c(117,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-long-namespace.c(121,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-long-namespace.c(471,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-long-namespace.c(472,4): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-matcher.c
+  test-mongoc-max-staleness.c
+  正在產生程式碼...
+  正在編譯...
+  test-mongoc-mongohouse.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-mongohouse.c(159,25): warning C4244: '=': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  test-mongoc-mongos-pinning.c
+  test-mongoc-opts.c
+  test-mongoc-primary-stepdown.c
+  test-mongoc-queue.c
+  test-mongoc-read-concern.c
+  test-mongoc-read-prefs.c
+  test-mongoc-read-write-concern.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-read-write-concern.c(17,4): warning C4244: '正在初始化': 將 'const int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+  test-mongoc-retryable-reads.c
+  test-mongoc-retryable-writes.c
+  test-mongoc-rpc.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-rpc.c(94,17): warning C4267: '+=': 將 'size_t' 轉換為 'off_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-rpc.c(635,11): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-rpc.c(642,11): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-sample-commands.c
+  test-mongoc-scram.c
+  test-mongoc-sdam-monitoring.c
+  test-mongoc-sdam.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-sdam.c(200,13): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+  test-mongoc-server-description.c
+  test-mongoc-server-selection-errors.c
+  test-mongoc-server-selection.c
+  test-mongoc-server-stream.c
+  test-mongoc-set.c
+  正在產生程式碼...
+  正在編譯...
+  test-mongoc-shared.c
+  test-mongoc-socket.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-socket.c(237,20): warning C4244: '-=': 將 'ssize_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-socket.c(255,20): warning C4244: '-=': 將 'ssize_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-socket.c(310,20): warning C4244: '+=': 將 'ssize_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  test-mongoc-speculative-auth.c
+  test-mongoc-ssl.c
+  test-mongoc-stream.c
+  test-mongoc-streamable-hello.c
+  test-mongoc-thread.c
+  test-mongoc-timeout.c
+  test-mongoc-topology-description.c
+  test-mongoc-topology-reconcile.c
+  test-mongoc-topology-scanner.c
+  test-mongoc-topology.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-topology.c(478,19): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-topology.c(2013,10): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-topology.c(2014,10): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  test-mongoc-transactions.c
+  test-mongoc-ts-pool.c
+  test-mongoc-uri.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(555,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(562,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(2577,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(2584,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(2599,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(2617,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-uri.c(2631,4): warning C4244: '正在初始化': 將 'int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+  test-mongoc-usleep.c
+  test-mongoc-util.c
+  test-mongoc-version.c
+  test-mongoc-versioned-api.c
+  test-mongoc-with-transaction.c
+  正在產生程式碼...
+  正在編譯...
+  test-mongoc-write-commands.c
+  test-mongoc-write-concern.c
+  TestSuite.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\TestSuite.c(776,14): warning C4996: 'GetVersion': 宣告為已被取代
+  operation.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\unified\operation.c(2343,54): warning C4244: '函式': 將 'ssize_t' 轉換為 'uint32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\unified\operation.c(2348,56): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  entity-map.c
+  result.c
+  runner.c
+  test-diagnostics.c
+  util.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\unified\util.c(29,14): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  ssl-test.c
+  test-mongoc-client-side-encryption.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-client-side-encryption.c(677,34): warning C4267: '=': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\tests\test-mongoc-client-side-encryption.c(4451,36): warning C4267: '=': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  test-mongoc-stream-tls-error.c
+  test-mongoc-stream-tls.c
+  test-mongoc-x509.c
+  test-mongoc-ocsp-cache.c
+  正在產生程式碼...
+  test-libmongoc.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\Debug\test-libmongoc.exe

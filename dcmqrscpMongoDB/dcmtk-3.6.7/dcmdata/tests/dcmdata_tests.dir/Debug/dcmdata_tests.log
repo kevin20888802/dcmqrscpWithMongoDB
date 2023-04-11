@@ -1,0 +1,33 @@
+﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/dcmdata/tests/CMakeLists.txt
+  tchval.cc
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\tests\tchval.cc(1,1): warning C4819: 檔案含有無法在目前字碼頁 (950) 中表示的字元。請以 Unicode 格式儲存檔案以防止資料遺失
+  tdict.cc
+  telemlen.cc
+  tests.cc
+  tfilter.cc
+  tgenuid.cc
+  ti2dbmp.cc
+  titem.cc
+  tmatch.cc
+  tnewdcme.cc
+  tparent.cc
+  tparser.cc
+  tpath.cc
+  tpread.cc
+  tsequen.cc
+  tspchrs.cc
+  tstrval.cc
+  tvrcomp.cc
+  tvrdatim.cc
+  tvrds.cc
+  正在產生程式碼...
+  正在編譯...
+  tvrfd.cc
+  tvrol.cc
+  tvrov.cc
+  tvrpn.cc
+  tvrsv.cc
+  tvrui.cc
+  tvruv.cc
+  正在產生程式碼...
+  dcmdata_tests.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\Debug\dcmdata_tests.exe

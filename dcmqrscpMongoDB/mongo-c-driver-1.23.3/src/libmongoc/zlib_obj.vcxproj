@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{277F8B29-F5C8-3B92-B2B9-823FF1DDCE99}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>zlib_obj</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">zlib_obj.dir\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">zlib_obj.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">zlib_obj</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">zlib_obj.dir\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">zlib_obj.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">zlib_obj</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">zlib_obj.dir\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">zlib_obj.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">zlib_obj</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">zlib_obj.dir\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">zlib_obj.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">zlib_obj</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4013;4431;4716;4113;4047;4090;4700</TreatSpecificWarningsAsErrors>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4013;4431;4716;4113;4047;4090;4700</TreatSpecificWarningsAsErrors>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4013;4431;4716;4113;4047;4090;4700</TreatSpecificWarningsAsErrors>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) -w</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>
+      </ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatSpecificWarningsAsErrors>4013;4431;4716;4113;4047;4090;4700</TreatSpecificWarningsAsErrors>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;_CRT_SECURE_NO_WARNINGS;_XOPEN_SOURCE=700;_BSD_SOURCE;_DEFAULT_SOURCE;HAVE_STDARG_H;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\src\zlib-1.2.12;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libmongoc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/src/libmongoc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckStructHasMember.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindICU.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\WriteBasicConfigVersionFile.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CheckSchedGetCPU.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindResSearch.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindSnappy.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoCPackage.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-ssl-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-static-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc-config.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-config.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-version.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\zconf.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libmongoc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/src/libmongoc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckStructHasMember.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindICU.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\WriteBasicConfigVersionFile.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CheckSchedGetCPU.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindResSearch.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindSnappy.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoCPackage.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-ssl-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-static-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc-config.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-config.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-version.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\zconf.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libmongoc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/src/libmongoc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckStructHasMember.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindICU.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\WriteBasicConfigVersionFile.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CheckSchedGetCPU.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindResSearch.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindSnappy.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoCPackage.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-ssl-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-static-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc-config.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-config.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-version.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\zconf.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libmongoc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/src/libmongoc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\BasicConfigVersion-AnyNewerVersion.cmake.in;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckIncludeFiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckStructHasMember.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckSymbolExists.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindICU.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindPkgConfig.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\FindZLIB.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\SelectLibraryConfigurations.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\WriteBasicConfigVersionFile.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CheckSchedGetCPU.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindResSearch.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\FindSnappy.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoCPackage.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config-version.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\build\cmake\libmongoc-static-1.0-config.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-ssl-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\libmongoc-static-1.0.pc.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc-config.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-config.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-version.h.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\zconf.h.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\adler32.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\crc32.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\deflate.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\infback.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\inffast.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\inflate.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\inftrees.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\trees.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\zutil.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\compress.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\uncompr.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\gzclose.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\gzlib.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\gzread.c" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\zlib-1.2.12\gzwrite.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\ZERO_CHECK.vcxproj">
+      <Project>{25DF73EC-F007-3E44-A90A-6E9B30231FED}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

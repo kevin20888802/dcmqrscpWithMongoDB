@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNugetPackages>false</ResolveNugetPackages>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D64B344F-EEC8-3694-B368-C392B765391D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\CMakeDependentOption.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePushCheckState.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLanguage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.26\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\Internal\CheckSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CCache.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\LoadVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MaintainerFlags.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\ParseVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\Sanitizers.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\make_dist\MakeDistFiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\CMakeDependentOption.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePushCheckState.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLanguage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.26\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\Internal\CheckSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CCache.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\LoadVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MaintainerFlags.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\ParseVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\Sanitizers.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\make_dist\MakeDistFiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\CMakeDependentOption.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePushCheckState.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLanguage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.26\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\Internal\CheckSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CCache.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\LoadVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MaintainerFlags.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\ParseVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\Sanitizers.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\make_dist\MakeDistFiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/mongo-c-driver-1.23.3/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-3.26\Modules\CMakeDependentOption.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CMakePushCheckState.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPack.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CPackComponent.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTest.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestTargets.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CTestUseLaunchers.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\CheckLanguage.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\DartConfiguration.tcl.in;C:\Program Files\CMake\share\cmake-3.26\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\InstallRequiredSystemLibraries.cmake;C:\Program Files\CMake\share\cmake-3.26\Modules\Internal\CheckSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-3.26\Templates\CPackConfig.cmake.in;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\CCache.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\LoadVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MaintainerFlags.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\MongoC-Warnings.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\ParseVersion.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\Sanitizers.cmake;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\build\cmake\make_dist\MakeDistFiles.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\ZERO_CHECK.vcxproj">
+      <Project>{25DF73EC-F007-3E44-A90A-6E9B30231FED}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\aggregation1.vcxproj">
+      <Project>{666F1FF3-C3A3-3C78-9C1B-54F9E1CD6329}</Project>
+      <Name>aggregation1</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\basic-aggregation.vcxproj">
+      <Project>{A6C077A7-2E13-3015-AD1B-36D6D5168327}</Project>
+      <Name>basic-aggregation</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bcon-col-view.vcxproj">
+      <Project>{EB7D3B70-0912-3767-AD01-FACD19D86C61}</Project>
+      <Name>bcon-col-view</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bcon-speed.vcxproj">
+      <Project>{42E86B8C-0C0D-3FAA-9DDE-111043B40693}</Project>
+      <Name>bcon-speed</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bson-check-depth.vcxproj">
+      <Project>{10F897F1-37E1-3674-AEDE-9DDBCB9FFDB1}</Project>
+      <Name>bson-check-depth</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bson-metrics.vcxproj">
+      <Project>{31F704B1-A751-39CC-B8FD-337774B0A406}</Project>
+      <Name>bson-metrics</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bson-to-json.vcxproj">
+      <Project>{F982EC43-8266-3D8C-9CC7-1118638F36A9}</Project>
+      <Name>bson-to-json</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bson-validate.vcxproj">
+      <Project>{F5479A72-F396-3848-AD02-97E434879CAF}</Project>
+      <Name>bson-validate</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bson_shared.vcxproj">
+      <Project>{2F316CB7-6DC3-3087-A891-31706CFF170F}</Project>
+      <Name>bson_shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\bson_static.vcxproj">
+      <Project>{CCF2CF50-41CD-369B-AEDE-892BB60E9BCE}</Project>
+      <Name>bson_static</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk-collation.vcxproj">
+      <Project>{1EAD6BD6-58C4-34FF-99DD-91CFCF439943}</Project>
+      <Name>bulk-collation</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk1.vcxproj">
+      <Project>{6ED45339-F290-3611-8C14-4481300A8EE7}</Project>
+      <Name>bulk1</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk2.vcxproj">
+      <Project>{F49B337A-498B-30CF-A6C9-4A12E9871014}</Project>
+      <Name>bulk2</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk3.vcxproj">
+      <Project>{8057D385-5FE2-3079-A0A6-36FF2DBF0DAA}</Project>
+      <Name>bulk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk4.vcxproj">
+      <Project>{A77D6836-FAA8-3305-A489-525B578BB3B5}</Project>
+      <Name>bulk4</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk5.vcxproj">
+      <Project>{7632CB4C-FF54-3F1F-AFB1-04C51233D9EF}</Project>
+      <Name>bulk5</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\bulk6.vcxproj">
+      <Project>{7A5D1EC1-D68B-345E-AB56-6B405D22AD89}</Project>
+      <Name>bulk6</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\common-operations.vcxproj">
+      <Project>{823B3E11-F0DC-3C63-A6A4-690FE95F2C8A}</Project>
+      <Name>common-operations</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-client.vcxproj">
+      <Project>{77CC5C48-E5A8-305D-B3A0-FC41A9FB5D4B}</Project>
+      <Name>example-client</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-collection-watch.vcxproj">
+      <Project>{0F7EB6E3-5F50-357E-9A7D-86EFD4F3B666}</Project>
+      <Name>example-collection-watch</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-command-monitoring.vcxproj">
+      <Project>{B403A84A-8FBF-3BF3-9AA4-2D40DAAFC34A}</Project>
+      <Name>example-command-monitoring</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-command-with-opts.vcxproj">
+      <Project>{7C30EAC4-7F35-3EBB-8922-C15602036218}</Project>
+      <Name>example-command-with-opts</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-create-indexes.vcxproj">
+      <Project>{A77911E4-BFDD-3C22-89FC-857C2C8C3DE9}</Project>
+      <Name>example-create-indexes</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-gridfs.vcxproj">
+      <Project>{5469732B-E4E0-3C0D-A2F8-1E088BBACA3C}</Project>
+      <Name>example-gridfs</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-gridfs-bucket.vcxproj">
+      <Project>{64E74418-637D-3B81-98E2-0257134A493C}</Project>
+      <Name>example-gridfs-bucket</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-scram.vcxproj">
+      <Project>{3D629DF5-38C3-34E7-9BE4-F3BCF74C7DCE}</Project>
+      <Name>example-scram</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-sdam-monitoring.vcxproj">
+      <Project>{45BABE37-3087-3790-BE9D-FE241AE6D6B2}</Project>
+      <Name>example-sdam-monitoring</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-session.vcxproj">
+      <Project>{ADBDAD6C-1AF0-3592-9A03-494505E889B9}</Project>
+      <Name>example-session</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-start-at-optime.vcxproj">
+      <Project>{DE2D0C0F-7EB1-37B5-956C-F1BE58DA20B4}</Project>
+      <Name>example-start-at-optime</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-transaction.vcxproj">
+      <Project>{EB9979EF-0299-3B95-A86F-E0C0FE2A195A}</Project>
+      <Name>example-transaction</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\example-update.vcxproj">
+      <Project>{1D10FB95-FC80-3A49-A076-7A0ADB120776}</Project>
+      <Name>example-update</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\fam.vcxproj">
+      <Project>{4D059D76-8C66-3379-979A-719C4395D052}</Project>
+      <Name>fam</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\find-and-modify.vcxproj">
+      <Project>{4E1EA354-E9DE-39E2-976D-F4485841AD9C}</Project>
+      <Name>find-and-modify</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\hello_mongoc.vcxproj">
+      <Project>{5A5FAAD7-1824-37CA-8223-0432F74106C4}</Project>
+      <Name>hello_mongoc</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\json-to-bson.vcxproj">
+      <Project>{A6FBAF60-9F8A-3969-9E5D-BC51855A0685}</Project>
+      <Name>json-to-bson</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\mongoc-cxx-check.vcxproj">
+      <Project>{F87C4567-A5FF-3438-9A09-42C92D29217C}</Project>
+      <Name>mongoc-cxx-check</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\mongoc-dump.vcxproj">
+      <Project>{5C97BC32-5F0C-3141-A72A-B9A4298FF1D3}</Project>
+      <Name>mongoc-dump</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\mongoc-ping.vcxproj">
+      <Project>{38CF4D7E-FE7E-35FA-9530-3CC7E4AD3E50}</Project>
+      <Name>mongoc-ping</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\mongoc-stat.vcxproj">
+      <Project>{22F376EF-43F2-35E4-B928-CEB8BEF383CD}</Project>
+      <Name>mongoc-stat</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\mongoc-tail.vcxproj">
+      <Project>{EF170A75-195C-3C21-910E-33978F53A543}</Project>
+      <Name>mongoc-tail</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\mongoc_shared.vcxproj">
+      <Project>{786408FF-E13A-38C5-921C-697A8D4BEF35}</Project>
+      <Name>mongoc_shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\mongoc_static.vcxproj">
+      <Project>{AAFA15F9-9211-36AB-ADA9-84133B0D11AB}</Project>
+      <Name>mongoc_static</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\test-libmongoc.vcxproj">
+      <Project>{4D606F32-CA62-3B32-975E-189B00DD07B4}</Project>
+      <Name>test-libmongoc</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\test-mongoc-cache.vcxproj">
+      <Project>{BBDC61DC-5C13-31EF-9282-319D107E6726}</Project>
+      <Name>test-mongoc-cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\test-mongoc-gssapi.vcxproj">
+      <Project>{CE075B58-A3F4-312B-B6D3-EA9363D49DEE}</Project>
+      <Name>test-mongoc-gssapi</Name>
+    </ProjectReference>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\zlib_obj.vcxproj">
+      <Project>{277F8B29-F5C8-3B92-B2B9-823FF1DDCE99}</Project>
+      <Name>zlib_obj</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

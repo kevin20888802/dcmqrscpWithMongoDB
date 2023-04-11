@@ -1,0 +1,39 @@
+﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libbson/CMakeLists.txt
+  bcon.c
+  bson.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson.c(2996,24): warning C4018: '>=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson.c(2999,27): warning C4018: '>': signed/unsigned 不相符
+  bson-atomic.c
+  bson-clock.c
+  bson-context.c
+  bson-decimal128.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-decimal128.c(629,19): warning C4267: '-=': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+  bson-error.c
+  bson-iso8601.c
+  bson-iter.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-iter.c(114,16): warning C4267: '=': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  bson-json.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-json.c(631,73): warning C4146: 一元減號運算子套用 unsigned 類型，所得的結果也會是 unsigned 類型
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-json.c(1189,10): warning C4267: '函式': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-json.c(2236,39): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-json.c(2237,24): warning C4018: '<': signed/unsigned 不相符
+  bson-keys.c
+  bson-md5.c
+  bson-memory.c
+  bson-oid.c
+  bson-reader.c
+  bson-string.c
+  bson-timegm.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson\bson-timegm.c(488,11): warning C4244: '+=': 將 'const int64_t' 轉換為 'int_fast32_t'，由於類型不同，可能導致資料遺失
+  bson-utf8.c
+  bson-value.c
+  bson-version-functions.c
+  正在產生程式碼...
+  正在編譯...
+  bson-writer.c
+  jsonsl.c
+  common-b64.c
+  common-md5.c
+  common-thread.c
+  正在產生程式碼...
+  bson_static.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\Debug\bson-static-1.0.lib

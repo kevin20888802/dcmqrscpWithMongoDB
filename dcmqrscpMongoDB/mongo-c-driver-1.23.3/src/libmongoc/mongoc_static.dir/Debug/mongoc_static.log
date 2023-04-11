@@ -1,0 +1,205 @@
+﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/libmongoc/CMakeLists.txt
+  mongoc-aggregate.c
+  mongoc-apm.c
+  mongoc-array.c
+  mongoc-async.c
+  mongoc-async-cmd.c
+  mongoc-buffer.c
+  mongoc-bulk-operation.c
+  mongoc-change-stream.c
+  mongoc-client.c
+  mongoc-client-pool.c
+  mongoc-client-side-encryption.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-client-side-encryption.c(347,21): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-client-side-encryption.c(403,21): warning C4018: '<': signed/unsigned 不相符
+  mongoc-cluster.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-cluster.c(162,30): warning C4267: '+=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-cluster.c(172,28): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-cluster.c(3180,50): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-cluster.c(3265,16): warning C4267: '=': 將 'size_t' 轉換為 'off_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-cluster.c(3441,79): warning C4267: '=': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+  mongoc-cluster-aws.c
+  mongoc-cluster-sasl.c
+  mongoc-collection.c
+  mongoc-compression.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-compression.c(51,29): warning C4267: '函式': 將 'size_t' 轉換為 'uLong'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-compression.c(181,24): warning C4267: '函式': 將 'size_t' 轉換為 'uLong'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-compression.c(255,25): warning C4267: '函式': 將 'size_t' 轉換為 'uLong'，資料可能遺失
+  mongoc-counters.c
+  mongoc-crypt.c
+  mongoc-cursor-array.c
+  mongoc-cursor.c
+  正在產生程式碼...
+  正在編譯...
+  mongoc-cursor-cmd.c
+  mongoc-cursor-change-stream.c
+  mongoc-cursor-cmd-deprecated.c
+  mongoc-cursor-find.c
+  mongoc-cursor-find-cmd.c
+  mongoc-cursor-find-opquery.c
+  mongoc-cursor-legacy.c
+  mongoc-database.c
+  mongoc-error.c
+  mongoc-find-and-modify.c
+  mongoc-generation-map.c
+  mongoc-init.c
+  Configure the driver with ENABLE_AUTOMATIC_INIT_AND_CLEANUP=OFF. Automatic cleanup is deprecated and will be removed in version 2.0.
+  mongoc-gridfs.c
+  mongoc-gridfs-bucket.c
+  mongoc-gridfs-bucket-file.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-bucket-file.c(378,30): warning C4267: '+=': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-bucket-file.c(379,19): warning C4267: '+=': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-bucket-file.c(433,30): warning C4267: '+=': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-bucket-file.c(434,27): warning C4267: '+=': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-bucket-file.c(435,19): warning C4267: '+=': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  mongoc-gridfs-file.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(451,18): warning C4018: '>=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(520,18): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(590,21): warning C4018: '>=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(607,68): warning C4244: '函式': 將 'uint64_t' 轉換為 'uint32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(841,36): warning C4018: '<=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(887,12): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-gridfs-file.c(986,24): warning C4244: '=': 將 'uint64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+  mongoc-gridfs-file-list.c
+  mongoc-gridfs-file-page.c
+  mongoc-handshake.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-handshake.c(202,18): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-handshake.c(298,8): warning C4996: 'GetVersionExA': 宣告為已被取代
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-handshake.c(505,7): warning C4018: '<': signed/unsigned 不相符
+  mongoc-host-list.c
+  正在產生程式碼...
+  正在編譯...
+  mongoc-http.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-http.c(194,27): warning C4244: '=': 將 '__int64' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-http.c(197,48): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  mongoc-index.c
+  mongoc-interrupt.c
+  mongoc-list.c
+  mongoc-linux-distro-scanner.c
+  mongoc-log.c
+  mongoc-matcher.c
+  mongoc-matcher-op.c
+  mongoc-memcmp.c
+  mongoc-cmd.c
+  mongoc-optional.c
+  mongoc-opts-helpers.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-opts-helpers.c(67,18): warning C4267: '函式': 將 'size_t' 轉換為 'int'，資料可能遺失
+  mongoc-opts.c
+  mongoc-queue.c
+  mongoc-read-concern.c
+  mongoc-read-prefs.c
+  mongoc-rpc.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\op-msg.def(1,1): warning C4267: '正在初始化': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-rpc.c(857,11): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-rpc.c(892,51): warning C4267: '=': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+  mongoc-server-api.c
+  mongoc-server-description.c
+  mongoc-server-stream.c
+  正在產生程式碼...
+  正在編譯...
+  mongoc-client-session.c
+  mongoc-server-monitor.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(232,54): warning C4244: '=': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(244,27): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(254,51): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(269,58): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(280,58): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(334,54): warning C4244: '=': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(348,27): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(354,51): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(362,58): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(373,58): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(443,54): warning C4244: '=': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(455,27): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(465,51): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(643,57): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-server-monitor.c(709,49): warning C4244: '函式': 將 'uint64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+  mongoc-set.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-set.c(91,15): warning C4244: '=': 將 '__int64' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-set.c(204,16): warning C4267: '函式': 將 'size_t' 轉換為 'uint32_t'，資料可能遺失
+  mongoc-shared.c
+  mongoc-socket.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-socket.c(1228,54): warning C4267: '函式': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-socket.c(1295,33): warning C4267: '函式': 將 'size_t' 轉換為 'DWORD'，資料可能遺失
+  mongoc-stream-buffered.c
+  mongoc-stream.c
+  mongoc-stream-file.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-stream-file.c(137,58): warning C4267: '函式': 將 'size_t' 轉換為 'unsigned int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-stream-file.c(187,60): warning C4267: '函式': 將 'size_t' 轉換為 'unsigned int'，資料可能遺失
+  mongoc-stream-gridfs.c
+  mongoc-stream-gridfs-download.c
+  mongoc-stream-gridfs-upload.c
+  mongoc-stream-socket.c
+  mongoc-timeout.c
+  mongoc-topology.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology.c(252,20): warning C4244: '=': 將 'const int64_t' 轉換為 'int'，由於類型不同，可能導致資料遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology.c(378,45): warning C4244: '函式': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+  mongoc-topology-background-monitoring.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology-background-monitoring.c(207,18): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology-background-monitoring.c(319,46): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology-background-monitoring.c(320,43): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  mongoc-topology-description.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology-description.c(907,75): warning C4018: '<=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology-description.c(2502,21): warning C4267: '函式': 將 'size_t' 轉換為 'int32_t'，資料可能遺失
+  mongoc-topology-description-apm.c
+  mongoc-topology-scanner.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-topology-scanner.c(288,22): warning C4267: '=': 將 'size_t' 轉換為 'int'，資料可能遺失
+  mongoc-ts-pool.c
+  mongoc-uri.c
+  正在產生程式碼...
+  正在編譯...
+  mongoc-util.c
+  mongoc-version-functions.c
+  mongoc-write-command.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command.c(425,34): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command.c(428,35): warning C4018: '>=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command.c(545,54): warning C4018: '<=': signed/unsigned 不相符
+  mongoc-write-command-legacy.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command-legacy.c(184,15): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command-legacy.c(305,21): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command-legacy.c(449,21): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-write-command-legacy.c(466,21): warning C4018: '>': signed/unsigned 不相符
+  mongoc-write-concern.c
+  common-b64.c
+  common-md5.c
+  common-thread.c
+  mongoc-crypto.c
+  mongoc-scram.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-scram.c(434,18): warning C4018: '<=': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-scram.c(672,18): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-scram.c(828,27): warning C4267: '函式': 將 'size_t' 轉換為 'int'，資料可能遺失
+  mongoc-stream-tls.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-stream-tls.c(121,46): warning C4244: '=': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+  mongoc-ssl.c
+  mongoc-crypto-cng.c
+  mongoc-rand-cng.c
+  mongoc-stream-tls-secure-channel.c
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-stream-tls-secure-channel.c(386,37): warning C4018: '>': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-stream-tls-secure-channel.c(394,21): warning C4018: '<': signed/unsigned 不相符
+D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc\mongoc-stream-tls-secure-channel.c(752,51): warning C4244: '=': 將 'int64_t' 轉換為 'int32_t'，由於類型不同，可能導致資料遺失
+  mongoc-secure-channel.c
+  mongoc-sasl.c
+  mongoc-cluster-sspi.c
+  mongoc-sspi.c
+  正在產生程式碼...
+cl : 命令列  warning D9025: 覆寫 '/W3'，以 '/w'
+  hexlify.c
+  kms_b64.c
+  kms_caller_identity_request.c
+  kms_crypto_apple.c
+  kms_crypto_libcrypto.c
+  kms_crypto_none.c
+  kms_crypto_windows.c
+  kms_decrypt_request.c
+  kms_encrypt_request.c
+  kms_kv_list.c
+  kms_message.c
+  kms_port.c
+  kms_request.c
+  kms_request_opt.c
+  kms_request_str.c
+  kms_response.c
+  kms_response_parser.c
+  sort.c
+  正在產生程式碼...
+  mongoc_static.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\Debug\mongoc-static-1.0.lib

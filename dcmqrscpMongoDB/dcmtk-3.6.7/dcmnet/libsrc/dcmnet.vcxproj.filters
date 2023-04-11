@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\assoc.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\cond.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dcasccff.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dcasccfg.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dccfenmp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dccfpcmp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dccfprmp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dccfrsmp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dccftsmp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dccfuidh.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dcmlayer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dcmtrans.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dcompat.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dcuserid.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dfindscu.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimcancl.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimcmd.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimdump.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimecho.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimfind.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimget.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimmove.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimse.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dimstore.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\diutil.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dstorscp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dstorscu.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dul.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dulconst.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dulextra.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dulfsm.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dulparse.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dulpres.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\dwrap.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\extneg.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\helpers.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\lst.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\scp.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\scpcfg.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\scppool.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\scpthrd.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\scu.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\libsrc\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{842A337B-DFF8-3353-9370-EA3D9039F60E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,15 @@
+﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/dcmqrdb/libsrc/CMakeLists.txt
+  dcmqrcbf.cc
+  dcmqrcbg.cc
+  dcmqrcbm.cc
+  dcmqrcbs.cc
+  dcmqrcnf.cc
+  dcmqrdbi.cc
+  dcmqrdbs.cc
+  dcmqropt.cc
+  dcmqrptb.cc
+  dcmqrsrv.cc
+  dcmqrtis.cc
+  正在產生程式碼...
+     正在建立程式庫 D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/lib/Debug/dcmqrdb.lib 和物件 D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/lib/Debug/dcmqrdb.exp
+  dcmqrdb.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\Debug\dcmqrdb.dll

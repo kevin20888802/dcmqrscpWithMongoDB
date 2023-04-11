@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\CMakeFiles\f50788e6a16c8854df698ab6219cd2c5\PACKAGE_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{A43821A0-B67D-3E57-B5F1-0EFAB5E80333}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

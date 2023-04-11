@@ -1,0 +1,9 @@
+﻿  1>Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/dcmnet/tests/CMakeLists.txt
+  tdimse.cc
+  tdump.cc
+  tests.cc
+  tpool.cc
+  tscuscp.cc
+  tscusession.cc
+  正在產生程式碼...
+  dcmnet_tests.vcxproj -> D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\Debug\dcmnet_tests.exe

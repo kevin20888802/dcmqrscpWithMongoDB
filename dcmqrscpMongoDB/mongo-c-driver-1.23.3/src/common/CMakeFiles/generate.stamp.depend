@@ -1,0 +1,4 @@
+# CMake generation dependency list for this directory.
+D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/build/cmake/MongoC-Warnings.cmake
+D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/common/CMakeLists.txt
+D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/mongo-c-driver-1.23.3/src/common/common-config.h.in

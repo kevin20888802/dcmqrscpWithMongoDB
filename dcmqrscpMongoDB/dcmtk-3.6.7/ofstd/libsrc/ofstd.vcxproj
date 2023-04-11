@@ -1,0 +1,358 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C932210E-9D7F-3563-9D79-25A49BF48185}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.22000.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>ofstd</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ofstd.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ofstd</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ofstd.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ofstd</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ofstd.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">ofstd</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\bin\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ofstd.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">ofstd</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.dll</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;DEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Debug";ofstd_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;DEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Debug\";ofstd_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64 /ignore:4099</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/lib/Debug/ofstd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/bin/Debug/ofstd.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="Release";ofstd_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"Release\";ofstd_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64 /ignore:4099</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/lib/Release/ofstd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/bin/Release/ofstd.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="MinSizeRel";ofstd_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"MinSizeRel\";ofstd_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64 /ignore:4099</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/lib/MinSizeRel/ofstd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/bin/MinSizeRel/ofstd.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR="RelWithDebInfo";ofstd_EXPORTS</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;USE_NULL_SAFE_OFSTRING;DCMTK_BUILD_IN_PROGRESS;NOMINMAX;_CRT_FAR_MAPPINGS_NO_DEPRECATE;_CRT_IS_WCTYPE_NO_DEPRECATE;_CRT_MANAGED_FP_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE_GLOBALS;_CRT_SETERRORMODE_BEEP_SLEEP_NO_DEPRECATE;_CRT_TIME_FUNCTIONS_NO_DEPRECATE;_CRT_VCCLRIT_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;_REENTRANT;CMAKE_INTDIR=\"RelWithDebInfo\";ofstd_EXPORTS</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64 /ignore:4099</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/lib/RelWithDebInfo/ofstd.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/bin/RelWithDebInfo/ofstd.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/ofstd/libsrc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/dcmtk-3.6.7/ofstd/libsrc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\ofstd\libsrc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/ofstd/libsrc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/dcmtk-3.6.7/ofstd/libsrc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\ofstd\libsrc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/ofstd/libsrc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/dcmtk-3.6.7/ofstd/libsrc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\ofstd\libsrc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule D:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource/dcmtk-3.6.7/ofstd/libsrc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Programming/C++/dcmqrscpWithMongoDB/CMakeSource -BD:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB --check-stamp-file D:/Programming/C++/dcmqrscpWithMongoDB/dcmqrscpMongoDB/dcmtk-3.6.7/ofstd/libsrc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\ofstd\libsrc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofchrenc.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofcmdln.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofconapp.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofcond.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofconfig.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofconsol.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofcrc32.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofdate.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofdatime.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\oferror.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\offile.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\offilsys.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\offname.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\oflist.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofstd.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofstring.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofstrutl.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofthread.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\oftime.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\oftimer.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\oftempf.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofxml.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofuuid.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofmath.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofsockad.cc" />
+    <ClCompile Include="D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\libsrc\ofrand.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\ZERO_CHECK.vcxproj">
+      <Project>{25DF73EC-F007-3E44-A90A-6E9B30231FED}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
