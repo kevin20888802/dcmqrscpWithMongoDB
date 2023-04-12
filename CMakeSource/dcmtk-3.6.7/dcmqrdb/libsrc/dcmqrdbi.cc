@@ -34,6 +34,9 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc-dcmtk.h"
+
 #include "dcmtk/ofstd/ofstd.h"
 
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
@@ -441,6 +444,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     DB_IdxInitRecord (idxRec, 1) ;
     return EC_Normal ;
 }
+
 
 
 /******************************
