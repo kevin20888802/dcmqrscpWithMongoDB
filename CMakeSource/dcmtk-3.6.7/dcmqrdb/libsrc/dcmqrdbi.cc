@@ -20,6 +20,16 @@
  *
  */
 
+/**
+* MongoDB設定
+*/
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
+
+// Mongo 連線網址
+const char* conn_string = "mongodb://127.0.0.1/?appname=dcmqrscpMongoDB";
+const char* mongoDB_name = "dcmqrscpDatabase";
+const char* collection_name = "dcmqrscp";
+
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 BEGIN_EXTERN_C
@@ -35,7 +45,6 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 
-#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -445,6 +454,83 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     return EC_Normal ;
 }
 
+/*
+Visual C++ 編譯時，遇到「無法解析的外部符號」
+解決的辦法如下：
+首先，到專案的「屬性」
+並到「組態屬性」->「連結器」->「輸入」
+其中的「其他相依性」則是告訴編譯器，你需要引用哪些 lib 檔
+將mongo的兩個lib引入
+
+windows下需要SSIZE_T
+加入以下來解決
+#ifdef _WIN32
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
+#endif // _WIN32
+在bson-cmp.h加入這段
+
+*/
+static bson_t* IdxRecordToBson(IdxRecord *idxRec)
+{
+    bson_t* doc;
+    bson_oid_t oid;
+    doc = bson_new();
+    bson_oid_init(&oid, NULL);
+
+    // 填入欄位
+    BSON_APPEND_OID(doc, "_id", &oid);
+    BSON_APPEND_UTF8(doc, "filename", idxRec->filename);
+    BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
+    BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
+
+    BSON_APPEND_UTF8(doc, "PatientBirthDate", idxRec->PatientBirthDate);
+    BSON_APPEND_UTF8(doc, "PatientSex", idxRec->PatientSex);
+    BSON_APPEND_UTF8(doc, "PatientName", idxRec->PatientName);
+    BSON_APPEND_UTF8(doc, "PatientID", idxRec->PatientID);
+    BSON_APPEND_UTF8(doc, "PatientBirthTime", idxRec->PatientBirthTime);
+    BSON_APPEND_UTF8(doc, "OtherPatientIDs", idxRec->OtherPatientIDs);
+    BSON_APPEND_UTF8(doc, "OtherPatientNames", idxRec->OtherPatientNames);
+    BSON_APPEND_UTF8(doc, "EthnicGroup", idxRec->EthnicGroup);
+
+    BSON_APPEND_UTF8(doc, "StudyDate", idxRec->StudyDate);
+    BSON_APPEND_UTF8(doc, "StudyTime", idxRec->StudyTime);
+    BSON_APPEND_UTF8(doc, "StudyID", idxRec->StudyID);
+    BSON_APPEND_UTF8(doc, "StudyDescription", idxRec->StudyDescription);
+    BSON_APPEND_UTF8(doc, "NameOfPhysiciansReadingStudy", idxRec->NameOfPhysiciansReadingStudy);
+
+    BSON_APPEND_UTF8(doc, "AccessionNumber", idxRec->AccessionNumber);
+    BSON_APPEND_UTF8(doc, "ReferringPhysicianName", idxRec->ReferringPhysicianName);
+    BSON_APPEND_UTF8(doc, "ProcedureDescription", idxRec->ProcedureDescription);
+    BSON_APPEND_UTF8(doc, "AttendingPhysiciansName", idxRec->AttendingPhysiciansName);
+    BSON_APPEND_UTF8(doc, "StudyInstanceUID", idxRec->StudyInstanceUID);
+    BSON_APPEND_UTF8(doc, "OtherStudyNumbers", idxRec->OtherStudyNumbers);
+    BSON_APPEND_UTF8(doc, "AdmittingDiagnosesDescription", idxRec->AdmittingDiagnosesDescription);
+    BSON_APPEND_UTF8(doc, "PatientAge", idxRec->PatientAge);
+    BSON_APPEND_UTF8(doc, "PatientSize", idxRec->PatientSize);
+    BSON_APPEND_UTF8(doc, "PatientWeight", idxRec->PatientWeight);
+    BSON_APPEND_UTF8(doc, "Occupation", idxRec->Occupation);
+
+    BSON_APPEND_UTF8(doc, "SeriesNumber", idxRec->SeriesNumber);
+    BSON_APPEND_UTF8(doc, "SeriesInstanceUID", idxRec->SeriesInstanceUID);
+    BSON_APPEND_UTF8(doc, "Modality", idxRec->Modality);
+
+    BSON_APPEND_UTF8(doc, "ImageNumber", idxRec->ImageNumber);
+    BSON_APPEND_UTF8(doc, "SOPInstanceUID", idxRec->SOPInstanceUID);
+    BSON_APPEND_UTF8(doc, "SeriesDate", idxRec->SeriesDate);
+    BSON_APPEND_UTF8(doc, "SeriesTime", idxRec->SeriesTime);
+    BSON_APPEND_UTF8(doc, "SeriesDescription", idxRec->SeriesDescription);
+    BSON_APPEND_UTF8(doc, "ProtocolName", idxRec->ProtocolName);
+    BSON_APPEND_UTF8(doc, "OperatorsName", idxRec->OperatorsName);
+    BSON_APPEND_UTF8(doc, "PerformingPhysicianName", idxRec->PerformingPhysicianName);
+    BSON_APPEND_UTF8(doc, "PresentationLabel", idxRec->PresentationLabel);
+    BSON_APPEND_UTF8(doc, "IssuerOfPatientID", idxRec->IssuerOfPatientID);
+
+    BSON_APPEND_UTF8(doc, "InstanceDescription", idxRec->InstanceDescription);
+    BSON_APPEND_UTF8(doc, "SpecificCharacterSet", idxRec->SpecificCharacterSet);
+
+    return doc;
+}
 
 
 /******************************
@@ -454,8 +540,51 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
 
 static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *idxRec)
 {
-    IdxRecord   rec ;
+    IdxRecord rec;
     OFCondition cond = EC_Normal;
+
+    // 開始將資料寫入MongoDB
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        cond = QR_EC_IndexDatabaseError;
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 取得database (會自動建立database如果沒有)
+        db = mongoc_client_get_database(mongoClient, mongoDB_name);
+
+        // 轉換格式 IdxRecord轉bson
+        bson_t* idxBson;
+        idxBson = IdxRecordToBson(idxRec);
+
+        // 存入MongoDB
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        if (!mongoc_collection_insert_one(collection, idxBson, NULL, NULL, &mongoError))
+        {
+            fprintf(stderr, "%s\n", mongoError.message);
+            cond = QR_EC_IndexDatabaseError;
+        }
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+
 
     /*** Find free place for the record
     *** A place is free if filename is empty

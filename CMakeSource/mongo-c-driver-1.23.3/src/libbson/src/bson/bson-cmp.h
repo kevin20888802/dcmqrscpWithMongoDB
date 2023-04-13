@@ -20,6 +20,12 @@
 #ifndef BSON_CMP_H
 #define BSON_CMP_H
 
+#ifdef _WIN32
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
+#endif // _WIN32
+
+
 
 #include "bson-compat.h" /* ssize_t */
 #include "bson-macros.h" /* BSON_CONCAT */
