@@ -35,7 +35,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 
-#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc-dcmtk.h"
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
 
 #include "dcmtk/ofstd/ofstd.h"
 
@@ -2673,6 +2673,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
 
 /*************************
 **  Add data from imageFileName to database
+* 在檔案儲存完成後，將dicom資料從檔案紀錄到資料庫。
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
@@ -2695,6 +2696,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     DB_IdxInitRecord (&idxRec, 0) ;
 
     strncpy(idxRec.filename, imageFileName, DBC_MAXSTRING);
+    std::cout << "DB_storeRequest () : storage request of file" << "" << std::endl;
 #ifdef DEBUG
     DCMQRDB_DEBUG("DB_storeRequest () : storage request of file : " << idxRec.filename);
 #endif
@@ -2842,6 +2844,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 #endif
 
     /**** Goto the end of IndexFile, and write the record
+    * 將資料寫入資料庫
     ***/
 
     DB_lock(OFTrue);
@@ -2884,6 +2887,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     free (pStudyDesc) ;
 
+    // 執行寫入(DB_IdxAdd)
     if (DB_IdxAdd (handle_, &i, &idxRec) == EC_Normal)
     {
         status->setStatus(STATUS_Success);

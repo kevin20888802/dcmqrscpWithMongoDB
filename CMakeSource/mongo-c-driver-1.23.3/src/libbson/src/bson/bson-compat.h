@@ -106,7 +106,7 @@ typedef SIZE_T size_t;
 #pragma warning(disable : 4142)
 #ifndef _SSIZE_T_DEFINED
 #define _SSIZE_T_DEFINED
-typedef SSIZE_T ssize_t;
+//typedef SSIZE_T ssize_t;
 #endif
 #pragma warning(default : 4142)
 #endif
