@@ -484,6 +484,37 @@ static bson_t* IdxRecordToBson(IdxRecord *idxRec)
     BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
     BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
 
+    bson_t* param_bson;
+    param_bson = bson_new();
+    for (int i = 0; i < NBPARAMETERS; i++)
+    {
+        DB_SmallDcmElmt &curr_param = idxRec->param[i];
+        bson_t* curr_param_bson; 
+        curr_param_bson = bson_new();
+
+        bson_t* PValueField_bson;
+        PValueField_bson = bson_new();
+        BSON_APPEND_UTF8(PValueField_bson,"p", curr_param.PValueField.ptr.p);
+        BSON_APPEND_INT32(PValueField_bson, "placeholder", curr_param.PValueField.ptr.placeholder);
+        BSON_APPEND_DOCUMENT(curr_param_bson, "PValueField", PValueField_bson);
+        BSON_APPEND_INT32(curr_param_bson, "ValueLength", curr_param.ValueLength);
+        bson_t* XTag_bson;
+        XTag_bson = bson_new();
+        for (int j = 0; j < 2; j++)
+        {
+            std::string s = std::to_string(j);
+            char const* pchar = s.c_str();
+            BSON_APPEND_INT32(XTag_bson, pchar, curr_param.XTag.key[j]);
+        }
+        BSON_APPEND_DOCUMENT(curr_param_bson, "XTag", XTag_bson);
+
+
+        std::string s = std::to_string(i);
+        char const* pchar = s.c_str();
+        BSON_APPEND_DOCUMENT(param_bson, pchar, curr_param_bson);
+    }
+    BSON_APPEND_DOCUMENT(doc, "param", param_bson);
+
     BSON_APPEND_UTF8(doc, "PatientBirthDate", idxRec->PatientBirthDate);
     BSON_APPEND_UTF8(doc, "PatientSex", idxRec->PatientSex);
     BSON_APPEND_UTF8(doc, "PatientName", idxRec->PatientName);
@@ -1625,6 +1656,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         }
     }
 
+    // 開始從資料庫找尋資料
     /**** Goto the beginning of Index File
     **** Then find the first matching image
     ***/
@@ -1633,7 +1665,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
     DB_IdxInitLoop (&(handle_->idxCounter)) ;
     MatchFound = OFFalse ;
-    cond = EC_Normal ;
+    cond = EC_Normal;
 
     CharsetConsideringMatcher dbmatch(*handle_);
     while (1) {
@@ -1650,9 +1682,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         dbmatch.setRecord(idxRec);
         cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
         if (cond != EC_Normal)
-            break ;
+            break;
         if (MatchFound)
-            break ;
+            break;
     }
 
     /**** If an error occurred in Matching function
