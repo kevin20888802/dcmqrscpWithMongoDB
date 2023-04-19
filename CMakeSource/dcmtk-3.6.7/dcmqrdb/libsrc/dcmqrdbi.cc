@@ -1366,12 +1366,101 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
     return EC_Normal ;
 }
 
-IdxRecord bson_to_idx_record(const bson_t *i_bson)
+IdxRecord* bson_to_idx_record(const bson_t *i_bson)
 {
     IdxRecord theRec = IdxRecord();
 
-    theRec.RecordedDate = i_bson;
+    for (int i = 0; i < NBPARAMETERS; i++)
+    {
+        std::cout << "param[" << i << "]=" << theRec.param[i].XTag.key[0] << "," << theRec.param[i].XTag.key[1] << "\n";
+    }
 
+    std::string aaa(theRec.filename);
+    std::cout << "theRec FILENAME=" << aaa << "\n";
+    //theRec.RecordedDate = i_bson;
+    bson_iter_t iter;
+    if (bson_iter_init(&iter, i_bson)) {
+        while (bson_iter_next(&iter)) {
+            (strcmp(bson_iter_key(&iter), "filename") == 0) ? strcpy(theRec.filename, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "RecordedDate") == 0) ? theRec.RecordedDate = bson_iter_double(&iter) : 0.0;
+            (strcmp(bson_iter_key(&iter), "ImageSize") == 0) ? theRec.ImageSize = bson_iter_int32(&iter) : 0;
+
+            if (strcmp(bson_iter_key(&iter), "param") == 0)
+            {
+                //std::cout << "param type=" << bson_iter_type(&iter) << std::endl;
+                const uint8_t* param_bson_data;
+                uint32_t param_bson_data_size;
+                bson_t* param_bson;
+                bson_iter_document(&iter, &param_bson_data_size, &param_bson_data);
+                param_bson = bson_new_from_data(param_bson_data, param_bson_data_size);
+                bson_iter_t param_iter;
+                if (bson_iter_init(&param_iter, param_bson)) {
+                    int pIndex = 0;
+                    while (bson_iter_next(&param_iter)) {
+                        printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&param_iter), bson_iter_utf8(&param_iter, 0));
+
+                        /*const uint8_t* curr_xtag_data;
+                        uint32_t curr_xtag_data_size;
+                        bson_t* curr_xtag_bson;
+                        bson_iter_document(&param_iter, &curr_xtag_data, &param_bson_data);
+                        param_bson = bson_new_from_data(param_bson_data, param_bson_data_size);
+                        bson_iter_t param_iter;
+
+
+                        theRec.param[pIndex].XTag.key[0] = 0;
+                        pIndex++;*/
+                    }
+                }
+            }
+
+            (strcmp(bson_iter_key(&iter), "PatientBirthDate") == 0) ? strcpy(theRec.PatientBirthDate, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientSex") == 0) ? strcpy(theRec.PatientSex, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientName") == 0) ? strcpy(theRec.PatientName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientID") == 0) ? strcpy(theRec.PatientID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientBirthTime") == 0) ? strcpy(theRec.PatientBirthTime, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OtherPatientIDs") == 0) ? strcpy(theRec.OtherPatientIDs, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OtherPatientNames") == 0) ? strcpy(theRec.OtherPatientNames, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "EthnicGroup") == 0) ? strcpy(theRec.EthnicGroup, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyDate") == 0) ? strcpy(theRec.StudyDate, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyTime") == 0) ? strcpy(theRec.StudyTime, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyID") == 0) ? strcpy(theRec.StudyID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyDescription") == 0) ? strcpy(theRec.StudyDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "NameOfPhysiciansReadingStudy") == 0) ? strcpy(theRec.NameOfPhysiciansReadingStudy, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "AccessionNumber") == 0) ? strcpy(theRec.AccessionNumber, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ReferringPhysicianName") == 0) ? strcpy(theRec.ReferringPhysicianName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ProcedureDescription") == 0) ? strcpy(theRec.ProcedureDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "AttendingPhysiciansName") == 0) ? strcpy(theRec.AttendingPhysiciansName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyInstanceUID") == 0) ? strcpy(theRec.StudyInstanceUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OtherStudyNumbers") == 0) ? strcpy(theRec.OtherStudyNumbers, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "AdmittingDiagnosesDescription") == 0) ? strcpy(theRec.AdmittingDiagnosesDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientAge") == 0) ? strcpy(theRec.PatientAge, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientSize") == 0) ? strcpy(theRec.PatientSize, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientWeight") == 0) ? strcpy(theRec.PatientWeight, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "Occupation") == 0) ? strcpy(theRec.Occupation, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesNumber") == 0) ? strcpy(theRec.SeriesNumber, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesInstanceUID") == 0) ? strcpy(theRec.SeriesInstanceUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "Modality") == 0) ? strcpy(theRec.Modality, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ImageNumber") == 0) ? strcpy(theRec.ImageNumber, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SOPInstanceUID") == 0) ? strcpy(theRec.SOPInstanceUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesDate") == 0) ? strcpy(theRec.SeriesDate, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesTime") == 0) ? strcpy(theRec.SeriesTime, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesDescription") == 0) ? strcpy(theRec.SeriesDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ProtocolName") == 0) ? strcpy(theRec.ProtocolName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OperatorsName") == 0) ? strcpy(theRec.OperatorsName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PerformingPhysicianName") == 0) ? strcpy(theRec.PerformingPhysicianName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PresentationLabel") == 0) ? strcpy(theRec.PresentationLabel, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "IssuerOfPatientID") == 0) ? strcpy(theRec.IssuerOfPatientID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "InstanceDescription") == 0) ? strcpy(theRec.InstanceDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SpecificCharacterSet") == 0) ? strcpy(theRec.SpecificCharacterSet, bson_iter_utf8(&iter, 0)) : "";
+
+            printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&iter), bson_iter_utf8(&iter, 0));
+        }
+    }
+    std::string ccc(theRec.filename);
+    printf("theRec Filename=%s\n", theRec.filename);
+    std::cout << "theRec FILENAME=" << theRec.filename << "\n";
+    std::cout << "theRec PatientBirthDate=" << theRec.PatientBirthDate << "\n";
+    return &theRec;
 }
 
 OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
@@ -1430,15 +1519,15 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
         resultBson = bson_new();
         char* str;
         //BSON_APPEND_REGEX
-        std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
+        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
         cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
         while (mongoc_cursor_next(cursor, &resultBson)) {
             str = bson_as_canonical_extended_json(resultBson, NULL);
-            printf("%s\n", str);
-            std::cout << str << std::endl;
+            //printf("%s\n", str);
+            //std::cout << str << std::endl;
             bson_free(str);
             // Convert Bson to IdxRecord.
-            idxRec = &bson_to_idx_record(resultBson);
+            idxRec = bson_to_idx_record(resultBson);
             break;
         }
         std::cout << "ending mongodb find" << "" << std::endl;

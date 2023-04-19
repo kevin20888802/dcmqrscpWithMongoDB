@@ -365,6 +365,7 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
 {
     /// default constructor
     IdxRecord();
+    /* undefined */ IdxRecord(const IdxRecord& copy);
 
     char    filename                        [DBC_MAXSTRING+1] ;
     char    SOPClassUID                     [UI_MAX_LENGTH+1] ;
@@ -426,7 +427,6 @@ struct DCMTK_DCMQRDB_EXPORT IdxRecord
     char    SpecificCharacterSet            [CS_MAX_LENGTH*8+1] ;
 
 private:
-    /* undefined */ IdxRecord(const IdxRecord& copy);
     /* undefined */ IdxRecord& operator=(const IdxRecord& copy);
 };
 
