@@ -378,6 +378,14 @@ private:
   int matchStudyUIDInStudyDesc (StudyDescRecord *pStudyDesc, char *StudyUID, int maxStudiesAllowed);
   OFCondition checkupinStudyDesc(StudyDescRecord *pStudyDesc, char *StudyUID, long imageSize);
 
+  OFBool mongoDBFindRecord (
+      DB_Private_Handle* phandle,
+      IdxRecord* idxRec,
+      DB_LEVEL          level,
+      DB_LEVEL          infLevel,
+      int* match,
+      CharsetConsideringMatcher& dbmatch);
+
   OFCondition hierarchicalCompare (
       DB_Private_Handle *phandle,
       IdxRecord         *idxRec,

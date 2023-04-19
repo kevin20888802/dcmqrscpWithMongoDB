@@ -454,6 +454,16 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     return EC_Normal ;
 }
 
+std::string int_to_hex(Uint16 i)
+{
+    std::stringstream stream;
+    //stream << "0x"
+    stream << ""
+        << std::setfill('0') << std::setw(sizeof(Uint16) * 2)
+        << std::hex << i;
+    return stream.str();
+}
+
 /*
 Visual C++ 編譯時，遇到「無法解析的外部符號」
 解決的辦法如下：
@@ -509,9 +519,13 @@ static bson_t* IdxRecordToBson(IdxRecord *idxRec)
         BSON_APPEND_DOCUMENT(curr_param_bson, "XTag", XTag_bson);
 
 
-        std::string s = std::to_string(i);
-        char const* pchar = s.c_str();
-        BSON_APPEND_DOCUMENT(param_bson, pchar, curr_param_bson);
+        //std::string s = std::to_string(i);
+        //char const* pchar = s.c_str();
+        // 改成以XTag為儲存key
+        std::string xtagRaw = "";
+        //xtagRaw = std::to_string(curr_param.XTag.key[0]) + "," + std::to_string(curr_param.XTag.key[1]);
+        xtagRaw = int_to_hex(curr_param.XTag.key[0]) + "," + int_to_hex(curr_param.XTag.key[1]);
+        BSON_APPEND_DOCUMENT(param_bson, xtagRaw.c_str(), curr_param_bson);
     }
     BSON_APPEND_DOCUMENT(doc, "param", param_bson);
 
@@ -1352,6 +1366,92 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
     return EC_Normal ;
 }
 
+IdxRecord bson_to_idx_record(const bson_t *i_bson)
+{
+    IdxRecord theRec = IdxRecord();
+
+    theRec.RecordedDate = i_bson;
+
+}
+
+OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
+    DB_Private_Handle* phandle,
+    IdxRecord* idxRec,
+    DB_LEVEL                level,
+    DB_LEVEL                infLevel,
+    int* match,
+    CharsetConsideringMatcher& dbmatch)
+{
+    int                 i;
+    DcmTagKey   XTag;
+    DB_ElementList* plist;
+    DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
+
+    IdxRecord* retRec = nullptr;
+
+    std::cout << "start mongodb find" << "" << std::endl;
+
+    // MongoDB連接
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        std::cout << "mongodb uri error" << "" << std::endl;
+        return false;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 將query轉bson
+        bson_t *query;
+        query = bson_new();
+        for (plist = phandle->findRequestList; plist; plist = plist->next)
+        {
+            std::string queryKey = "param.";
+            std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
+            queryKey = queryKey + xtag + ".PValueField.p";
+            BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+        }
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        char* str;
+        //BSON_APPEND_REGEX
+        std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            str = bson_as_canonical_extended_json(resultBson, NULL);
+            printf("%s\n", str);
+            std::cout << str << std::endl;
+            bson_free(str);
+            // Convert Bson to IdxRecord.
+            idxRec = &bson_to_idx_record(resultBson);
+            break;
+        }
+        std::cout << "ending mongodb find" << "" << std::endl;
+        return true;
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+        return false;
+    }
+
+}
+
 
 /************
 **      Hierarchical Search Algorithm
@@ -1422,7 +1522,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
 
     /**** If current level is the QueryLevel
     ***/
-
+    
     else if (level == phandle->queryLevel) {
 
         /*** For each element in Identifier list
@@ -1479,6 +1579,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
     }
     return QR_EC_IndexDatabaseError;
 }
+
+
+
+
 
 /********************
 **      Start find in Database
@@ -1668,24 +1772,26 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     cond = EC_Normal;
 
     CharsetConsideringMatcher dbmatch(*handle_);
+    MatchFound = mongoDBFindRecord(handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch);
+    /*
     while (1) {
 
         /*** Exit loop if read error (or end of file)
         **/
 
-        if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
+        /*if (DB_IdxGetNext(&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
         /*** Exit loop if error or matching OK
         **/
 
-        dbmatch.setRecord(idxRec);
+        /*dbmatch.setRecord(idxRec);
         cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
         if (cond != EC_Normal)
             break;
         if (MatchFound)
             break;
-    }
+    }*/
 
     /**** If an error occurred in Matching function
     ****    return a failed status
