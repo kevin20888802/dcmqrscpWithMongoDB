@@ -380,7 +380,15 @@ private:
 
   OFBool mongoDBFindRecord (
       DB_Private_Handle* phandle,
-      IdxRecord* idxRec,
+      IdxRecord &idxRec,
+      DB_LEVEL          level,
+      DB_LEVEL          infLevel,
+      int* match,
+      CharsetConsideringMatcher& dbmatch);
+
+  OFBool mongoDBFindRecords(
+      DB_Private_Handle* phandle,
+      IdxRecord& idxRec,
       DB_LEVEL          level,
       DB_LEVEL          infLevel,
       int* match,

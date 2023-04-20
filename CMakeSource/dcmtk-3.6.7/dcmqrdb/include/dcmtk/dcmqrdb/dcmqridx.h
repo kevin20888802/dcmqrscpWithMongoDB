@@ -216,6 +216,7 @@ struct DCMTK_DCMQRDB_EXPORT DB_UidList
 
 struct DCMTK_DCMQRDB_EXPORT DB_CounterList
 {
+    IdxRecord *rec;
     int idxCounter ;
     struct DB_CounterList *next ;
 };

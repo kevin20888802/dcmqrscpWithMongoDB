@@ -247,6 +247,7 @@ static OFCondition sendStudy(
     DIC_US nRemaining = 0;
 
     cond = handle.startMoveRequest(UID_MOVEStudyRootQueryRetrieveInformationModel, &query, &dbStatus);
+    std::cout << "sending image:" << imgFile << std::endl;
     if (cond.bad()) return cond;
 
     while (dbStatus.status() == STATUS_Pending)
@@ -259,8 +260,8 @@ static OFCondition sendStudy(
         cond = sendImage(assoc, sopClass, sopInstance, imgFile);
         if (cond.bad())
         {
-          handle.cancelMoveRequest(&dbStatus);
-          return cond;
+            handle.cancelMoveRequest(&dbStatus);
+            return cond;
         }
       }
     }

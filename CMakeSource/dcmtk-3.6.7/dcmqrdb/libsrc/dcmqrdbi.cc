@@ -491,6 +491,7 @@ static bson_t* IdxRecordToBson(IdxRecord *idxRec)
     // 填入欄位
     BSON_APPEND_OID(doc, "_id", &oid);
     BSON_APPEND_UTF8(doc, "filename", idxRec->filename);
+    BSON_APPEND_UTF8(doc, "SOPClassUID", idxRec->SOPClassUID);
     BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
     BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
 
@@ -630,10 +631,10 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
         std::cout << "mongodb client error" << "" << std::endl;
     }
 
-
-    /*** Find free place for the record
-    *** A place is free if filename is empty
-    **/
+    /*
+    // Find free place for the record
+    // A place is free if filename is empty
+    
 
     *idx = 0 ;
 
@@ -644,7 +645,7 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
         (*idx)++ ;
     }
 
-    /*** We have either found a free place or we are at the end of file. **/
+    // We have either found a free place or we are at the end of file. 
 
 
     DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
@@ -655,7 +656,7 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
         cond = EC_Normal ;
 
     DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
-
+    */
     return cond ;
 }
 
@@ -1366,14 +1367,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
     return EC_Normal ;
 }
 
-IdxRecord* bson_to_idx_record(const bson_t *i_bson)
+IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
 {
-    IdxRecord theRec = IdxRecord();
-
-    for (int i = 0; i < NBPARAMETERS; i++)
-    {
-        std::cout << "param[" << i << "]=" << theRec.param[i].XTag.key[0] << "," << theRec.param[i].XTag.key[1] << "\n";
-    }
+    //IdxRecord theRec = IdxRecord();
 
     std::string aaa(theRec.filename);
     std::cout << "theRec FILENAME=" << aaa << "\n";
@@ -1382,6 +1378,7 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson)
     if (bson_iter_init(&iter, i_bson)) {
         while (bson_iter_next(&iter)) {
             (strcmp(bson_iter_key(&iter), "filename") == 0) ? strcpy(theRec.filename, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SOPClassUID") == 0) ? strcpy(theRec.SOPClassUID, bson_iter_utf8(&iter, 0)) : "";
             (strcmp(bson_iter_key(&iter), "RecordedDate") == 0) ? theRec.RecordedDate = bson_iter_double(&iter) : 0.0;
             (strcmp(bson_iter_key(&iter), "ImageSize") == 0) ? theRec.ImageSize = bson_iter_int32(&iter) : 0;
 
@@ -1394,21 +1391,68 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson)
                 bson_iter_document(&iter, &param_bson_data_size, &param_bson_data);
                 param_bson = bson_new_from_data(param_bson_data, param_bson_data_size);
                 bson_iter_t param_iter;
-                if (bson_iter_init(&param_iter, param_bson)) {
+                if (bson_iter_init(&param_iter, param_bson)) 
+                {
                     int pIndex = 0;
-                    while (bson_iter_next(&param_iter)) {
-                        printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&param_iter), bson_iter_utf8(&param_iter, 0));
+                    while (bson_iter_next(&param_iter)) 
+                    {
 
-                        /*const uint8_t* curr_xtag_data;
-                        uint32_t curr_xtag_data_size;
-                        bson_t* curr_xtag_bson;
-                        bson_iter_document(&param_iter, &curr_xtag_data, &param_bson_data);
-                        param_bson = bson_new_from_data(param_bson_data, param_bson_data_size);
-                        bson_iter_t param_iter;
+                        const uint8_t* curr_param_data;
+                        uint32_t curr_param_data_size;
+                        bson_t* curr_param_bson;
+                        bson_iter_document(&param_iter, &curr_param_data_size, &curr_param_data);
+                        curr_param_bson = bson_new_from_data(curr_param_data, curr_param_data_size);
+                        bson_iter_t curr_param_iter;
+                        if (bson_iter_init(&curr_param_iter, curr_param_bson))
+                        {
+                            while (bson_iter_next(&curr_param_iter))
+                            {
+                                if (strcmp(bson_iter_key(&curr_param_iter),"PValueField") == 0)
+                                {
+                                    const uint8_t* curr_pvalue_data;
+                                    uint32_t curr_pvalue_data_size;
+                                    bson_t* curr_pvalue_bson;
+                                    bson_iter_document(&curr_param_iter, &curr_pvalue_data_size, &curr_pvalue_data);
+                                    curr_pvalue_bson = bson_new_from_data(curr_pvalue_data, curr_pvalue_data_size);
+                                    bson_iter_t pvalue_iter;
+                                    theRec.param[pIndex].PValueField.ptr.p = strdup("");
+                                    /*if (bson_iter_init(&pvalue_iter, curr_pvalue_bson))
+                                    {
+                                        while (bson_iter_next(&pvalue_iter))
+                                        {
+                                            //(strcmp(bson_iter_key(&pvalue_iter), "p") == 0) ? theRec.param[pIndex].PValueField.ptr.p = ) : "";
+                                            (strcmp(bson_iter_key(&pvalue_iter), "p") == 0) ? theRec.param[pIndex].PValueField.ptr.p = strdup(bson_iter_utf8(&pvalue_iter, 0)) : "";
+                                            printf("ptr.p = %s\n", theRec.param[pIndex].PValueField.ptr.p);
+                                            //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&pvalue_iter), bson_iter_utf8(&pvalue_iter, 0));
+                                            (strcmp(bson_iter_key(&pvalue_iter), "placeholder") == 0) ? theRec.param[pIndex].PValueField.ptr.placeholder = bson_iter_int32(&pvalue_iter) : 0;
+                                        }
+                                    }*/
+                                }
+                                if (strcmp(bson_iter_key(&curr_param_iter), "ValueLength") == 0)
+                                {
+                                    theRec.param[pIndex].ValueLength = bson_iter_int32(&curr_param_iter);
+                                }
+                                if (strcmp(bson_iter_key(&curr_param_iter), "XTag") == 0)
+                                {
+                                    const uint8_t* curr_xtag_data;
+                                    uint32_t curr_xtag_data_size;
+                                    bson_t* curr_xtag_bson;
+                                    bson_iter_document(&curr_param_iter, &curr_xtag_data_size, &curr_xtag_data);
+                                    curr_xtag_bson = bson_new_from_data(curr_xtag_data, curr_xtag_data_size);
+                                    bson_iter_t xtag_iter;
+                                    if (bson_iter_init(&xtag_iter, curr_xtag_bson))
+                                    {
+                                        while (bson_iter_next(&xtag_iter))
+                                        {
+                                            (strcmp(bson_iter_key(&xtag_iter), "0") == 0) ? theRec.param[pIndex].XTag.key[0] = bson_iter_int32(&xtag_iter) : 0;
+                                            (strcmp(bson_iter_key(&xtag_iter), "1") == 0) ? theRec.param[pIndex].XTag.key[1] = bson_iter_int32(&xtag_iter) : 0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-
-                        theRec.param[pIndex].XTag.key[0] = 0;
-                        pIndex++;*/
+                        pIndex++;
                     }
                 }
             }
@@ -1453,19 +1497,20 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson)
             (strcmp(bson_iter_key(&iter), "InstanceDescription") == 0) ? strcpy(theRec.InstanceDescription, bson_iter_utf8(&iter, 0)) : "";
             (strcmp(bson_iter_key(&iter), "SpecificCharacterSet") == 0) ? strcpy(theRec.SpecificCharacterSet, bson_iter_utf8(&iter, 0)) : "";
 
-            printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&iter), bson_iter_utf8(&iter, 0));
+            //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&iter), bson_iter_utf8(&iter, 0));
         }
     }
+    DB_IdxInitRecord(&theRec, 1);
+
     std::string ccc(theRec.filename);
     printf("theRec Filename=%s\n", theRec.filename);
     std::cout << "theRec FILENAME=" << theRec.filename << "\n";
-    std::cout << "theRec PatientBirthDate=" << theRec.PatientBirthDate << "\n";
     return &theRec;
 }
 
 OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
     DB_Private_Handle* phandle,
-    IdxRecord* idxRec,
+    IdxRecord &idxRec,
     DB_LEVEL                level,
     DB_LEVEL                infLevel,
     int* match,
@@ -1475,8 +1520,7 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
     DcmTagKey   XTag;
     DB_ElementList* plist;
     DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
-
-    IdxRecord* retRec = nullptr;
+    OFBool foundAnything = OFFalse;
 
     std::cout << "start mongodb find" << "" << std::endl;
 
@@ -1495,7 +1539,6 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
             conn_string,
             mongoError.message);
         std::cout << "mongodb uri error" << "" << std::endl;
-        return false;
     }
 
     mongoClient = mongoc_client_new_from_uri(uri);
@@ -1506,10 +1549,13 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
         query = bson_new();
         for (plist = phandle->findRequestList; plist; plist = plist->next)
         {
-            std::string queryKey = "param.";
-            std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
-            queryKey = queryKey + xtag + ".PValueField.p";
-            BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+            if (plist->elem.PValueField.ptr.p != NULL)
+            {
+                std::string queryKey = "param.";
+                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
+                queryKey = queryKey + xtag + ".PValueField.p";
+                BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+            }
         }
 
         mongoc_collection_t* collection;
@@ -1527,17 +1573,27 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
             //std::cout << str << std::endl;
             bson_free(str);
             // Convert Bson to IdxRecord.
-            idxRec = bson_to_idx_record(resultBson);
-            break;
+            bson_to_idx_record(resultBson, idxRec);
+            //idxRec = bson_to_idx_record(resultBson);
+            std::cout << "idxRec FILENAME=" << idxRec.filename << "\n";
+            //break;
+            if (DB_UIDAlreadyFound(handle_, &idxRec))
+            {
+                continue;
+            }
+            else
+            {
+                foundAnything = OFTrue;
+                break;
+            }
         }
         std::cout << "ending mongodb find" << "" << std::endl;
-        return true;
     }
     else
     {
         std::cout << "mongodb client error" << "" << std::endl;
-        return false;
     }
+    return foundAnything;
 
 }
 
@@ -1861,26 +1917,32 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     cond = EC_Normal;
 
     CharsetConsideringMatcher dbmatch(*handle_);
-    MatchFound = mongoDBFindRecord(handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch);
+    
+    MatchFound = mongoDBFindRecord(handle_, idxRec, qLevel, qLevel, &MatchFound, dbmatch);
+    dbmatch.setRecord(idxRec);
+    std::cout << "idxRec FILENAME=" << idxRec.filename << "\n";
+    
+
     /*
     while (1) {
 
-        /*** Exit loop if read error (or end of file)
-        **/
+        // Exit loop if read error (or end of file)
+        
 
-        /*if (DB_IdxGetNext(&(handle_->idxCounter), &idxRec) != EC_Normal)
+        if (DB_IdxGetNext(&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
-        /*** Exit loop if error or matching OK
-        **/
+        // Exit loop if error or matching OK
+        
 
-        /*dbmatch.setRecord(idxRec);
+        dbmatch.setRecord(idxRec);
         cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
         if (cond != EC_Normal)
             break;
         if (MatchFound)
             break;
-    }*/
+    }
+    */
 
     /**** If an error occurred in Matching function
     ****    return a failed status
@@ -2130,22 +2192,21 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     cond = EC_Normal ;
 
     CharsetConsideringMatcher dbmatch(*handle_);
+    MatchFound = mongoDBFindRecord(handle_, idxRec, qLevel, qLevel, &MatchFound, dbmatch);
+    /**
     while (1) {
 
-        /*** Exit loop if read error (or end of file)
-        **/
+        // Exit loop if read error (or end of file) 
 
         if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
-        /*** If Response already found
-        **/
+        // If Response already found
 
         if (DB_UIDAlreadyFound (handle_, &idxRec))
             continue ;
 
-        /*** Exit loop if error or matching OK
-        **/
+        // Exit loop if error or matching OK 
 
         dbmatch.setRecord(idxRec);
         cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
@@ -2155,6 +2216,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
             break ;
 
     }
+    **/
 
     /**** If an error occurred in Matching function
     ****    return status is pending
@@ -2356,7 +2418,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
 }
 
 
-
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         const char      *SOPClassUID,
         DcmDataset      *moveRequestIdentifiers,
@@ -2536,9 +2597,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         }
     }
 
-    /**** Goto the beginning of Index File
-    **** Then find all matching images
-    ***/
+    // 開始從資料庫尋找
 
     MatchFound = OFFalse ;
     handle_->moveCounterList = NULL ;
@@ -2550,17 +2609,96 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     DB_lock(OFFalse);
 
     CharsetConsideringMatcher dbmatch(*handle_);
-    DB_IdxInitLoop (&(handle_->idxCounter)) ;
+    
+    // Find and get Records from mongodb
+    // MongoDB連接
+
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 將query轉bson
+        bson_t* query;
+        query = bson_new();
+        for (plist = handle_->findRequestList; plist; plist = plist->next)
+        {
+            if (plist->elem.PValueField.ptr.p != NULL)
+            {
+                std::string queryKey = "param.";
+                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
+                queryKey = queryKey + xtag + ".PValueField.p";
+                BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+            }
+        }
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        char* str;
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            str = bson_as_canonical_extended_json(resultBson, NULL);
+            bson_free(str);
+
+            pidxlist = (DB_CounterList*)malloc(sizeof(DB_CounterList));
+            if (pidxlist == NULL) {
+                status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                return (QR_EC_IndexDatabaseError);
+            }
+
+            pidxlist->rec = new IdxRecord();
+            bson_to_idx_record(resultBson, *pidxlist->rec);
+            std::cout << "Move idxRec FILENAME=" << pidxlist->rec->filename << "\n";
+
+            pidxlist->next = NULL;
+            //pidxlist->idxCounter = handle_->idxCounter;
+            handle_->NumberRemainOperations++;
+            if (handle_->moveCounterList == NULL)
+            {
+                lastidxlist = pidxlist;
+                handle_->moveCounterList = lastidxlist;
+            }
+            else {
+                lastidxlist->next = pidxlist;
+                lastidxlist = pidxlist;
+            }
+        }
+        std::cout << "ending mongodb find" << "" << std::endl;
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+
+
+    /*
+    DB_IdxInitLoop(&(handle_->idxCounter));
     while (1) {
 
-        /*** Exit loop if read error (or end of file)
-        **/
+        // Exit loop if read error (or end of file)
+        
 
         if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
-        /*** If matching found
-        **/
+        // If matching found
+        
 
         dbmatch.setRecord(idxRec);
         cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
@@ -2582,7 +2720,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             }
         }
     }
-
+    */
     DB_FreeElementList (handle_->findRequestList) ;
     handle_->findRequestList = NULL ;
 
@@ -2628,7 +2766,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     unsigned short *numberOfRemainingSubOperations,
     DcmQueryRetrieveDatabaseStatus *status)
 {
-    IdxRecord           idxRec ;
+    IdxRecord           *idxRec ;
     DB_CounterList              *nextlist ;
 
     /**** If all matching images have been retrieved,
@@ -2646,7 +2784,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     /**** Goto the next matching image number of Index File
     ***/
 
-    if (DB_IdxRead (handle_->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
+    idxRec = handle_->moveCounterList->rec;
+    /*if (DB_IdxRead(handle_->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
 #ifdef DEBUG
         DCMQRDB_DEBUG("DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess");
 #endif
@@ -2655,11 +2794,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
         DB_unlock();
 
         return (QR_EC_IndexDatabaseError) ;
-    }
+    }*/
 
-    OFStandard::strlcpy(SOPClassUID, (char *) idxRec. SOPClassUID, SOPClassUIDSize) ;
-    OFStandard::strlcpy(SOPInstanceUID, (char *) idxRec. SOPInstanceUID, SOPInstanceUIDSize) ;
-    OFStandard::strlcpy(imageFileName, (char *) idxRec. filename, imageFileNameSize) ;
+    OFStandard::strlcpy(SOPClassUID, (char *) idxRec-> SOPClassUID, SOPClassUIDSize) ;
+    OFStandard::strlcpy(SOPInstanceUID, (char *) idxRec-> SOPInstanceUID, SOPInstanceUIDSize) ;
+    OFStandard::strlcpy(imageFileName, (char *) idxRec-> filename, imageFileNameSize) ;
+
+    std::cout << "SOPClassUID=" << SOPClassUID << "idxRec.SOPClassUID=" << idxRec->SOPClassUID << std::endl;
+    std::cout << "SOPInstanceUID=" << SOPInstanceUID << "idxRec.SOPInstanceUID=" << idxRec->SOPInstanceUID << std::endl;
+    std::cout << "imageFileName=" << imageFileName << "idxRec.imageFileName=" << idxRec->filename << std::endl;
 
     *numberOfRemainingSubOperations = OFstatic_cast(unsigned short, (--handle_->NumberRemainOperations));
 
@@ -2989,7 +3132,74 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
     StudyDescRecord *pStudyDesc, const char *newImageFileName)
 {
 
-    int idx = 0;
+    // Find dupes using filename
+    // MongoDB連接
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 將query轉bson
+        bson_t* query;
+        query = bson_new();
+
+        std::string queryKey = "SOPInstanceUID";
+        BSON_APPEND_UTF8(query, queryKey.c_str(), SOPInstanceUID);
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+
+        // delete the file first.
+
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        //BSON_APPEND_REGEX
+        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            bson_iter_t iter;
+            if (bson_iter_init(&iter, resultBson)) {
+                while (bson_iter_next(&iter)) {
+                    if (strcmp(bson_iter_key(&iter), "filename") == 0)
+                    {
+                        deleteImageFile(strdup(bson_iter_utf8(&iter,0)));
+                    }
+                }
+            }
+        }
+
+        // and then delete the data in mongodb
+        bson_error_t error;
+        if (!mongoc_collection_delete_many(collection, query, NULL, NULL, &error))
+        {
+            printf("%s\n", error.message);
+        }
+
+        std::cout << "ending mongodb delete dupes" << "" << std::endl;
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+
+
+
+    /*int idx = 0;
     IdxRecord idxRec ;
     int studyIdx = 0;
 
@@ -2998,9 +3208,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
 
     if ( pStudyDesc[studyIdx].NumberofRegistratedImages == 0 ) {
     /* no study images, cannot be any old images */
-    return EC_Normal;
-    }
-
+    //return EC_Normal;
+    //}
+    /*
     while (DB_IdxRead(idx, &idxRec) == EC_Normal) {
 
     if (strcmp(idxRec.SOPInstanceUID, SOPInstanceUID) == 0) {
@@ -3008,20 +3218,20 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
 #ifdef DEBUG
         DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
 #endif
-        /* remove the idx record  */
+        // remove the idx record  
         DB_IdxRemove (idx);
-        /* only remove the image file if it is different than that
-         * being entered into the database.
-         */
+        // only remove the image file if it is different than that
+        // being entered into the database.
+        //
         if (strcmp(idxRec.filename, newImageFileName) != 0) {
             deleteImageFile(idxRec.filename);
         }
-        /* update the study info */
+        // update the study info 
         pStudyDesc[studyIdx].NumberofRegistratedImages--;
         pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
     }
     idx++;
-    }
+    }*/
     /* the study record should be written to file later */
     return EC_Normal;
 }
