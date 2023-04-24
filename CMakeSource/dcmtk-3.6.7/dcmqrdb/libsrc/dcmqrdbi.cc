@@ -1161,7 +1161,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
     /*** For each element in Request identifier
     **/
-
+    std::cout << "add file to res:" << idxRec->filename << std::endl;
     for (pRequestList = phandle->findRequestList ; pRequestList ; pRequestList = pRequestList->next) {
 
         /*** Find Corresponding Tag in index record
@@ -1508,6 +1508,16 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
     return &theRec;
 }
 
+std::string ReplaceString(std::string subject, const std::string& search,
+    const std::string& replace) {
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+    return subject;
+}
+
 OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
     DB_Private_Handle* phandle,
     IdxRecord &idxRec,
@@ -1554,7 +1564,24 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
                 std::string queryKey = "param.";
                 std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
                 queryKey = queryKey + xtag + ".PValueField.p";
-                BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                std::cout << "query++=" << queryKey << std::endl;
+                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
+                std::cout << "LEVEL=" << XTagLevel << std::endl;
+                std::string queryValue = plist->elem.PValueField.ptr.p;
+                queryValue = "^" + queryValue;
+                queryValue = ReplaceString(queryValue, "*", ".*");
+                queryValue = ReplaceString(queryValue, "?", ".");
+                std::cout << "queryVal++=" << queryValue << std::endl;
+                if (strcmp(xtag.c_str(), "0020,000d") != 0)
+                {
+                    
+                    //BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                    bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+                }
+                else
+                {
+                    BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                }
             }
         }
 
@@ -1969,6 +1996,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ****    return status is pending
     ***/
 
+    std::cout << "MatchFound=" << MatchFound << "\n";
     if (MatchFound) {
         DB_UIDAddFound (handle_, &idxRec) ;
         makeResponseList (handle_, &idxRec) ;
@@ -2241,6 +2269,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ****    prepare Response List in handle
     ***/
 
+    std::cout << "nextMatchFound=" << MatchFound << "\n";
     if (MatchFound) {
         DB_UIDAddFound (handle_, &idxRec) ;
         makeResponseList (handle_, &idxRec) ;
@@ -2636,12 +2665,36 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         query = bson_new();
         for (plist = handle_->findRequestList; plist; plist = plist->next)
         {
-            if (plist->elem.PValueField.ptr.p != NULL)
+            /*if (plist->elem.PValueField.ptr.p != NULL)
             {
                 std::string queryKey = "param.";
                 std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
                 queryKey = queryKey + xtag + ".PValueField.p";
                 BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+            }*/
+
+            if (plist->elem.PValueField.ptr.p != NULL)
+            {
+                std::string queryKey = "param.";
+                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
+                queryKey = queryKey + xtag + ".PValueField.p";
+                std::cout << "query++=" << queryKey << std::endl;
+                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
+                std::string queryValue = plist->elem.PValueField.ptr.p;
+                queryValue = "^" + queryValue;
+                queryValue = ReplaceString(queryValue, "*", ".*");
+                queryValue = ReplaceString(queryValue, "?", ".");
+                std::cout << "queryVal++=" << queryValue << std::endl;
+                if (strcmp(xtag.c_str(), "0020,000d") != 0)
+                {
+
+                    //BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                    bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+                }
+                else
+                {
+                    BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                }
             }
         }
 

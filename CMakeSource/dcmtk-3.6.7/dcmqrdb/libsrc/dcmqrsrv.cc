@@ -269,6 +269,7 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
         DcmQueryRetrieveDatabaseHandle& dbHandle)
 
 {
+    std::cout << "Received Find SCP" << std::endl;
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveFindContext context(dbHandle, options_, STATUS_Pending, config_->getCharacterSetOptions());
 
@@ -283,9 +284,10 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     cond = DIMSE_findProvider(assoc, presID, request,
         findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
+        std::cout << "Find SCP Failed" << std::endl;
         DCMQRDB_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
-    std::cout << "Received Find SCP" << std::endl;
+    std::cout << "Received Find SCP End" << std::endl;
     return cond;
 }
 
