@@ -495,6 +495,7 @@ static bson_t* IdxRecordToBson(IdxRecord *idxRec)
     BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
     BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
 
+    // 雖然我們不讀取param，但是找尋資料庫會用到。
     bson_t* param_bson;
     param_bson = bson_new();
     for (int i = 0; i < NBPARAMETERS; i++)
@@ -1167,10 +1168,18 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
         /*** Find Corresponding Tag in index record
         **/
 
-        for (i = 0 ; i < NBPARAMETERS ; i++)
-            if (idxRec->param [i]. XTag == pRequestList->elem. XTag)
-                break ;
-
+        for (i = 0; i < NBPARAMETERS; i++) 
+        {
+            if (idxRec->param[i].XTag.key[0] == pRequestList->elem.XTag.key[0] && idxRec->param[i].XTag.key[1] == pRequestList->elem.XTag.key[1])
+            {
+                std::cout << "idxRec keys=" << idxRec->param[i].XTag.key[0] << "," << idxRec->param[i].XTag.key[1] << std::endl;
+                std::cout << "elem keys=" << pRequestList->elem.XTag.key[0] << "," << pRequestList->elem.XTag.key[1] << std::endl;
+                std::cout << "idxRec keys=" << int_to_hex(idxRec->param[i].XTag.key[0]) << "," << int_to_hex(idxRec->param[i].XTag.key[1]) << std::endl;
+                std::cout << "elem keys=" << int_to_hex(pRequestList->elem.XTag.key[0]) << "," << int_to_hex(pRequestList->elem.XTag.key[1]) << std::endl;
+                std::cout << "i=" << i << std::endl;
+                break;
+            }
+        }
         /*** If Tag not found, skip the element
         **/
 
@@ -1185,8 +1194,9 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
             DCMQRDB_ERROR("makeResponseList: out of memory");
             return;
         }
-
         DB_DuplicateElement(&idxRec->param[i], &plist->elem);
+        std::cout << "param[" << i << "]=" << idxRec->param[i].PValueField.ptr.p << std::endl;
+        std::cout << "elem=" << plist->elem.PValueField.ptr.p << std::endl;
 
         if (phandle->findResponseList == NULL) {
             phandle->findResponseList = last = plist ;
@@ -1370,6 +1380,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
 IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
 {
     //IdxRecord theRec = IdxRecord();
+    DB_IdxInitRecord(&theRec, 0);
 
     std::string aaa(theRec.filename);
     std::cout << "theRec FILENAME=" << aaa << "\n";
@@ -1382,7 +1393,8 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
             (strcmp(bson_iter_key(&iter), "RecordedDate") == 0) ? theRec.RecordedDate = bson_iter_double(&iter) : 0.0;
             (strcmp(bson_iter_key(&iter), "ImageSize") == 0) ? theRec.ImageSize = bson_iter_int32(&iter) : 0;
 
-            if (strcmp(bson_iter_key(&iter), "param") == 0)
+            // param is dcmtk internal system needed , we don't need to save them or do somewhat about it.
+            /*if (strcmp(bson_iter_key(&iter), "param") == 0)
             {
                 //std::cout << "param type=" << bson_iter_type(&iter) << std::endl;
                 const uint8_t* param_bson_data;
@@ -1407,7 +1419,7 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
                         {
                             while (bson_iter_next(&curr_param_iter))
                             {
-                                if (strcmp(bson_iter_key(&curr_param_iter),"PValueField") == 0)
+                                if (strcmp(bson_iter_key(&curr_param_iter), "PValueField") == 0)
                                 {
                                     const uint8_t* curr_pvalue_data;
                                     uint32_t curr_pvalue_data_size;
@@ -1416,7 +1428,7 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
                                     curr_pvalue_bson = bson_new_from_data(curr_pvalue_data, curr_pvalue_data_size);
                                     bson_iter_t pvalue_iter;
                                     theRec.param[pIndex].PValueField.ptr.p = strdup("");
-                                    /*if (bson_iter_init(&pvalue_iter, curr_pvalue_bson))
+                                    if (bson_iter_init(&pvalue_iter, curr_pvalue_bson))
                                     {
                                         while (bson_iter_next(&pvalue_iter))
                                         {
@@ -1426,7 +1438,7 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
                                             //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&pvalue_iter), bson_iter_utf8(&pvalue_iter, 0));
                                             (strcmp(bson_iter_key(&pvalue_iter), "placeholder") == 0) ? theRec.param[pIndex].PValueField.ptr.placeholder = bson_iter_int32(&pvalue_iter) : 0;
                                         }
-                                    }*/
+                                    }
                                 }
                                 if (strcmp(bson_iter_key(&curr_param_iter), "ValueLength") == 0)
                                 {
@@ -1456,7 +1468,7 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
                     }
                 }
             }
-
+            */
             (strcmp(bson_iter_key(&iter), "PatientBirthDate") == 0) ? strcpy(theRec.PatientBirthDate, bson_iter_utf8(&iter, 0)) : "";
             (strcmp(bson_iter_key(&iter), "PatientSex") == 0) ? strcpy(theRec.PatientSex, bson_iter_utf8(&iter, 0)) : "";
             (strcmp(bson_iter_key(&iter), "PatientName") == 0) ? strcpy(theRec.PatientName, bson_iter_utf8(&iter, 0)) : "";
@@ -1504,6 +1516,8 @@ IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
 
     std::string ccc(theRec.filename);
     printf("theRec Filename=%s\n", theRec.filename);
+    std::cout << "StudyInstanceUID=" << theRec.StudyInstanceUID << std::endl;
+    std::cout << "StudyInstanceUID=" << theRec.param[RECORDIDX_StudyInstanceUID].PValueField.ptr.p << std::endl;
     std::cout << "theRec FILENAME=" << theRec.filename << "\n";
     return &theRec;
 }
