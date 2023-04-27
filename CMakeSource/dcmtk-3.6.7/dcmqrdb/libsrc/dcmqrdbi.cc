@@ -20,15 +20,7 @@
  *
  */
 
-/**
-* MongoDB設定
-*/
-#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
 
-// Mongo 連線網址
-const char* conn_string = "mongodb://127.0.0.1/?appname=dcmqrscpMongoDB";
-const char* mongoDB_name = "dcmqrscpDatabase";
-const char* collection_name = "dcmqrscp";
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -46,8 +38,8 @@ END_EXTERN_C
 
 
 
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
 #include "dcmtk/ofstd/ofstd.h"
-
 #include "dcmtk/dcmqrdb/dcmqrdbs.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
@@ -116,6 +108,786 @@ static int NbFindAttr = ((sizeof (TbFindAttr)) / (sizeof (TbFindAttr [0])));
 
 /* ========================= static functions ========================= */
 
+#pragma region MongoDB
+
+/**
+* MongoDB設定
+*/
+
+// Mongo 連線網址
+const char* conn_string = "mongodb://127.0.0.1/?appname=dcmqrscpMongoDB";
+const char* mongoDB_name = "dcmqrscpDatabase";
+const char* collection_name = "dcmqrscp";
+
+/*
+Visual C++ 編譯時，遇到「無法解析的外部符號」
+解決的辦法如下：
+首先，到專案的「屬性」
+並到「組態屬性」->「連結器」->「輸入」
+其中的「其他相依性」則是告訴編譯器，你需要引用哪些 lib 檔
+將mongo的兩個lib引入
+
+windows下需要SSIZE_T
+加入以下來解決
+#ifdef _WIN32
+#include <basetsd.h>
+typedef SSIZE_T ssize_t;
+#endif // _WIN32
+在bson-cmp.h加入這段
+*/
+
+/*
+* 將十進位數字轉十六進位字串
+*/
+std::string int_to_hex(Uint16 i)
+{
+    std::stringstream stream;
+    //stream << "0x"
+    stream << ""
+        << std::setfill('0') << std::setw(sizeof(Uint16) * 2)
+        << std::hex << i;
+    return stream.str();
+}
+
+/*
+* C++版的字串替換Replace
+*/
+std::string ReplaceString(std::string subject, const std::string& search, const std::string& replace)
+{
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+    return subject;
+}
+
+/************
+ *      Initializes addresses in an IdxRecord
+ */
+
+static void DB_IdxInitRecord(IdxRecord* idx, int linksOnly)
+{
+    if (!linksOnly)
+    {
+        idx->param[RECORDIDX_PatientBirthDate].XTag = DCM_PatientBirthDate;
+        idx->param[RECORDIDX_PatientBirthDate].ValueLength = DA_MAX_LENGTH;
+        idx->PatientBirthDate[0] = '\0';
+        idx->param[RECORDIDX_PatientSex].XTag = DCM_PatientSex;
+        idx->param[RECORDIDX_PatientSex].ValueLength = CS_MAX_LENGTH;
+        idx->PatientSex[0] = '\0';
+        idx->param[RECORDIDX_PatientName].XTag = DCM_PatientName;
+        idx->param[RECORDIDX_PatientName].ValueLength = PN_MAX_LENGTH;
+        idx->PatientName[0] = '\0';
+        idx->param[RECORDIDX_PatientID].XTag = DCM_PatientID;
+        idx->param[RECORDIDX_PatientID].ValueLength = LO_MAX_LENGTH;
+        idx->PatientID[0] = '\0';
+        idx->param[RECORDIDX_PatientBirthTime].XTag = DCM_PatientBirthTime;
+        idx->param[RECORDIDX_PatientBirthTime].ValueLength = TM_MAX_LENGTH;
+        idx->PatientBirthTime[0] = '\0';
+        idx->param[RECORDIDX_OtherPatientIDs].XTag = DCM_RETIRED_OtherPatientIDs;
+        idx->param[RECORDIDX_OtherPatientIDs].ValueLength = LO_MAX_LENGTH;
+        idx->OtherPatientIDs[0] = '\0';
+        idx->param[RECORDIDX_OtherPatientNames].XTag = DCM_OtherPatientNames;
+        idx->param[RECORDIDX_OtherPatientNames].ValueLength = PN_MAX_LENGTH;
+        idx->OtherPatientNames[0] = '\0';
+        idx->param[RECORDIDX_EthnicGroup].XTag = DCM_EthnicGroup;
+        idx->param[RECORDIDX_EthnicGroup].ValueLength = SH_MAX_LENGTH;
+        idx->EthnicGroup[0] = '\0';
+        idx->param[RECORDIDX_StudyDate].XTag = DCM_StudyDate;
+        idx->param[RECORDIDX_StudyDate].ValueLength = DA_MAX_LENGTH;
+        idx->StudyDate[0] = '\0';
+        idx->param[RECORDIDX_StudyTime].XTag = DCM_StudyTime;
+        idx->param[RECORDIDX_StudyTime].ValueLength = TM_MAX_LENGTH;
+        idx->StudyTime[0] = '\0';
+        idx->param[RECORDIDX_StudyID].XTag = DCM_StudyID;
+        idx->param[RECORDIDX_StudyID].ValueLength = CS_MAX_LENGTH;
+        idx->StudyID[0] = '\0';
+        idx->param[RECORDIDX_StudyDescription].XTag = DCM_StudyDescription;
+        idx->param[RECORDIDX_StudyDescription].ValueLength = LO_MAX_LENGTH;
+        idx->StudyDescription[0] = '\0';
+        idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].XTag = DCM_NameOfPhysiciansReadingStudy;
+        idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].ValueLength = PN_MAX_LENGTH;
+        idx->NameOfPhysiciansReadingStudy[0] = '\0';
+        idx->param[RECORDIDX_AccessionNumber].XTag = DCM_AccessionNumber;
+        idx->param[RECORDIDX_AccessionNumber].ValueLength = CS_MAX_LENGTH;
+        idx->AccessionNumber[0] = '\0';
+        idx->param[RECORDIDX_ReferringPhysicianName].XTag = DCM_ReferringPhysicianName;
+        idx->param[RECORDIDX_ReferringPhysicianName].ValueLength = PN_MAX_LENGTH;
+        idx->ReferringPhysicianName[0] = '\0';
+        idx->param[RECORDIDX_ProcedureDescription].XTag = DCM_StudyDescription;
+        idx->param[RECORDIDX_ProcedureDescription].ValueLength = LO_MAX_LENGTH;
+        idx->ProcedureDescription[0] = '\0';
+        idx->param[RECORDIDX_AttendingPhysiciansName].XTag = DCM_NameOfPhysiciansReadingStudy;
+        idx->param[RECORDIDX_AttendingPhysiciansName].ValueLength = PN_MAX_LENGTH;
+        idx->AttendingPhysiciansName[0] = '\0';
+        idx->param[RECORDIDX_StudyInstanceUID].XTag = DCM_StudyInstanceUID;
+        idx->param[RECORDIDX_StudyInstanceUID].ValueLength = UI_MAX_LENGTH;
+        idx->StudyInstanceUID[0] = '\0';
+        idx->param[RECORDIDX_OtherStudyNumbers].XTag = DCM_RETIRED_OtherStudyNumbers;
+        idx->param[RECORDIDX_OtherStudyNumbers].ValueLength = IS_MAX_LENGTH;
+        idx->OtherStudyNumbers[0] = '\0';
+        idx->param[RECORDIDX_AdmittingDiagnosesDescription].XTag = DCM_AdmittingDiagnosesDescription;
+        idx->param[RECORDIDX_AdmittingDiagnosesDescription].ValueLength = LO_MAX_LENGTH;
+        idx->AdmittingDiagnosesDescription[0] = '\0';
+        idx->param[RECORDIDX_PatientAge].XTag = DCM_PatientAge;
+        idx->param[RECORDIDX_PatientAge].ValueLength = AS_MAX_LENGTH;
+        idx->PatientAge[0] = '\0';
+        idx->param[RECORDIDX_PatientSize].XTag = DCM_PatientSize;
+        idx->param[RECORDIDX_PatientSize].ValueLength = DS_MAX_LENGTH;
+        idx->PatientSize[0] = '\0';
+        idx->param[RECORDIDX_PatientWeight].XTag = DCM_PatientWeight;
+        idx->param[RECORDIDX_PatientWeight].ValueLength = DS_MAX_LENGTH;
+        idx->PatientWeight[0] = '\0';
+        idx->param[RECORDIDX_Occupation].XTag = DCM_Occupation;
+        idx->param[RECORDIDX_Occupation].ValueLength = SH_MAX_LENGTH;
+        idx->Occupation[0] = '\0';
+        idx->param[RECORDIDX_SeriesNumber].XTag = DCM_SeriesNumber;
+        idx->param[RECORDIDX_SeriesNumber].ValueLength = IS_MAX_LENGTH;
+        idx->SeriesNumber[0] = '\0';
+        idx->param[RECORDIDX_SeriesInstanceUID].XTag = DCM_SeriesInstanceUID;
+        idx->param[RECORDIDX_SeriesInstanceUID].ValueLength = UI_MAX_LENGTH;
+        idx->SeriesInstanceUID[0] = '\0';
+        idx->param[RECORDIDX_Modality].XTag = DCM_Modality;
+        idx->param[RECORDIDX_Modality].ValueLength = CS_MAX_LENGTH;
+        idx->ImageNumber[0] = '\0';
+        idx->param[RECORDIDX_ImageNumber].XTag = DCM_InstanceNumber;
+        idx->param[RECORDIDX_ImageNumber].ValueLength = IS_MAX_LENGTH;
+        idx->ImageNumber[0] = '\0';
+        idx->param[RECORDIDX_SOPInstanceUID].XTag = DCM_SOPInstanceUID;
+        idx->param[RECORDIDX_SOPInstanceUID].ValueLength = UI_MAX_LENGTH;
+        idx->SOPInstanceUID[0] = '\0';
+        idx->param[RECORDIDX_SeriesDate].XTag = DCM_SeriesDate;
+        idx->param[RECORDIDX_SeriesDate].ValueLength = DA_MAX_LENGTH;
+        idx->SeriesDate[0] = '\0';
+        idx->param[RECORDIDX_SeriesTime].XTag = DCM_SeriesTime;
+        idx->param[RECORDIDX_SeriesTime].ValueLength = TM_MAX_LENGTH;
+        idx->SeriesTime[0] = '\0';
+        idx->param[RECORDIDX_SeriesDescription].XTag = DCM_SeriesDescription;
+        idx->param[RECORDIDX_SeriesDescription].ValueLength = LO_MAX_LENGTH;
+        idx->SeriesDescription[0] = '\0';
+        idx->param[RECORDIDX_ProtocolName].XTag = DCM_ProtocolName;
+        idx->param[RECORDIDX_ProtocolName].ValueLength = LO_MAX_LENGTH;
+        idx->ProtocolName[0] = '\0';
+        idx->param[RECORDIDX_OperatorsName].XTag = DCM_OperatorsName;
+        idx->param[RECORDIDX_OperatorsName].ValueLength = PN_MAX_LENGTH;
+        idx->OperatorsName[0] = '\0';
+        idx->param[RECORDIDX_PerformingPhysicianName].XTag = DCM_PerformingPhysicianName;
+        idx->param[RECORDIDX_PerformingPhysicianName].ValueLength = PN_MAX_LENGTH;
+        idx->PerformingPhysicianName[0] = '\0';
+        idx->param[RECORDIDX_PresentationLabel].XTag = DCM_ContentLabel;
+        idx->param[RECORDIDX_PresentationLabel].ValueLength = CS_LABEL_MAX_LENGTH;
+        idx->PresentationLabel[0] = '\0';
+        idx->param[RECORDIDX_IssuerOfPatientID].XTag = DCM_IssuerOfPatientID;
+        idx->param[RECORDIDX_IssuerOfPatientID].ValueLength = LO_MAX_LENGTH;
+        idx->IssuerOfPatientID[0] = '\0';
+        idx->param[RECORDIDX_SpecificCharacterSet].XTag = DCM_SpecificCharacterSet;
+        idx->param[RECORDIDX_SpecificCharacterSet].ValueLength = CS_MAX_LENGTH * 8;
+        idx->SpecificCharacterSet[0] = '\0';
+    }
+    idx->param[RECORDIDX_PatientBirthDate].PValueField = (char*)idx->PatientBirthDate;
+    idx->param[RECORDIDX_PatientSex].PValueField = (char*)idx->PatientSex;
+    idx->param[RECORDIDX_PatientName].PValueField = (char*)idx->PatientName;
+    idx->param[RECORDIDX_PatientID].PValueField = (char*)idx->PatientID;
+    idx->param[RECORDIDX_PatientBirthTime].PValueField = (char*)idx->PatientBirthTime;
+    idx->param[RECORDIDX_OtherPatientIDs].PValueField = (char*)idx->OtherPatientIDs;
+    idx->param[RECORDIDX_OtherPatientNames].PValueField = (char*)idx->OtherPatientNames;
+    idx->param[RECORDIDX_EthnicGroup].PValueField = (char*)idx->EthnicGroup;
+    idx->param[RECORDIDX_StudyDate].PValueField = (char*)idx->StudyDate;
+    idx->param[RECORDIDX_StudyTime].PValueField = (char*)idx->StudyTime;
+    idx->param[RECORDIDX_StudyID].PValueField = (char*)idx->StudyID;
+    idx->param[RECORDIDX_StudyDescription].PValueField = (char*)idx->StudyDescription;
+    idx->param[RECORDIDX_NameOfPhysiciansReadingStudy].PValueField = (char*)idx->NameOfPhysiciansReadingStudy;
+    idx->param[RECORDIDX_AccessionNumber].PValueField = (char*)idx->AccessionNumber;
+    idx->param[RECORDIDX_ReferringPhysicianName].PValueField = (char*)idx->ReferringPhysicianName;
+    idx->param[RECORDIDX_ProcedureDescription].PValueField = (char*)idx->ProcedureDescription;
+    idx->param[RECORDIDX_AttendingPhysiciansName].PValueField = (char*)idx->AttendingPhysiciansName;
+    idx->param[RECORDIDX_StudyInstanceUID].PValueField = (char*)idx->StudyInstanceUID;
+    idx->param[RECORDIDX_OtherStudyNumbers].PValueField = (char*)idx->OtherStudyNumbers;
+    idx->param[RECORDIDX_AdmittingDiagnosesDescription].PValueField = (char*)idx->AdmittingDiagnosesDescription;
+    idx->param[RECORDIDX_PatientAge].PValueField = (char*)idx->PatientAge;
+    idx->param[RECORDIDX_PatientSize].PValueField = (char*)idx->PatientSize;
+    idx->param[RECORDIDX_PatientWeight].PValueField = (char*)idx->PatientWeight;
+    idx->param[RECORDIDX_Occupation].PValueField = (char*)idx->Occupation;
+    idx->param[RECORDIDX_SeriesNumber].PValueField = (char*)idx->SeriesNumber;
+    idx->param[RECORDIDX_SeriesInstanceUID].PValueField = (char*)idx->SeriesInstanceUID;
+    idx->param[RECORDIDX_Modality].PValueField = (char*)idx->Modality;
+    idx->param[RECORDIDX_ImageNumber].PValueField = (char*)idx->ImageNumber;
+    idx->param[RECORDIDX_SOPInstanceUID].PValueField = (char*)idx->SOPInstanceUID;
+    idx->param[RECORDIDX_SeriesDate].PValueField = (char*)idx->SeriesDate;
+    idx->param[RECORDIDX_SeriesTime].PValueField = (char*)idx->SeriesTime;
+    idx->param[RECORDIDX_SeriesDescription].PValueField = (char*)idx->SeriesDescription;
+    idx->param[RECORDIDX_ProtocolName].PValueField = (char*)idx->ProtocolName;
+    idx->param[RECORDIDX_OperatorsName].PValueField = (char*)idx->OperatorsName;
+    idx->param[RECORDIDX_PerformingPhysicianName].PValueField = (char*)idx->PerformingPhysicianName;
+    idx->param[RECORDIDX_PresentationLabel].PValueField = (char*)idx->PresentationLabel;
+    idx->param[RECORDIDX_IssuerOfPatientID].PValueField = (char*)idx->IssuerOfPatientID;
+    idx->param[RECORDIDX_SpecificCharacterSet].PValueField = (char*)idx->SpecificCharacterSet;
+}
+
+/************
+**      Search if an Index Record has already been found
+*/
+static int DB_UIDAlreadyFound(
+    DB_Private_Handle* phandle,
+    IdxRecord* idxRec
+)
+{
+    DB_UidList* plist;
+
+    for (plist = phandle->uidList; plist; plist = plist->next) {
+        if (((int)phandle->queryLevel >= PATIENT_LEVEL)
+            && (strcmp(plist->patient, (char*)idxRec->PatientID) != 0)
+            )
+            continue;
+        if (((int)phandle->queryLevel >= STUDY_LEVEL)
+            && (strcmp(plist->study, (char*)idxRec->StudyInstanceUID) != 0)
+            )
+            continue;
+        if (((int)phandle->queryLevel >= SERIE_LEVEL)
+            && (strcmp(plist->serie, (char*)idxRec->SeriesInstanceUID) != 0)
+            )
+            continue;
+        if (((int)phandle->queryLevel >= IMAGE_LEVEL)
+            && (strcmp(plist->image, (char*)idxRec->SOPInstanceUID) != 0)
+            )
+            continue;
+        return (OFTrue);
+    }
+    return (OFFalse);
+}
+
+/*
+* 將Dicom資料儲存格式轉換成MongoDB儲存的Bson
+*/
+static bson_t* IdxRecordToBson(IdxRecord* idxRec)
+{
+    bson_t* doc;
+    bson_oid_t oid;
+    doc = bson_new();
+    bson_oid_init(&oid, NULL);
+
+    // 填入欄位
+    BSON_APPEND_OID(doc, "_id", &oid);
+    BSON_APPEND_UTF8(doc, "filename", idxRec->filename);
+    BSON_APPEND_UTF8(doc, "SOPClassUID", idxRec->SOPClassUID);
+    BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
+    BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
+
+    // 雖然我們不讀取param，但是找尋資料庫會用到。
+    bson_t* param_bson;
+    param_bson = bson_new();
+    for (int i = 0; i < NBPARAMETERS; i++)
+    {
+        DB_SmallDcmElmt& curr_param = idxRec->param[i];
+        bson_t* curr_param_bson;
+        curr_param_bson = bson_new();
+
+        bson_t* PValueField_bson;
+        PValueField_bson = bson_new();
+        BSON_APPEND_UTF8(PValueField_bson, "p", curr_param.PValueField.ptr.p);
+        BSON_APPEND_INT32(PValueField_bson, "placeholder", curr_param.PValueField.ptr.placeholder);
+        BSON_APPEND_DOCUMENT(curr_param_bson, "PValueField", PValueField_bson);
+        BSON_APPEND_INT32(curr_param_bson, "ValueLength", curr_param.ValueLength);
+        bson_t* XTag_bson;
+        XTag_bson = bson_new();
+        for (int j = 0; j < 2; j++)
+        {
+            std::string s = std::to_string(j);
+            char const* pchar = s.c_str();
+            BSON_APPEND_INT32(XTag_bson, pchar, curr_param.XTag.key[j]);
+        }
+        BSON_APPEND_DOCUMENT(curr_param_bson, "XTag", XTag_bson);
+
+
+        //std::string s = std::to_string(i);
+        //char const* pchar = s.c_str();
+        // 改成以XTag為儲存key
+        std::string xtagRaw = "";
+        //xtagRaw = std::to_string(curr_param.XTag.key[0]) + "," + std::to_string(curr_param.XTag.key[1]);
+        xtagRaw = int_to_hex(curr_param.XTag.key[0]) + "," + int_to_hex(curr_param.XTag.key[1]);
+        BSON_APPEND_DOCUMENT(param_bson, xtagRaw.c_str(), curr_param_bson);
+    }
+    BSON_APPEND_DOCUMENT(doc, "param", param_bson);
+
+    BSON_APPEND_UTF8(doc, "PatientBirthDate", idxRec->PatientBirthDate);
+    BSON_APPEND_UTF8(doc, "PatientSex", idxRec->PatientSex);
+    BSON_APPEND_UTF8(doc, "PatientName", idxRec->PatientName);
+    BSON_APPEND_UTF8(doc, "PatientID", idxRec->PatientID);
+    BSON_APPEND_UTF8(doc, "PatientBirthTime", idxRec->PatientBirthTime);
+    BSON_APPEND_UTF8(doc, "OtherPatientIDs", idxRec->OtherPatientIDs);
+    BSON_APPEND_UTF8(doc, "OtherPatientNames", idxRec->OtherPatientNames);
+    BSON_APPEND_UTF8(doc, "EthnicGroup", idxRec->EthnicGroup);
+
+    BSON_APPEND_UTF8(doc, "StudyDate", idxRec->StudyDate);
+    BSON_APPEND_UTF8(doc, "StudyTime", idxRec->StudyTime);
+    BSON_APPEND_UTF8(doc, "StudyID", idxRec->StudyID);
+    BSON_APPEND_UTF8(doc, "StudyDescription", idxRec->StudyDescription);
+    BSON_APPEND_UTF8(doc, "NameOfPhysiciansReadingStudy", idxRec->NameOfPhysiciansReadingStudy);
+
+    BSON_APPEND_UTF8(doc, "AccessionNumber", idxRec->AccessionNumber);
+    BSON_APPEND_UTF8(doc, "ReferringPhysicianName", idxRec->ReferringPhysicianName);
+    BSON_APPEND_UTF8(doc, "ProcedureDescription", idxRec->ProcedureDescription);
+    BSON_APPEND_UTF8(doc, "AttendingPhysiciansName", idxRec->AttendingPhysiciansName);
+    BSON_APPEND_UTF8(doc, "StudyInstanceUID", idxRec->StudyInstanceUID);
+    BSON_APPEND_UTF8(doc, "OtherStudyNumbers", idxRec->OtherStudyNumbers);
+    BSON_APPEND_UTF8(doc, "AdmittingDiagnosesDescription", idxRec->AdmittingDiagnosesDescription);
+    BSON_APPEND_UTF8(doc, "PatientAge", idxRec->PatientAge);
+    BSON_APPEND_UTF8(doc, "PatientSize", idxRec->PatientSize);
+    BSON_APPEND_UTF8(doc, "PatientWeight", idxRec->PatientWeight);
+    BSON_APPEND_UTF8(doc, "Occupation", idxRec->Occupation);
+
+    BSON_APPEND_UTF8(doc, "SeriesNumber", idxRec->SeriesNumber);
+    BSON_APPEND_UTF8(doc, "SeriesInstanceUID", idxRec->SeriesInstanceUID);
+    BSON_APPEND_UTF8(doc, "Modality", idxRec->Modality);
+
+    BSON_APPEND_UTF8(doc, "ImageNumber", idxRec->ImageNumber);
+    BSON_APPEND_UTF8(doc, "SOPInstanceUID", idxRec->SOPInstanceUID);
+    BSON_APPEND_UTF8(doc, "SeriesDate", idxRec->SeriesDate);
+    BSON_APPEND_UTF8(doc, "SeriesTime", idxRec->SeriesTime);
+    BSON_APPEND_UTF8(doc, "SeriesDescription", idxRec->SeriesDescription);
+    BSON_APPEND_UTF8(doc, "ProtocolName", idxRec->ProtocolName);
+    BSON_APPEND_UTF8(doc, "OperatorsName", idxRec->OperatorsName);
+    BSON_APPEND_UTF8(doc, "PerformingPhysicianName", idxRec->PerformingPhysicianName);
+    BSON_APPEND_UTF8(doc, "PresentationLabel", idxRec->PresentationLabel);
+    BSON_APPEND_UTF8(doc, "IssuerOfPatientID", idxRec->IssuerOfPatientID);
+
+    BSON_APPEND_UTF8(doc, "InstanceDescription", idxRec->InstanceDescription);
+    BSON_APPEND_UTF8(doc, "SpecificCharacterSet", idxRec->SpecificCharacterSet);
+
+    return doc;
+}
+
+/*
+ * MongoDB資料庫新增一筆資料Store
+ */
+static OFCondition DB_IdxAdd(DB_Private_Handle* phandle, int* idx, IdxRecord* idxRec)
+{
+    IdxRecord rec;
+    OFCondition cond = EC_Normal;
+
+    // MongoDB的連結建立起動
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        cond = QR_EC_IndexDatabaseError;
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    // 有順利連接就儲存
+    if (mongoClient)
+    {
+        // 取得database (會自動建立database如果沒有)
+        db = mongoc_client_get_database(mongoClient, mongoDB_name);
+
+        // 轉換格式 IdxRecord轉bson
+        bson_t* idxBson;
+        idxBson = IdxRecordToBson(idxRec);
+
+        // 存入MongoDB
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        if (!mongoc_collection_insert_one(collection, idxBson, NULL, NULL, &mongoError))
+        {
+            fprintf(stderr, "%s\n", mongoError.message);
+            cond = QR_EC_IndexDatabaseError;
+        }
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+    return cond;
+}
+
+/*
+* 將MongoDB讀取到的Bson轉換成Dicom儲存格式IdxRecord
+*/
+IdxRecord* bson_to_idx_record(const bson_t* i_bson, IdxRecord& theRec)
+{
+    DB_IdxInitRecord(&theRec, 0);
+
+    bson_iter_t iter;
+    if (bson_iter_init(&iter, i_bson)) {
+        while (bson_iter_next(&iter)) {
+            (strcmp(bson_iter_key(&iter), "filename") == 0) ? strcpy(theRec.filename, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SOPClassUID") == 0) ? strcpy(theRec.SOPClassUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "RecordedDate") == 0) ? theRec.RecordedDate = bson_iter_double(&iter) : 0.0;
+            (strcmp(bson_iter_key(&iter), "ImageSize") == 0) ? theRec.ImageSize = bson_iter_int32(&iter) : 0;
+            (strcmp(bson_iter_key(&iter), "PatientBirthDate") == 0) ? strcpy(theRec.PatientBirthDate, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientSex") == 0) ? strcpy(theRec.PatientSex, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientName") == 0) ? strcpy(theRec.PatientName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientID") == 0) ? strcpy(theRec.PatientID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientBirthTime") == 0) ? strcpy(theRec.PatientBirthTime, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OtherPatientIDs") == 0) ? strcpy(theRec.OtherPatientIDs, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OtherPatientNames") == 0) ? strcpy(theRec.OtherPatientNames, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "EthnicGroup") == 0) ? strcpy(theRec.EthnicGroup, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyDate") == 0) ? strcpy(theRec.StudyDate, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyTime") == 0) ? strcpy(theRec.StudyTime, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyID") == 0) ? strcpy(theRec.StudyID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyDescription") == 0) ? strcpy(theRec.StudyDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "NameOfPhysiciansReadingStudy") == 0) ? strcpy(theRec.NameOfPhysiciansReadingStudy, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "AccessionNumber") == 0) ? strcpy(theRec.AccessionNumber, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ReferringPhysicianName") == 0) ? strcpy(theRec.ReferringPhysicianName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ProcedureDescription") == 0) ? strcpy(theRec.ProcedureDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "AttendingPhysiciansName") == 0) ? strcpy(theRec.AttendingPhysiciansName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "StudyInstanceUID") == 0) ? strcpy(theRec.StudyInstanceUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OtherStudyNumbers") == 0) ? strcpy(theRec.OtherStudyNumbers, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "AdmittingDiagnosesDescription") == 0) ? strcpy(theRec.AdmittingDiagnosesDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientAge") == 0) ? strcpy(theRec.PatientAge, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientSize") == 0) ? strcpy(theRec.PatientSize, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PatientWeight") == 0) ? strcpy(theRec.PatientWeight, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "Occupation") == 0) ? strcpy(theRec.Occupation, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesNumber") == 0) ? strcpy(theRec.SeriesNumber, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesInstanceUID") == 0) ? strcpy(theRec.SeriesInstanceUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "Modality") == 0) ? strcpy(theRec.Modality, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ImageNumber") == 0) ? strcpy(theRec.ImageNumber, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SOPInstanceUID") == 0) ? strcpy(theRec.SOPInstanceUID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesDate") == 0) ? strcpy(theRec.SeriesDate, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesTime") == 0) ? strcpy(theRec.SeriesTime, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SeriesDescription") == 0) ? strcpy(theRec.SeriesDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "ProtocolName") == 0) ? strcpy(theRec.ProtocolName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "OperatorsName") == 0) ? strcpy(theRec.OperatorsName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PerformingPhysicianName") == 0) ? strcpy(theRec.PerformingPhysicianName, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "PresentationLabel") == 0) ? strcpy(theRec.PresentationLabel, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "IssuerOfPatientID") == 0) ? strcpy(theRec.IssuerOfPatientID, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "InstanceDescription") == 0) ? strcpy(theRec.InstanceDescription, bson_iter_utf8(&iter, 0)) : "";
+            (strcmp(bson_iter_key(&iter), "SpecificCharacterSet") == 0) ? strcpy(theRec.SpecificCharacterSet, bson_iter_utf8(&iter, 0)) : "";
+
+            //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&iter), bson_iter_utf8(&iter, 0));
+        }
+    }
+    DB_IdxInitRecord(&theRec, 1);
+
+    std::string ccc(theRec.filename);
+    printf("theRec Filename=%s\n", theRec.filename);
+    std::cout << "StudyInstanceUID=" << theRec.StudyInstanceUID << std::endl;
+    std::cout << "StudyInstanceUID=" << theRec.param[RECORDIDX_StudyInstanceUID].PValueField.ptr.p << std::endl;
+    std::cout << "theRec FILENAME=" << theRec.filename << "\n";
+    return &theRec;
+}
+
+
+/*
+* 從MongoDB利用C-Find的參數找尋資料
+*/
+OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle* phandle, IdxRecord& idxRec, DB_LEVEL level, DB_LEVEL infLevel, int* match, CharsetConsideringMatcher& dbmatch)
+{
+    int                 i;
+    DcmTagKey   XTag;
+    DB_ElementList* plist;
+    DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
+    OFBool foundAnything = OFFalse;
+
+    std::cout << "start mongodb find" << "" << std::endl;
+
+    // MongoDB連接
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 將query轉bson
+        bson_t* query;
+        query = bson_new();
+        for (plist = phandle->findRequestList; plist; plist = plist->next)
+        {
+            if (plist->elem.PValueField.ptr.p != NULL)
+            {
+                std::string queryKey = "param.";
+                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
+                queryKey = queryKey + xtag + ".PValueField.p";
+                std::cout << "query++=" << queryKey << std::endl;
+                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
+                std::cout << "LEVEL=" << XTagLevel << std::endl;
+                std::string queryValue = plist->elem.PValueField.ptr.p;
+                queryValue = "^" + queryValue;
+                queryValue = ReplaceString(queryValue, "*", ".*");
+                queryValue = ReplaceString(queryValue, "?", ".");
+                std::cout << "queryVal++=" << queryValue << std::endl;
+                if (strcmp(xtag.c_str(), "0020,000d") != 0)
+                {
+
+                    //BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                    bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+                }
+                else
+                {
+                    BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                }
+            }
+        }
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        char* str;
+        //BSON_APPEND_REGEX
+        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            str = bson_as_canonical_extended_json(resultBson, NULL);
+            //printf("%s\n", str);
+            //std::cout << str << std::endl;
+            bson_free(str);
+            // Convert Bson to IdxRecord.
+            bson_to_idx_record(resultBson, idxRec);
+            //idxRec = bson_to_idx_record(resultBson);
+            std::cout << "idxRec FILENAME=" << idxRec.filename << "\n";
+            //break;
+            if (DB_UIDAlreadyFound(handle_, &idxRec))
+            {
+                continue;
+            }
+            else
+            {
+                foundAnything = OFTrue;
+                break;
+            }
+        }
+        std::cout << "ending mongodb find" << "" << std::endl;
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+    return foundAnything;
+
+}
+
+OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_ElementList* plist, DB_CounterList* pidxlist, DB_CounterList* lastidxlist, DcmQueryRetrieveDatabaseStatus* status)
+{
+    // Find and get Records from mongodb
+// MongoDB連接
+
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 將query轉bson
+        bson_t* query;
+        query = bson_new();
+        for (plist = handle_->findRequestList; plist; plist = plist->next)
+        {
+            if (plist->elem.PValueField.ptr.p != NULL)
+            {
+                std::string queryKey = "param.";
+                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
+                queryKey = queryKey + xtag + ".PValueField.p";
+                std::cout << "query++=" << queryKey << std::endl;
+                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
+                std::string queryValue = plist->elem.PValueField.ptr.p;
+                queryValue = "^" + queryValue;
+                queryValue = ReplaceString(queryValue, "*", ".*");
+                queryValue = ReplaceString(queryValue, "?", ".");
+                std::cout << "queryVal++=" << queryValue << std::endl;
+                if (strcmp(xtag.c_str(), "0020,000d") != 0)
+                {
+                    bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+                }
+                else
+                {
+                    BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
+                }
+            }
+        }
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        char* str;
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            str = bson_as_canonical_extended_json(resultBson, NULL);
+            bson_free(str);
+
+            pidxlist = (DB_CounterList*)malloc(sizeof(DB_CounterList));
+            if (pidxlist == NULL) {
+                status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                return (QR_EC_IndexDatabaseError);
+            }
+
+            pidxlist->rec = new IdxRecord();
+            bson_to_idx_record(resultBson, *pidxlist->rec);
+            std::cout << "Move idxRec FILENAME=" << pidxlist->rec->filename << "\n";
+
+            pidxlist->next = NULL;
+            //pidxlist->idxCounter = handle_->idxCounter;
+            handle_->NumberRemainOperations++;
+            if (handle_->moveCounterList == NULL)
+            {
+                lastidxlist = pidxlist;
+                handle_->moveCounterList = lastidxlist;
+            }
+            else {
+                lastidxlist->next = pidxlist;
+                lastidxlist = pidxlist;
+            }
+        }
+        std::cout << "ending mongodb find" << "" << std::endl;
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+}
+
+/*
+ * If the image is already stored remove it from the database.
+ * hewett - Nov. 1, 93
+ */
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(const char* SOPInstanceUID, const char* StudyInstanceUID, StudyDescRecord* pStudyDesc, const char* newImageFileName)
+{
+
+    // Find dupes using filename
+    // MongoDB連接
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    if (!uri) {
+        fprintf(stderr,
+            "failed to parse URI: %s\n"
+            "error message:       %s\n",
+            conn_string,
+            mongoError.message);
+        std::cout << "mongodb uri error" << "" << std::endl;
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        // 將query轉bson
+        bson_t* query;
+        query = bson_new();
+
+        std::string queryKey = "SOPInstanceUID";
+        BSON_APPEND_UTF8(query, queryKey.c_str(), SOPInstanceUID);
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+
+        // delete the file first.
+
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        //BSON_APPEND_REGEX
+        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            bson_iter_t iter;
+            if (bson_iter_init(&iter, resultBson)) {
+                while (bson_iter_next(&iter)) {
+                    if (strcmp(bson_iter_key(&iter), "filename") == 0)
+                    {
+                        deleteImageFile(strdup(bson_iter_utf8(&iter, 0)));
+                    }
+                }
+            }
+        }
+
+        // and then delete the data in mongodb
+        bson_error_t error;
+        if (!mongoc_collection_delete_many(collection, query, NULL, NULL, &error))
+        {
+            printf("%s\n", error.message);
+        }
+
+        std::cout << "ending mongodb delete dupes" << "" << std::endl;
+    }
+    else
+    {
+        std::cout << "mongodb client error" << "" << std::endl;
+    }
+
+
+
+    /*int idx = 0;
+    IdxRecord idxRec ;
+    int studyIdx = 0;
+
+    studyIdx = matchStudyUIDInStudyDesc (pStudyDesc, (char*)StudyInstanceUID,
+                        (int)(handle_ -> maxStudiesAllowed)) ;
+
+    if ( pStudyDesc[studyIdx].NumberofRegistratedImages == 0 ) {
+    /* no study images, cannot be any old images */
+    //return EC_Normal;
+    //}
+    /*
+    while (DB_IdxRead(idx, &idxRec) == EC_Normal) {
+
+    if (strcmp(idxRec.SOPInstanceUID, SOPInstanceUID) == 0) {
+
+#ifdef DEBUG
+        DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
+#endif
+        // remove the idx record
+        DB_IdxRemove (idx);
+        // only remove the image file if it is different than that
+        // being entered into the database.
+        //
+        if (strcmp(idxRec.filename, newImageFileName) != 0) {
+            deleteImageFile(idxRec.filename);
+        }
+        // update the study info
+        pStudyDesc[studyIdx].NumberofRegistratedImages--;
+        pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
+    }
+    idx++;
+    }*/
+    /* the study record should be written to file later */
+    return EC_Normal;
+}
+
+#pragma endregion
+
 static char *DB_strdup(const char* str)
 {
     if (str == NULL) return NULL;
@@ -159,202 +931,6 @@ static void DB_UIDAddFound (
     phandle->uidList = plist ;
 }
 
-
-/************
-**      Search if an Index Record has already been found
- */
-
-static int DB_UIDAlreadyFound (
-                DB_Private_Handle       *phandle,
-                IdxRecord               *idxRec
-                )
-{
-    DB_UidList *plist ;
-
-    for (plist = phandle->uidList ; plist ; plist = plist->next) {
-        if (  ((int)phandle->queryLevel >= PATIENT_LEVEL)
-              && (strcmp (plist->patient, (char *) idxRec->PatientID) != 0)
-            )
-            continue ;
-        if (  ((int)phandle->queryLevel >= STUDY_LEVEL)
-              && (strcmp (plist->study, (char *) idxRec->StudyInstanceUID) != 0)
-            )
-            continue ;
-        if (  ((int)phandle->queryLevel >= SERIE_LEVEL)
-              && (strcmp (plist->serie, (char *) idxRec->SeriesInstanceUID) != 0)
-            )
-            continue ;
-        if (  ((int)phandle->queryLevel >= IMAGE_LEVEL)
-              && (strcmp (plist->image, (char *) idxRec->SOPInstanceUID) != 0)
-            )
-            continue ;
-        return (OFTrue) ;
-    }
-    return (OFFalse) ;
-}
-
-/************
- *      Initializes addresses in an IdxRecord
- */
-
-static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
-{
-    if (! linksOnly)
-    {
-        idx -> param[RECORDIDX_PatientBirthDate]. XTag = DCM_PatientBirthDate ;
-        idx -> param[RECORDIDX_PatientBirthDate]. ValueLength = DA_MAX_LENGTH ;
-        idx -> PatientBirthDate[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientSex]. XTag = DCM_PatientSex ;
-        idx -> param[RECORDIDX_PatientSex]. ValueLength = CS_MAX_LENGTH ;
-        idx -> PatientSex[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientName]. XTag = DCM_PatientName ;
-        idx -> param[RECORDIDX_PatientName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> PatientName[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientID]. XTag = DCM_PatientID ;
-        idx -> param[RECORDIDX_PatientID]. ValueLength = LO_MAX_LENGTH ;
-        idx -> PatientID[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientBirthTime]. XTag = DCM_PatientBirthTime ;
-        idx -> param[RECORDIDX_PatientBirthTime]. ValueLength = TM_MAX_LENGTH ;
-        idx -> PatientBirthTime[0] = '\0' ;
-        idx -> param[RECORDIDX_OtherPatientIDs]. XTag = DCM_RETIRED_OtherPatientIDs ;
-        idx -> param[RECORDIDX_OtherPatientIDs]. ValueLength = LO_MAX_LENGTH ;
-        idx -> OtherPatientIDs[0] = '\0' ;
-        idx -> param[RECORDIDX_OtherPatientNames]. XTag = DCM_OtherPatientNames ;
-        idx -> param[RECORDIDX_OtherPatientNames]. ValueLength = PN_MAX_LENGTH ;
-        idx -> OtherPatientNames[0] = '\0' ;
-        idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup ;
-        idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH ;
-        idx -> EthnicGroup[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate ;
-        idx -> param[RECORDIDX_StudyDate]. ValueLength = DA_MAX_LENGTH ;
-        idx -> StudyDate[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyTime]. XTag = DCM_StudyTime ;
-        idx -> param[RECORDIDX_StudyTime]. ValueLength = TM_MAX_LENGTH ;
-        idx -> StudyTime[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyID]. XTag = DCM_StudyID ;
-        idx -> param[RECORDIDX_StudyID]. ValueLength = CS_MAX_LENGTH ;
-        idx -> StudyID[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyDescription]. XTag = DCM_StudyDescription ;
-        idx -> param[RECORDIDX_StudyDescription]. ValueLength = LO_MAX_LENGTH ;
-        idx -> StudyDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. XTag = DCM_NameOfPhysiciansReadingStudy ;
-        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. ValueLength = PN_MAX_LENGTH ;
-        idx -> NameOfPhysiciansReadingStudy[0] = '\0' ;
-        idx -> param[RECORDIDX_AccessionNumber]. XTag = DCM_AccessionNumber ;
-        idx -> param[RECORDIDX_AccessionNumber]. ValueLength = CS_MAX_LENGTH ;
-        idx -> AccessionNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_ReferringPhysicianName]. XTag = DCM_ReferringPhysicianName ;
-        idx -> param[RECORDIDX_ReferringPhysicianName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> ReferringPhysicianName[0] = '\0' ;
-        idx -> param[RECORDIDX_ProcedureDescription]. XTag = DCM_StudyDescription ;
-        idx -> param[RECORDIDX_ProcedureDescription]. ValueLength = LO_MAX_LENGTH ;
-        idx -> ProcedureDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_AttendingPhysiciansName]. XTag = DCM_NameOfPhysiciansReadingStudy ;
-        idx -> param[RECORDIDX_AttendingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> AttendingPhysiciansName[0] = '\0' ;
-        idx -> param[RECORDIDX_StudyInstanceUID]. XTag = DCM_StudyInstanceUID ;
-        idx -> param[RECORDIDX_StudyInstanceUID]. ValueLength = UI_MAX_LENGTH ;
-        idx -> StudyInstanceUID[0] = '\0' ;
-        idx -> param[RECORDIDX_OtherStudyNumbers]. XTag = DCM_RETIRED_OtherStudyNumbers ;
-        idx -> param[RECORDIDX_OtherStudyNumbers]. ValueLength = IS_MAX_LENGTH ;
-        idx -> OtherStudyNumbers[0] = '\0' ;
-        idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. XTag = DCM_AdmittingDiagnosesDescription ;
-        idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. ValueLength = LO_MAX_LENGTH ;
-        idx -> AdmittingDiagnosesDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientAge]. XTag = DCM_PatientAge ;
-        idx -> param[RECORDIDX_PatientAge]. ValueLength = AS_MAX_LENGTH ;
-        idx -> PatientAge[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientSize]. XTag = DCM_PatientSize ;
-        idx -> param[RECORDIDX_PatientSize]. ValueLength = DS_MAX_LENGTH ;
-        idx -> PatientSize[0] = '\0' ;
-        idx -> param[RECORDIDX_PatientWeight]. XTag = DCM_PatientWeight ;
-        idx -> param[RECORDIDX_PatientWeight]. ValueLength = DS_MAX_LENGTH ;
-        idx -> PatientWeight[0] = '\0' ;
-        idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation ;
-        idx -> param[RECORDIDX_Occupation]. ValueLength = SH_MAX_LENGTH ;
-        idx -> Occupation[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesNumber]. XTag = DCM_SeriesNumber ;
-        idx -> param[RECORDIDX_SeriesNumber]. ValueLength = IS_MAX_LENGTH ;
-        idx -> SeriesNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesInstanceUID]. XTag = DCM_SeriesInstanceUID ;
-        idx -> param[RECORDIDX_SeriesInstanceUID]. ValueLength = UI_MAX_LENGTH ;
-        idx -> SeriesInstanceUID[0] = '\0' ;
-        idx -> param[RECORDIDX_Modality]. XTag = DCM_Modality ;
-        idx -> param[RECORDIDX_Modality]. ValueLength = CS_MAX_LENGTH ;
-        idx -> ImageNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_ImageNumber]. XTag = DCM_InstanceNumber ;
-        idx -> param[RECORDIDX_ImageNumber]. ValueLength = IS_MAX_LENGTH ;
-        idx -> ImageNumber[0] = '\0' ;
-        idx -> param[RECORDIDX_SOPInstanceUID]. XTag = DCM_SOPInstanceUID ;
-        idx -> param[RECORDIDX_SOPInstanceUID]. ValueLength = UI_MAX_LENGTH ;
-        idx -> SOPInstanceUID[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesDate]. XTag = DCM_SeriesDate ;
-        idx -> param[RECORDIDX_SeriesDate]. ValueLength = DA_MAX_LENGTH ;
-        idx -> SeriesDate[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesTime]. XTag = DCM_SeriesTime ;
-        idx -> param[RECORDIDX_SeriesTime]. ValueLength = TM_MAX_LENGTH ;
-        idx -> SeriesTime[0] = '\0' ;
-        idx -> param[RECORDIDX_SeriesDescription]. XTag = DCM_SeriesDescription ;
-        idx -> param[RECORDIDX_SeriesDescription]. ValueLength = LO_MAX_LENGTH ;
-        idx -> SeriesDescription[0] = '\0' ;
-        idx -> param[RECORDIDX_ProtocolName]. XTag = DCM_ProtocolName ;
-        idx -> param[RECORDIDX_ProtocolName]. ValueLength = LO_MAX_LENGTH ;
-        idx -> ProtocolName[0] = '\0' ;
-        idx -> param[RECORDIDX_OperatorsName ]. XTag = DCM_OperatorsName ;
-        idx -> param[RECORDIDX_OperatorsName ]. ValueLength = PN_MAX_LENGTH ;
-        idx -> OperatorsName[0] = '\0' ;
-        idx -> param[RECORDIDX_PerformingPhysicianName]. XTag = DCM_PerformingPhysicianName ;
-        idx -> param[RECORDIDX_PerformingPhysicianName]. ValueLength = PN_MAX_LENGTH ;
-        idx -> PerformingPhysicianName[0] = '\0' ;
-        idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel ;
-        idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
-        idx -> PresentationLabel[0] = '\0' ;
-        idx -> param[RECORDIDX_IssuerOfPatientID]. XTag = DCM_IssuerOfPatientID ;
-        idx -> param[RECORDIDX_IssuerOfPatientID]. ValueLength =  LO_MAX_LENGTH ;
-        idx -> IssuerOfPatientID[0] = '\0' ;
-        idx -> param[RECORDIDX_SpecificCharacterSet]. XTag = DCM_SpecificCharacterSet ;
-        idx -> param[RECORDIDX_SpecificCharacterSet]. ValueLength = CS_MAX_LENGTH*8 ;
-        idx -> SpecificCharacterSet[0] = '\0' ;
-    }
-    idx -> param[RECORDIDX_PatientBirthDate]. PValueField = (char *)idx -> PatientBirthDate ;
-    idx -> param[RECORDIDX_PatientSex]. PValueField = (char *)idx -> PatientSex ;
-    idx -> param[RECORDIDX_PatientName]. PValueField = (char *)idx -> PatientName ;
-    idx -> param[RECORDIDX_PatientID]. PValueField = (char *)idx -> PatientID ;
-    idx -> param[RECORDIDX_PatientBirthTime]. PValueField = (char *)idx -> PatientBirthTime ;
-    idx -> param[RECORDIDX_OtherPatientIDs]. PValueField = (char *)idx -> OtherPatientIDs ;
-    idx -> param[RECORDIDX_OtherPatientNames]. PValueField = (char *)idx -> OtherPatientNames ;
-    idx -> param[RECORDIDX_EthnicGroup]. PValueField = (char *)idx -> EthnicGroup ;
-    idx -> param[RECORDIDX_StudyDate]. PValueField = (char *) idx -> StudyDate ;
-    idx -> param[RECORDIDX_StudyTime]. PValueField = (char *) idx -> StudyTime ;
-    idx -> param[RECORDIDX_StudyID]. PValueField = (char *) idx -> StudyID ;
-    idx -> param[RECORDIDX_StudyDescription]. PValueField = (char *) idx -> StudyDescription ;
-    idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. PValueField = (char *) idx ->NameOfPhysiciansReadingStudy;
-    idx -> param[RECORDIDX_AccessionNumber]. PValueField = (char *) idx -> AccessionNumber ;
-    idx -> param[RECORDIDX_ReferringPhysicianName]. PValueField = (char *) idx -> ReferringPhysicianName ;
-    idx -> param[RECORDIDX_ProcedureDescription]. PValueField = (char *) idx -> ProcedureDescription ;
-    idx -> param[RECORDIDX_AttendingPhysiciansName]. PValueField = (char *) idx -> AttendingPhysiciansName ;
-    idx -> param[RECORDIDX_StudyInstanceUID]. PValueField = (char *) idx -> StudyInstanceUID ;
-    idx -> param[RECORDIDX_OtherStudyNumbers]. PValueField = (char *) idx -> OtherStudyNumbers ;
-    idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. PValueField = (char *) idx -> AdmittingDiagnosesDescription ;
-    idx -> param[RECORDIDX_PatientAge]. PValueField = (char *) idx -> PatientAge ;
-    idx -> param[RECORDIDX_PatientSize]. PValueField = (char *) idx -> PatientSize ;
-    idx -> param[RECORDIDX_PatientWeight]. PValueField = (char *) idx -> PatientWeight ;
-    idx -> param[RECORDIDX_Occupation]. PValueField = (char *) idx -> Occupation ;
-    idx -> param[RECORDIDX_SeriesNumber]. PValueField = (char *) idx -> SeriesNumber ;
-    idx -> param[RECORDIDX_SeriesInstanceUID]. PValueField = (char *) idx -> SeriesInstanceUID ;
-    idx -> param[RECORDIDX_Modality]. PValueField = (char *) idx -> Modality ;
-    idx -> param[RECORDIDX_ImageNumber]. PValueField = (char *) idx -> ImageNumber ;
-    idx -> param[RECORDIDX_SOPInstanceUID]. PValueField = (char *) idx -> SOPInstanceUID ;
-    idx -> param[RECORDIDX_SeriesDate]. PValueField = (char *) idx -> SeriesDate ;
-    idx -> param[RECORDIDX_SeriesTime]. PValueField = (char *) idx -> SeriesTime ;
-    idx -> param[RECORDIDX_SeriesDescription]. PValueField = (char *) idx -> SeriesDescription ;
-    idx -> param[RECORDIDX_ProtocolName]. PValueField = (char *) idx -> ProtocolName ;
-    idx -> param[RECORDIDX_OperatorsName ]. PValueField = (char *) idx -> OperatorsName ;
-    idx -> param[RECORDIDX_PerformingPhysicianName]. PValueField = (char *) idx -> PerformingPhysicianName ;
-    idx -> param[RECORDIDX_PresentationLabel]. PValueField = (char *) idx -> PresentationLabel ;
-    idx -> param[RECORDIDX_IssuerOfPatientID]. PValueField = (char *) idx -> IssuerOfPatientID ;
-    idx -> param[RECORDIDX_SpecificCharacterSet]. PValueField = (char *) idx -> SpecificCharacterSet ;
-}
 
 /******************************
  *      Seek to a file position and do error checking
@@ -452,213 +1028,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
 
     DB_IdxInitRecord (idxRec, 1) ;
     return EC_Normal ;
-}
-
-std::string int_to_hex(Uint16 i)
-{
-    std::stringstream stream;
-    //stream << "0x"
-    stream << ""
-        << std::setfill('0') << std::setw(sizeof(Uint16) * 2)
-        << std::hex << i;
-    return stream.str();
-}
-
-/*
-Visual C++ 編譯時，遇到「無法解析的外部符號」
-解決的辦法如下：
-首先，到專案的「屬性」
-並到「組態屬性」->「連結器」->「輸入」
-其中的「其他相依性」則是告訴編譯器，你需要引用哪些 lib 檔
-將mongo的兩個lib引入
-
-windows下需要SSIZE_T
-加入以下來解決
-#ifdef _WIN32
-#include <basetsd.h>
-typedef SSIZE_T ssize_t;
-#endif // _WIN32
-在bson-cmp.h加入這段
-
-*/
-static bson_t* IdxRecordToBson(IdxRecord *idxRec)
-{
-    bson_t* doc;
-    bson_oid_t oid;
-    doc = bson_new();
-    bson_oid_init(&oid, NULL);
-
-    // 填入欄位
-    BSON_APPEND_OID(doc, "_id", &oid);
-    BSON_APPEND_UTF8(doc, "filename", idxRec->filename);
-    BSON_APPEND_UTF8(doc, "SOPClassUID", idxRec->SOPClassUID);
-    BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
-    BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
-
-    // 雖然我們不讀取param，但是找尋資料庫會用到。
-    bson_t* param_bson;
-    param_bson = bson_new();
-    for (int i = 0; i < NBPARAMETERS; i++)
-    {
-        DB_SmallDcmElmt &curr_param = idxRec->param[i];
-        bson_t* curr_param_bson; 
-        curr_param_bson = bson_new();
-
-        bson_t* PValueField_bson;
-        PValueField_bson = bson_new();
-        BSON_APPEND_UTF8(PValueField_bson,"p", curr_param.PValueField.ptr.p);
-        BSON_APPEND_INT32(PValueField_bson, "placeholder", curr_param.PValueField.ptr.placeholder);
-        BSON_APPEND_DOCUMENT(curr_param_bson, "PValueField", PValueField_bson);
-        BSON_APPEND_INT32(curr_param_bson, "ValueLength", curr_param.ValueLength);
-        bson_t* XTag_bson;
-        XTag_bson = bson_new();
-        for (int j = 0; j < 2; j++)
-        {
-            std::string s = std::to_string(j);
-            char const* pchar = s.c_str();
-            BSON_APPEND_INT32(XTag_bson, pchar, curr_param.XTag.key[j]);
-        }
-        BSON_APPEND_DOCUMENT(curr_param_bson, "XTag", XTag_bson);
-
-
-        //std::string s = std::to_string(i);
-        //char const* pchar = s.c_str();
-        // 改成以XTag為儲存key
-        std::string xtagRaw = "";
-        //xtagRaw = std::to_string(curr_param.XTag.key[0]) + "," + std::to_string(curr_param.XTag.key[1]);
-        xtagRaw = int_to_hex(curr_param.XTag.key[0]) + "," + int_to_hex(curr_param.XTag.key[1]);
-        BSON_APPEND_DOCUMENT(param_bson, xtagRaw.c_str(), curr_param_bson);
-    }
-    BSON_APPEND_DOCUMENT(doc, "param", param_bson);
-
-    BSON_APPEND_UTF8(doc, "PatientBirthDate", idxRec->PatientBirthDate);
-    BSON_APPEND_UTF8(doc, "PatientSex", idxRec->PatientSex);
-    BSON_APPEND_UTF8(doc, "PatientName", idxRec->PatientName);
-    BSON_APPEND_UTF8(doc, "PatientID", idxRec->PatientID);
-    BSON_APPEND_UTF8(doc, "PatientBirthTime", idxRec->PatientBirthTime);
-    BSON_APPEND_UTF8(doc, "OtherPatientIDs", idxRec->OtherPatientIDs);
-    BSON_APPEND_UTF8(doc, "OtherPatientNames", idxRec->OtherPatientNames);
-    BSON_APPEND_UTF8(doc, "EthnicGroup", idxRec->EthnicGroup);
-
-    BSON_APPEND_UTF8(doc, "StudyDate", idxRec->StudyDate);
-    BSON_APPEND_UTF8(doc, "StudyTime", idxRec->StudyTime);
-    BSON_APPEND_UTF8(doc, "StudyID", idxRec->StudyID);
-    BSON_APPEND_UTF8(doc, "StudyDescription", idxRec->StudyDescription);
-    BSON_APPEND_UTF8(doc, "NameOfPhysiciansReadingStudy", idxRec->NameOfPhysiciansReadingStudy);
-
-    BSON_APPEND_UTF8(doc, "AccessionNumber", idxRec->AccessionNumber);
-    BSON_APPEND_UTF8(doc, "ReferringPhysicianName", idxRec->ReferringPhysicianName);
-    BSON_APPEND_UTF8(doc, "ProcedureDescription", idxRec->ProcedureDescription);
-    BSON_APPEND_UTF8(doc, "AttendingPhysiciansName", idxRec->AttendingPhysiciansName);
-    BSON_APPEND_UTF8(doc, "StudyInstanceUID", idxRec->StudyInstanceUID);
-    BSON_APPEND_UTF8(doc, "OtherStudyNumbers", idxRec->OtherStudyNumbers);
-    BSON_APPEND_UTF8(doc, "AdmittingDiagnosesDescription", idxRec->AdmittingDiagnosesDescription);
-    BSON_APPEND_UTF8(doc, "PatientAge", idxRec->PatientAge);
-    BSON_APPEND_UTF8(doc, "PatientSize", idxRec->PatientSize);
-    BSON_APPEND_UTF8(doc, "PatientWeight", idxRec->PatientWeight);
-    BSON_APPEND_UTF8(doc, "Occupation", idxRec->Occupation);
-
-    BSON_APPEND_UTF8(doc, "SeriesNumber", idxRec->SeriesNumber);
-    BSON_APPEND_UTF8(doc, "SeriesInstanceUID", idxRec->SeriesInstanceUID);
-    BSON_APPEND_UTF8(doc, "Modality", idxRec->Modality);
-
-    BSON_APPEND_UTF8(doc, "ImageNumber", idxRec->ImageNumber);
-    BSON_APPEND_UTF8(doc, "SOPInstanceUID", idxRec->SOPInstanceUID);
-    BSON_APPEND_UTF8(doc, "SeriesDate", idxRec->SeriesDate);
-    BSON_APPEND_UTF8(doc, "SeriesTime", idxRec->SeriesTime);
-    BSON_APPEND_UTF8(doc, "SeriesDescription", idxRec->SeriesDescription);
-    BSON_APPEND_UTF8(doc, "ProtocolName", idxRec->ProtocolName);
-    BSON_APPEND_UTF8(doc, "OperatorsName", idxRec->OperatorsName);
-    BSON_APPEND_UTF8(doc, "PerformingPhysicianName", idxRec->PerformingPhysicianName);
-    BSON_APPEND_UTF8(doc, "PresentationLabel", idxRec->PresentationLabel);
-    BSON_APPEND_UTF8(doc, "IssuerOfPatientID", idxRec->IssuerOfPatientID);
-
-    BSON_APPEND_UTF8(doc, "InstanceDescription", idxRec->InstanceDescription);
-    BSON_APPEND_UTF8(doc, "SpecificCharacterSet", idxRec->SpecificCharacterSet);
-
-    return doc;
-}
-
-
-/******************************
- *      Add an Index record
- *      Returns the index allocated for this record
- */
-
-static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *idxRec)
-{
-    IdxRecord rec;
-    OFCondition cond = EC_Normal;
-
-    // 開始將資料寫入MongoDB
-    mongoc_client_t* mongoClient;
-    mongoc_database_t* db;
-    mongoc_uri_t* uri;
-    bson_error_t mongoError;
-
-    mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
-    if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
-        cond = QR_EC_IndexDatabaseError;
-        std::cout << "mongodb uri error" << "" << std::endl;
-    }
-
-    mongoClient = mongoc_client_new_from_uri(uri);
-    if (mongoClient)
-    {
-        // 取得database (會自動建立database如果沒有)
-        db = mongoc_client_get_database(mongoClient, mongoDB_name);
-
-        // 轉換格式 IdxRecord轉bson
-        bson_t* idxBson;
-        idxBson = IdxRecordToBson(idxRec);
-
-        // 存入MongoDB
-        mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
-        if (!mongoc_collection_insert_one(collection, idxBson, NULL, NULL, &mongoError))
-        {
-            fprintf(stderr, "%s\n", mongoError.message);
-            cond = QR_EC_IndexDatabaseError;
-        }
-    }
-    else
-    {
-        std::cout << "mongodb client error" << "" << std::endl;
-    }
-
-    /*
-    // Find free place for the record
-    // A place is free if filename is empty
-    
-
-    *idx = 0 ;
-
-    DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC), SEEK_SET) ;
-    while (read (phandle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
-        if (rec. filename [0] == '\0')
-            break ;
-        (*idx)++ ;
-    }
-
-    // We have either found a free place or we are at the end of file. 
-
-
-    DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE + SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
-
-    if (write (phandle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
-        cond = QR_EC_IndexDatabaseError ;
-    else
-        cond = EC_Normal ;
-
-    DB_lseek (phandle -> pidx, OFstatic_cast(long, DBHEADERSIZE), SEEK_SET) ;
-    */
-    return cond ;
 }
 
 
@@ -1172,11 +1541,6 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
         {
             if (idxRec->param[i].XTag.key[0] == pRequestList->elem.XTag.key[0] && idxRec->param[i].XTag.key[1] == pRequestList->elem.XTag.key[1])
             {
-                std::cout << "idxRec keys=" << idxRec->param[i].XTag.key[0] << "," << idxRec->param[i].XTag.key[1] << std::endl;
-                std::cout << "elem keys=" << pRequestList->elem.XTag.key[0] << "," << pRequestList->elem.XTag.key[1] << std::endl;
-                std::cout << "idxRec keys=" << int_to_hex(idxRec->param[i].XTag.key[0]) << "," << int_to_hex(idxRec->param[i].XTag.key[1]) << std::endl;
-                std::cout << "elem keys=" << int_to_hex(pRequestList->elem.XTag.key[0]) << "," << int_to_hex(pRequestList->elem.XTag.key[1]) << std::endl;
-                std::cout << "i=" << i << std::endl;
                 break;
             }
         }
@@ -1377,266 +1741,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
     return EC_Normal ;
 }
 
-IdxRecord* bson_to_idx_record(const bson_t *i_bson, IdxRecord &theRec)
-{
-    //IdxRecord theRec = IdxRecord();
-    DB_IdxInitRecord(&theRec, 0);
-
-    std::string aaa(theRec.filename);
-    std::cout << "theRec FILENAME=" << aaa << "\n";
-    //theRec.RecordedDate = i_bson;
-    bson_iter_t iter;
-    if (bson_iter_init(&iter, i_bson)) {
-        while (bson_iter_next(&iter)) {
-            (strcmp(bson_iter_key(&iter), "filename") == 0) ? strcpy(theRec.filename, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SOPClassUID") == 0) ? strcpy(theRec.SOPClassUID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "RecordedDate") == 0) ? theRec.RecordedDate = bson_iter_double(&iter) : 0.0;
-            (strcmp(bson_iter_key(&iter), "ImageSize") == 0) ? theRec.ImageSize = bson_iter_int32(&iter) : 0;
-
-            // param is dcmtk internal system needed , we don't need to save them or do somewhat about it.
-            /*if (strcmp(bson_iter_key(&iter), "param") == 0)
-            {
-                //std::cout << "param type=" << bson_iter_type(&iter) << std::endl;
-                const uint8_t* param_bson_data;
-                uint32_t param_bson_data_size;
-                bson_t* param_bson;
-                bson_iter_document(&iter, &param_bson_data_size, &param_bson_data);
-                param_bson = bson_new_from_data(param_bson_data, param_bson_data_size);
-                bson_iter_t param_iter;
-                if (bson_iter_init(&param_iter, param_bson)) 
-                {
-                    int pIndex = 0;
-                    while (bson_iter_next(&param_iter)) 
-                    {
-
-                        const uint8_t* curr_param_data;
-                        uint32_t curr_param_data_size;
-                        bson_t* curr_param_bson;
-                        bson_iter_document(&param_iter, &curr_param_data_size, &curr_param_data);
-                        curr_param_bson = bson_new_from_data(curr_param_data, curr_param_data_size);
-                        bson_iter_t curr_param_iter;
-                        if (bson_iter_init(&curr_param_iter, curr_param_bson))
-                        {
-                            while (bson_iter_next(&curr_param_iter))
-                            {
-                                if (strcmp(bson_iter_key(&curr_param_iter), "PValueField") == 0)
-                                {
-                                    const uint8_t* curr_pvalue_data;
-                                    uint32_t curr_pvalue_data_size;
-                                    bson_t* curr_pvalue_bson;
-                                    bson_iter_document(&curr_param_iter, &curr_pvalue_data_size, &curr_pvalue_data);
-                                    curr_pvalue_bson = bson_new_from_data(curr_pvalue_data, curr_pvalue_data_size);
-                                    bson_iter_t pvalue_iter;
-                                    theRec.param[pIndex].PValueField.ptr.p = strdup("");
-                                    if (bson_iter_init(&pvalue_iter, curr_pvalue_bson))
-                                    {
-                                        while (bson_iter_next(&pvalue_iter))
-                                        {
-                                            //(strcmp(bson_iter_key(&pvalue_iter), "p") == 0) ? theRec.param[pIndex].PValueField.ptr.p = ) : "";
-                                            (strcmp(bson_iter_key(&pvalue_iter), "p") == 0) ? theRec.param[pIndex].PValueField.ptr.p = strdup(bson_iter_utf8(&pvalue_iter, 0)) : "";
-                                            printf("ptr.p = %s\n", theRec.param[pIndex].PValueField.ptr.p);
-                                            //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&pvalue_iter), bson_iter_utf8(&pvalue_iter, 0));
-                                            (strcmp(bson_iter_key(&pvalue_iter), "placeholder") == 0) ? theRec.param[pIndex].PValueField.ptr.placeholder = bson_iter_int32(&pvalue_iter) : 0;
-                                        }
-                                    }
-                                }
-                                if (strcmp(bson_iter_key(&curr_param_iter), "ValueLength") == 0)
-                                {
-                                    theRec.param[pIndex].ValueLength = bson_iter_int32(&curr_param_iter);
-                                }
-                                if (strcmp(bson_iter_key(&curr_param_iter), "XTag") == 0)
-                                {
-                                    const uint8_t* curr_xtag_data;
-                                    uint32_t curr_xtag_data_size;
-                                    bson_t* curr_xtag_bson;
-                                    bson_iter_document(&curr_param_iter, &curr_xtag_data_size, &curr_xtag_data);
-                                    curr_xtag_bson = bson_new_from_data(curr_xtag_data, curr_xtag_data_size);
-                                    bson_iter_t xtag_iter;
-                                    if (bson_iter_init(&xtag_iter, curr_xtag_bson))
-                                    {
-                                        while (bson_iter_next(&xtag_iter))
-                                        {
-                                            (strcmp(bson_iter_key(&xtag_iter), "0") == 0) ? theRec.param[pIndex].XTag.key[0] = bson_iter_int32(&xtag_iter) : 0;
-                                            (strcmp(bson_iter_key(&xtag_iter), "1") == 0) ? theRec.param[pIndex].XTag.key[1] = bson_iter_int32(&xtag_iter) : 0;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        pIndex++;
-                    }
-                }
-            }
-            */
-            (strcmp(bson_iter_key(&iter), "PatientBirthDate") == 0) ? strcpy(theRec.PatientBirthDate, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientSex") == 0) ? strcpy(theRec.PatientSex, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientName") == 0) ? strcpy(theRec.PatientName, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientID") == 0) ? strcpy(theRec.PatientID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientBirthTime") == 0) ? strcpy(theRec.PatientBirthTime, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "OtherPatientIDs") == 0) ? strcpy(theRec.OtherPatientIDs, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "OtherPatientNames") == 0) ? strcpy(theRec.OtherPatientNames, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "EthnicGroup") == 0) ? strcpy(theRec.EthnicGroup, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "StudyDate") == 0) ? strcpy(theRec.StudyDate, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "StudyTime") == 0) ? strcpy(theRec.StudyTime, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "StudyID") == 0) ? strcpy(theRec.StudyID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "StudyDescription") == 0) ? strcpy(theRec.StudyDescription, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "NameOfPhysiciansReadingStudy") == 0) ? strcpy(theRec.NameOfPhysiciansReadingStudy, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "AccessionNumber") == 0) ? strcpy(theRec.AccessionNumber, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "ReferringPhysicianName") == 0) ? strcpy(theRec.ReferringPhysicianName, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "ProcedureDescription") == 0) ? strcpy(theRec.ProcedureDescription, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "AttendingPhysiciansName") == 0) ? strcpy(theRec.AttendingPhysiciansName, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "StudyInstanceUID") == 0) ? strcpy(theRec.StudyInstanceUID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "OtherStudyNumbers") == 0) ? strcpy(theRec.OtherStudyNumbers, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "AdmittingDiagnosesDescription") == 0) ? strcpy(theRec.AdmittingDiagnosesDescription, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientAge") == 0) ? strcpy(theRec.PatientAge, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientSize") == 0) ? strcpy(theRec.PatientSize, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PatientWeight") == 0) ? strcpy(theRec.PatientWeight, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "Occupation") == 0) ? strcpy(theRec.Occupation, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SeriesNumber") == 0) ? strcpy(theRec.SeriesNumber, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SeriesInstanceUID") == 0) ? strcpy(theRec.SeriesInstanceUID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "Modality") == 0) ? strcpy(theRec.Modality, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "ImageNumber") == 0) ? strcpy(theRec.ImageNumber, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SOPInstanceUID") == 0) ? strcpy(theRec.SOPInstanceUID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SeriesDate") == 0) ? strcpy(theRec.SeriesDate, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SeriesTime") == 0) ? strcpy(theRec.SeriesTime, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SeriesDescription") == 0) ? strcpy(theRec.SeriesDescription, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "ProtocolName") == 0) ? strcpy(theRec.ProtocolName, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "OperatorsName") == 0) ? strcpy(theRec.OperatorsName, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PerformingPhysicianName") == 0) ? strcpy(theRec.PerformingPhysicianName, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "PresentationLabel") == 0) ? strcpy(theRec.PresentationLabel, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "IssuerOfPatientID") == 0) ? strcpy(theRec.IssuerOfPatientID, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "InstanceDescription") == 0) ? strcpy(theRec.InstanceDescription, bson_iter_utf8(&iter, 0)) : "";
-            (strcmp(bson_iter_key(&iter), "SpecificCharacterSet") == 0) ? strcpy(theRec.SpecificCharacterSet, bson_iter_utf8(&iter, 0)) : "";
-
-            //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&iter), bson_iter_utf8(&iter, 0));
-        }
-    }
-    DB_IdxInitRecord(&theRec, 1);
-
-    std::string ccc(theRec.filename);
-    printf("theRec Filename=%s\n", theRec.filename);
-    std::cout << "StudyInstanceUID=" << theRec.StudyInstanceUID << std::endl;
-    std::cout << "StudyInstanceUID=" << theRec.param[RECORDIDX_StudyInstanceUID].PValueField.ptr.p << std::endl;
-    std::cout << "theRec FILENAME=" << theRec.filename << "\n";
-    return &theRec;
-}
-
-std::string ReplaceString(std::string subject, const std::string& search,
-    const std::string& replace) {
-    size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != std::string::npos) {
-        subject.replace(pos, search.length(), replace);
-        pos += replace.length();
-    }
-    return subject;
-}
-
-OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(
-    DB_Private_Handle* phandle,
-    IdxRecord &idxRec,
-    DB_LEVEL                level,
-    DB_LEVEL                infLevel,
-    int* match,
-    CharsetConsideringMatcher& dbmatch)
-{
-    int                 i;
-    DcmTagKey   XTag;
-    DB_ElementList* plist;
-    DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
-    OFBool foundAnything = OFFalse;
-
-    std::cout << "start mongodb find" << "" << std::endl;
-
-    // MongoDB連接
-    mongoc_client_t* mongoClient;
-    mongoc_database_t* db;
-    mongoc_uri_t* uri;
-    bson_error_t mongoError;
-
-    mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
-    if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
-        std::cout << "mongodb uri error" << "" << std::endl;
-    }
-
-    mongoClient = mongoc_client_new_from_uri(uri);
-    if (mongoClient)
-    {
-        // 將query轉bson
-        bson_t *query;
-        query = bson_new();
-        for (plist = phandle->findRequestList; plist; plist = plist->next)
-        {
-            if (plist->elem.PValueField.ptr.p != NULL)
-            {
-                std::string queryKey = "param.";
-                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
-                queryKey = queryKey + xtag + ".PValueField.p";
-                std::cout << "query++=" << queryKey << std::endl;
-                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
-                std::cout << "LEVEL=" << XTagLevel << std::endl;
-                std::string queryValue = plist->elem.PValueField.ptr.p;
-                queryValue = "^" + queryValue;
-                queryValue = ReplaceString(queryValue, "*", ".*");
-                queryValue = ReplaceString(queryValue, "?", ".");
-                std::cout << "queryVal++=" << queryValue << std::endl;
-                if (strcmp(xtag.c_str(), "0020,000d") != 0)
-                {
-                    
-                    //BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
-                    bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
-                }
-                else
-                {
-                    BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
-                }
-            }
-        }
-
-        mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
-        mongoc_cursor_t* cursor;
-        const bson_t* resultBson;
-        resultBson = bson_new();
-        char* str;
-        //BSON_APPEND_REGEX
-        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
-        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
-        while (mongoc_cursor_next(cursor, &resultBson)) {
-            str = bson_as_canonical_extended_json(resultBson, NULL);
-            //printf("%s\n", str);
-            //std::cout << str << std::endl;
-            bson_free(str);
-            // Convert Bson to IdxRecord.
-            bson_to_idx_record(resultBson, idxRec);
-            //idxRec = bson_to_idx_record(resultBson);
-            std::cout << "idxRec FILENAME=" << idxRec.filename << "\n";
-            //break;
-            if (DB_UIDAlreadyFound(handle_, &idxRec))
-            {
-                continue;
-            }
-            else
-            {
-                foundAnything = OFTrue;
-                break;
-            }
-        }
-        std::cout << "ending mongodb find" << "" << std::endl;
-    }
-    else
-    {
-        std::cout << "mongodb client error" << "" << std::endl;
-    }
-    return foundAnything;
-
-}
 
 
 /************
@@ -1961,7 +2065,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     
     MatchFound = mongoDBFindRecord(handle_, idxRec, qLevel, qLevel, &MatchFound, dbmatch);
     dbmatch.setRecord(idxRec);
-    std::cout << "idxRec FILENAME=" << idxRec.filename << "\n";
+    std::cout << "Find Request Filename:" << idxRec.filename << "\n";
     
 
     /*
@@ -2010,7 +2114,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ****    return status is pending
     ***/
 
-    std::cout << "MatchFound=" << MatchFound << "\n";
     if (MatchFound) {
         DB_UIDAddFound (handle_, &idxRec) ;
         makeResponseList (handle_, &idxRec) ;
@@ -2652,107 +2755,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     DB_lock(OFFalse);
 
     CharsetConsideringMatcher dbmatch(*handle_);
-    
-    // Find and get Records from mongodb
-    // MongoDB連接
 
-    mongoc_client_t* mongoClient;
-    mongoc_database_t* db;
-    mongoc_uri_t* uri;
-    bson_error_t mongoError;
-    mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
-    if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
-        std::cout << "mongodb uri error" << "" << std::endl;
-    }
-
-    mongoClient = mongoc_client_new_from_uri(uri);
-    if (mongoClient)
-    {
-        // 將query轉bson
-        bson_t* query;
-        query = bson_new();
-        for (plist = handle_->findRequestList; plist; plist = plist->next)
-        {
-            /*if (plist->elem.PValueField.ptr.p != NULL)
-            {
-                std::string queryKey = "param.";
-                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
-                queryKey = queryKey + xtag + ".PValueField.p";
-                BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
-            }*/
-
-            if (plist->elem.PValueField.ptr.p != NULL)
-            {
-                std::string queryKey = "param.";
-                std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
-                queryKey = queryKey + xtag + ".PValueField.p";
-                std::cout << "query++=" << queryKey << std::endl;
-                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
-                std::string queryValue = plist->elem.PValueField.ptr.p;
-                queryValue = "^" + queryValue;
-                queryValue = ReplaceString(queryValue, "*", ".*");
-                queryValue = ReplaceString(queryValue, "?", ".");
-                std::cout << "queryVal++=" << queryValue << std::endl;
-                if (strcmp(xtag.c_str(), "0020,000d") != 0)
-                {
-
-                    //BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
-                    bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
-                }
-                else
-                {
-                    BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
-                }
-            }
-        }
-
-        mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
-        mongoc_cursor_t* cursor;
-        const bson_t* resultBson;
-        resultBson = bson_new();
-        char* str;
-        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
-        while (mongoc_cursor_next(cursor, &resultBson)) {
-            str = bson_as_canonical_extended_json(resultBson, NULL);
-            bson_free(str);
-
-            pidxlist = (DB_CounterList*)malloc(sizeof(DB_CounterList));
-            if (pidxlist == NULL) {
-                status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                return (QR_EC_IndexDatabaseError);
-            }
-
-            pidxlist->rec = new IdxRecord();
-            bson_to_idx_record(resultBson, *pidxlist->rec);
-            std::cout << "Move idxRec FILENAME=" << pidxlist->rec->filename << "\n";
-
-            pidxlist->next = NULL;
-            //pidxlist->idxCounter = handle_->idxCounter;
-            handle_->NumberRemainOperations++;
-            if (handle_->moveCounterList == NULL)
-            {
-                lastidxlist = pidxlist;
-                handle_->moveCounterList = lastidxlist;
-            }
-            else {
-                lastidxlist->next = pidxlist;
-                lastidxlist = pidxlist;
-            }
-        }
-        std::cout << "ending mongodb find" << "" << std::endl;
-    }
-    else
-    {
-        std::cout << "mongodb client error" << "" << std::endl;
-    }
-
+    mongoDBFindRecordsForMove(handle_, plist, pidxlist, lastidxlist, status);
 
     /*
     DB_IdxInitLoop(&(handle_->idxCounter));
@@ -2866,10 +2870,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     OFStandard::strlcpy(SOPClassUID, (char *) idxRec-> SOPClassUID, SOPClassUIDSize) ;
     OFStandard::strlcpy(SOPInstanceUID, (char *) idxRec-> SOPInstanceUID, SOPInstanceUIDSize) ;
     OFStandard::strlcpy(imageFileName, (char *) idxRec-> filename, imageFileNameSize) ;
-
-    std::cout << "SOPClassUID=" << SOPClassUID << "idxRec.SOPClassUID=" << idxRec->SOPClassUID << std::endl;
-    std::cout << "SOPInstanceUID=" << SOPInstanceUID << "idxRec.SOPInstanceUID=" << idxRec->SOPInstanceUID << std::endl;
-    std::cout << "imageFileName=" << imageFileName << "idxRec.imageFileName=" << idxRec->filename << std::endl;
 
     *numberOfRemainingSubOperations = OFstatic_cast(unsigned short, (--handle_->NumberRemainOperations));
 
@@ -3188,119 +3188,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
         return ( EC_Normal ) ;
     else
         return ( QR_EC_IndexDatabaseError ) ;
-}
-
-/*
- * If the image is already stored remove it from the database.
- * hewett - Nov. 1, 93
- */
-OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
-    const char *SOPInstanceUID, const char *StudyInstanceUID,
-    StudyDescRecord *pStudyDesc, const char *newImageFileName)
-{
-
-    // Find dupes using filename
-    // MongoDB連接
-    mongoc_client_t* mongoClient;
-    mongoc_database_t* db;
-    mongoc_uri_t* uri;
-    bson_error_t mongoError;
-
-    mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
-    if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
-        std::cout << "mongodb uri error" << "" << std::endl;
-    }
-
-    mongoClient = mongoc_client_new_from_uri(uri);
-    if (mongoClient)
-    {
-        // 將query轉bson
-        bson_t* query;
-        query = bson_new();
-
-        std::string queryKey = "SOPInstanceUID";
-        BSON_APPEND_UTF8(query, queryKey.c_str(), SOPInstanceUID);
-
-        mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
-
-        // delete the file first.
-
-        mongoc_cursor_t* cursor;
-        const bson_t* resultBson;
-        resultBson = bson_new();
-        //BSON_APPEND_REGEX
-        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
-        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
-        while (mongoc_cursor_next(cursor, &resultBson)) {
-            bson_iter_t iter;
-            if (bson_iter_init(&iter, resultBson)) {
-                while (bson_iter_next(&iter)) {
-                    if (strcmp(bson_iter_key(&iter), "filename") == 0)
-                    {
-                        deleteImageFile(strdup(bson_iter_utf8(&iter,0)));
-                    }
-                }
-            }
-        }
-
-        // and then delete the data in mongodb
-        bson_error_t error;
-        if (!mongoc_collection_delete_many(collection, query, NULL, NULL, &error))
-        {
-            printf("%s\n", error.message);
-        }
-
-        std::cout << "ending mongodb delete dupes" << "" << std::endl;
-    }
-    else
-    {
-        std::cout << "mongodb client error" << "" << std::endl;
-    }
-
-
-
-    /*int idx = 0;
-    IdxRecord idxRec ;
-    int studyIdx = 0;
-
-    studyIdx = matchStudyUIDInStudyDesc (pStudyDesc, (char*)StudyInstanceUID,
-                        (int)(handle_ -> maxStudiesAllowed)) ;
-
-    if ( pStudyDesc[studyIdx].NumberofRegistratedImages == 0 ) {
-    /* no study images, cannot be any old images */
-    //return EC_Normal;
-    //}
-    /*
-    while (DB_IdxRead(idx, &idxRec) == EC_Normal) {
-
-    if (strcmp(idxRec.SOPInstanceUID, SOPInstanceUID) == 0) {
-
-#ifdef DEBUG
-        DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
-#endif
-        // remove the idx record  
-        DB_IdxRemove (idx);
-        // only remove the image file if it is different than that
-        // being entered into the database.
-        //
-        if (strcmp(idxRec.filename, newImageFileName) != 0) {
-            deleteImageFile(idxRec.filename);
-        }
-        // update the study info 
-        pStudyDesc[studyIdx].NumberofRegistratedImages--;
-        pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
-    }
-    idx++;
-    }*/
-    /* the study record should be written to file later */
-    return EC_Normal;
 }
 
 
