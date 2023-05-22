@@ -1206,7 +1206,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 }
 
 // ----------------------------------------------------------------------------
-
+/*
+* Àx¦sworklist¸ê®Æ
+*/
 static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, const OFString& calledAE, const OFString& reqFilePath, const OFString& reqFileFormat)
 {
   OFString fileName = reqFileFormat;

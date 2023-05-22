@@ -240,7 +240,9 @@ void WlmDataSourceFileSystem::HandleExistentButEmptyReferencedStudyOrPatientSequ
 }
 
 // ----------------------------------------------------------------------------
-
+/*
+* §ä´Mworklist¸ê®Æfind
+*/
 WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmDataset &findRequestIdentifiers )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
