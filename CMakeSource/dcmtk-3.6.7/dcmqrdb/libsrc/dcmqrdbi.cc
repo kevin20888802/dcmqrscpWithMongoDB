@@ -1,4 +1,4 @@
-/*
+Ôªø/*
  *
  *  Copyright (C) 1993-2022, OFFIS e.V.
  *  All rights reserved.  See COPYRIGHT file for details.
@@ -108,50 +108,192 @@ static int NbFindAttr = ((sizeof (TbFindAttr)) / (sizeof (TbFindAttr [0])));
 
 /* ========================= static functions ========================= */
 
+std::string getCurrentTimeAsString()
+{
+    // ÂèñÂæóÁõÆÂâçÊôÇÈñì
+    std::time_t currentTime = std::time(nullptr);
+
+    // ËΩâÊèõÁÇ∫ÁõÆÂâçÊôÇÂçÄ
+    std::tm* localTime = std::localtime(&currentTime);
+
+    // ËΩâÊèõÊàêstring
+    std::ostringstream oss;
+    oss << std::put_time(localTime, "[%Y/%m/%d %H:%M:%S]");
+    return oss.str();
+}
+
+/*
+* msg=Ë®äÊÅØ
+* msgType--> E=ERROR
+*            D=DEBUG
+*            W=WARN
+*           ""=INFO
+*/
+static void ConsoleLog(std::string msg, std::string msgType)
+{
+    if (strcmp(msgType.c_str(), "E") == 0)
+    {
+        std::cout << "[ERROR]";
+    }
+    else if (strcmp(msgType.c_str(), "D") == 0)
+    {
+        std::cout << "[DEBUG]";
+    }
+    else if (strcmp(msgType.c_str(), "W") == 0)
+    {
+        std::cout << "[WARN]";
+    }
+    else
+    {
+        std::cout << "[INFO]";
+    }
+
+    std::string currentTime = getCurrentTimeAsString();
+    std::cout << currentTime;
+    std::cout << " ";
+    std::cout << msg << std::endl;
+}
+
 #pragma region MongoDB
 
 /**
-* MongoDB≥]©w
+* MongoDBË®≠ÂÆö
 */
 
-// Mongo ≥sΩu∫Ùß}
-const char* conn_string = "mongodb://127.0.0.1/?appname=dcmqrscpMongoDB";
-const char* mongoDB_name = "dcmqrscpDatabase";
-const char* collection_name = "dcmqrscp";
+// Mongo ÈÄ£Á∑öÁ∂≤ÂùÄ
+std::string conn_string = "mongodb://127.0.0.1/?appname=dcmqrscp4raccoon";
+std::string mongoDB_name = "raccoon_polka";
+std::string collection_name = "dicom";
+
+#ifdef _WIN32 // Windows
+
+#include <windows.h>
+
+std::string getExecutablePath() {
+    char exePath[MAX_PATH];
+    DWORD pathLength = GetModuleFileName(NULL, exePath, MAX_PATH);
+
+    if (pathLength == 0) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#elif defined(__linux__) // Linux
+
+#include <unistd.h>
+#include <limits.h>
+
+std::string getExecutablePath() {
+    char exePath[PATH_MAX];
+    ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath));
+
+    if (pathLength == -1) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath, pathLength);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#else
+#error Unsupported platform
+#endif
+
+void ReadMongoConfig()
+{
+    std::string exeDirectory = getExecutablePath();
+    std::string configFilePath = exeDirectory + "dcmqrscpMongoConfig.cfg";
+
+    std::ifstream config_file(configFilePath);
+
+    if (!config_file.is_open()) {
+        ConsoleLog("MongoDB Config File Path:" + configFilePath, "");
+        ConsoleLog("Failed to open mongo config file.", "E");
+    }
+
+    std::string line;
+    while (std::getline(config_file, line)) 
+    {
+        size_t delimiter_pos = line.find('=');
+        if (delimiter_pos != std::string::npos) 
+        {
+            std::string key = line.substr(0, delimiter_pos);
+            std::string value = line.substr(delimiter_pos + 1);
+
+            if (key == "conn_string") 
+            {
+                conn_string = value;
+            }
+            else if (key == "mongoDB_name") 
+            {
+                mongoDB_name = value;
+            }
+            else if (key == "collection_name") 
+            {
+                collection_name = value;
+            }
+        }
+    }
+    ConsoleLog("MongoDB conn_string:" + conn_string, "");
+    ConsoleLog("MongoDB mongoDB_name:" + mongoDB_name, "");
+    ConsoleLog("MongoDB collection_name:" + collection_name, "");
+
+    config_file.close();
+}
+
 
 /*
-Visual C++ Ωsƒ∂Æ…°AπJ®Ï°uµL™k∏—™R™∫•~≥°≤≈∏π°v
-∏—®M™∫øÏ™k¶p§U°G
-≠∫•˝°A®Ïdcmqrscp±MÆ◊™∫°uƒ›© °v
-®√®Ï°u≤’∫Aƒ›© °v->°u≥sµ≤æπ°v->°uøÈ§J°v
-®‰§§™∫°u®‰•L¨€®Ã© °v´h¨Oßi∂DΩsƒ∂æπ°AßAª›≠n§ﬁ•Œ≠˛®« lib ¿…
-±Nmongo™∫®‚≠”lib§ﬁ§J
+Visual C++ Á∑®Ë≠ØÊôÇÔºåÈÅáÂà∞„ÄåÁÑ°Ê≥ïËß£ÊûêÁöÑÂ§ñÈÉ®Á¨¶Ëôü„Äç
+Ëß£Ê±∫ÁöÑËæ¶Ê≥ïÂ¶Ç‰∏ãÔºö
+È¶ñÂÖàÔºåÂà∞dcmqrscpÂ∞àÊ°àÁöÑ„ÄåÂ±¨ÊÄß„Äç
+‰∏¶Âà∞„ÄåÁµÑÊÖãÂ±¨ÊÄß„Äç->„ÄåÈÄ£ÁµêÂô®„Äç->„ÄåËº∏ÂÖ•„Äç
+ÂÖ∂‰∏≠ÁöÑ„ÄåÂÖ∂‰ªñÁõ∏‰æùÊÄß„ÄçÂâáÊòØÂëäË®¥Á∑®Ë≠ØÂô®Ôºå‰Ω†ÈúÄË¶ÅÂºïÁî®Âì™‰∫õ lib Ê™î
+Â∞ámongoÁöÑÂÖ©ÂÄãlibÂºïÂÖ•
 
 DEBUG:
 ..\..\..\lib\Debug\dcmqrdb.lib;..\..\..\lib\Debug\dcmnet.lib;..\..\..\lib\Debug\dcmdata.lib;..\..\..\lib\Debug\oflog.lib;..\..\..\lib\Debug\ofstd.lib;..\..\..\mongo-c-driver-1.23.3\src\libbson\Debug\bson-1.0.lib;..\..\..\mongo-c-driver-1.23.3\src\libmongoc\Debug\mongoc-1.0.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib
 RELEASE:
 ..\..\..\lib\Release\dcmqrdb.lib;..\..\..\lib\Release\dcmnet.lib;..\..\..\lib\Release\dcmdata.lib;..\..\..\lib\Release\oflog.lib;..\..\..\lib\Release\ofstd.lib;..\..\..\mongo-c-driver-1.23.3\src\libbson\Release\bson-1.0.lib;..\..\..\mongo-c-driver-1.23.3\src\libmongoc\Release\mongoc-1.0.lib;iphlpapi.lib;ws2_32.lib;netapi32.lib;wsock32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib
 
-¶bdcmqrdb±MÆ◊™∫°uƒ›© °v
-°uC/C++°v->°u§@ØÎ°v->°u®‰•LInclude•ÿø˝°v
-ßÔ¶®≥o≠”°A®”•[§JMongoDB™∫Include•ÿø˝°C
+Âú®dcmqrdbÂ∞àÊ°àÁöÑ„ÄåÂ±¨ÊÄß„Äç
+„ÄåC/C++„Äç->„Äå‰∏ÄËà¨„Äç->„ÄåÂÖ∂‰ªñIncludeÁõÆÈåÑ„Äç
+ÊîπÊàêÈÄôÂÄãÔºå‰æÜÂä†ÂÖ•MongoDBÁöÑIncludeÁõÆÈåÑ„ÄÇ
 DEBUG:
 D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\..\..\src\common;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\..\..\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\..\..\src\common;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\src\bson;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\..\..\src\common;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\..\..\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\..\..\src\common;%(AdditionalIncludeDirectories)
 RELEASE:
 D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\dcmtk-3.6.7\config\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\ofstd\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\oflog\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmdata\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimgle\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmimage\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpeg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmjpls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtls\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmnet\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsr\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmsign\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmwlm\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmqrdb\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpstat\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmrt\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmiod\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmfg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmseg\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmtract\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmpmap\include;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\dcmtk-3.6.7\dcmect\include;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\src\mongoc;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libmongoc\..\..\src\common;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\..\..\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libmongoc\..\..\src\common;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\src\bson;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\src\bson;D:\Programming\C++\dcmqrscpWithMongoDB\CMakeSource\mongo-c-driver-1.23.3\src\libbson\..\..\src\common;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\..\..\src;D:\Programming\C++\dcmqrscpWithMongoDB\dcmqrscpMongoDB\mongo-c-driver-1.23.3\src\libbson\..\..\src\common;%(AdditionalIncludeDirectories)
 
-windows§Uª›≠nSSIZE_T
-•[§J•H§U®”∏—®M
+windows‰∏ãÈúÄË¶ÅSSIZE_T
+Âä†ÂÖ•‰ª•‰∏ã‰æÜËß£Ê±∫
 #ifdef _WIN32
 #include <basetsd.h>
 typedef SSIZE_T ssize_t;
 #endif // _WIN32
-¶bbson-cmp.h•[§J≥o¨q
+Âú®bson-cmp.hÂä†ÂÖ•ÈÄôÊÆµ
 
 */
 
 /*
-* ±N§Q∂i¶Ïº∆¶r¬‡§Q§ª∂i¶Ï¶r¶Í
+* Â∞áÂçÅÈÄ≤‰ΩçÊï∏Â≠óËΩâÂçÅÂÖ≠ÈÄ≤‰ΩçÂ≠ó‰∏≤
 */
 std::string int_to_hex(Uint16 i)
 {
@@ -164,7 +306,7 @@ std::string int_to_hex(Uint16 i)
 }
 
 /*
-* C++™©™∫¶r¶Í¥¿¥´Replace
+* C++ÁâàÁöÑÂ≠ó‰∏≤ÊõøÊèõReplace
 */
 std::string ReplaceString(std::string subject, const std::string& search, const std::string& replace)
 {
@@ -372,23 +514,25 @@ static int DB_UIDAlreadyFound(
 }
 
 /*
-* ±NDicom∏ÍÆ∆¿x¶sÆÊ¶°¬‡¥´¶®MongoDB¿x¶s™∫Bson
+* Â∞áDicomË≥áÊñôÂÑ≤Â≠òÊ†ºÂºèËΩâÊèõÊàêMongoDBÂÑ≤Â≠òÁöÑBson
 */
 static bson_t* IdxRecordToBson(IdxRecord* idxRec)
 {
+    ConsoleLog("Saving file:" + std::string(idxRec->filename), "");
+
     bson_t* doc;
     bson_oid_t oid;
     doc = bson_new();
     bson_oid_init(&oid, NULL);
 
-    // ∂Ò§JƒÊ¶Ï
+    // Â°´ÂÖ•Ê¨Ñ‰Ωç
     BSON_APPEND_OID(doc, "_id", &oid);
     BSON_APPEND_UTF8(doc, "filename", idxRec->filename);
     BSON_APPEND_UTF8(doc, "SOPClassUID", idxRec->SOPClassUID);
     BSON_APPEND_DOUBLE(doc, "RecordedDate", idxRec->RecordedDate);
     BSON_APPEND_INT32(doc, "ImageSize", idxRec->ImageSize);
 
-    // ¡ˆµMß⁄≠Ã§£≈™®˙param°A¶˝¨Oß‰¥M∏ÍÆ∆Æw∑|•Œ®Ï°C
+    // ÈõñÁÑ∂ÊàëÂÄë‰∏çËÆÄÂèñparamÔºå‰ΩÜÊòØÊâæÂ∞ãË≥áÊñôÂ∫´ÊúÉÁî®Âà∞„ÄÇ
     bson_t* param_bson;
     param_bson = bson_new();
     for (int i = 0; i < NBPARAMETERS; i++)
@@ -413,12 +557,8 @@ static bson_t* IdxRecordToBson(IdxRecord* idxRec)
         }
         BSON_APPEND_DOCUMENT(curr_param_bson, "XTag", XTag_bson);
 
-
-        //std::string s = std::to_string(i);
-        //char const* pchar = s.c_str();
-        // ßÔ¶®•HXTag¨∞¿x¶skey
+        // ÊîπÊàê‰ª•XTagÁÇ∫ÂÑ≤Â≠òkey
         std::string xtagRaw = "";
-        //xtagRaw = std::to_string(curr_param.XTag.key[0]) + "," + std::to_string(curr_param.XTag.key[1]);
         xtagRaw = int_to_hex(curr_param.XTag.key[0]) + "," + int_to_hex(curr_param.XTag.key[1]);
         BSON_APPEND_DOCUMENT(param_bson, xtagRaw.c_str(), curr_param_bson);
     }
@@ -473,60 +613,58 @@ static bson_t* IdxRecordToBson(IdxRecord* idxRec)
 }
 
 /*
- * MongoDB∏ÍÆ∆Æw∑sºW§@µß∏ÍÆ∆Store
+ * MongoDBË≥áÊñôÂ∫´Êñ∞Â¢û‰∏ÄÁ≠ÜË≥áÊñôStore
  */
 static OFCondition DB_IdxAdd(DB_Private_Handle* phandle, int* idx, IdxRecord* idxRec)
 {
     IdxRecord rec;
     OFCondition cond = EC_Normal;
 
-    // MongoDB™∫≥sµ≤´ÿ•ﬂ∞_∞ 
+    // MongoDBÁöÑÈÄ£ÁµêÂª∫Á´ãËµ∑Âãï
     mongoc_client_t* mongoClient;
     mongoc_database_t* db;
     mongoc_uri_t* uri;
     bson_error_t mongoError;
+    ReadMongoConfig();
 
     mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
     if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
+        ConsoleLog("failed to parse URI:" + conn_string, "E");
+        ConsoleLog("error message:" + std::string(mongoError.message), "E");
         cond = QR_EC_IndexDatabaseError;
-        std::cout << "mongodb uri error" << "" << std::endl;
+        ConsoleLog("mongodb uri error", "E");
     }
 
     mongoClient = mongoc_client_new_from_uri(uri);
-    // ¶≥∂∂ßQ≥s±µ¥N¿x¶s
+    // ÊúâÈ†ÜÂà©ÈÄ£Êé•Â∞±ÂÑ≤Â≠ò
     if (mongoClient)
     {
-        // ®˙±odatabase (∑|¶€∞ ´ÿ•ﬂdatabase¶p™G®S¶≥)
-        db = mongoc_client_get_database(mongoClient, mongoDB_name);
+        // ÂèñÂæódatabase (ÊúÉËá™ÂãïÂª∫Á´ãdatabaseÂ¶ÇÊûúÊ≤íÊúâ)
+        db = mongoc_client_get_database(mongoClient, mongoDB_name.c_str());
 
-        // ¬‡¥´ÆÊ¶° IdxRecord¬‡bson
+        // ËΩâÊèõÊ†ºÂºè IdxRecordËΩâbson
         bson_t* idxBson;
         idxBson = IdxRecordToBson(idxRec);
 
-        // ¶s§JMongoDB
+        // Â≠òÂÖ•MongoDB
         mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
         if (!mongoc_collection_insert_one(collection, idxBson, NULL, NULL, &mongoError))
         {
-            fprintf(stderr, "%s\n", mongoError.message);
+            ConsoleLog(mongoError.message, "E");
             cond = QR_EC_IndexDatabaseError;
         }
     }
     else
     {
-        std::cout << "mongodb client error" << "" << std::endl;
+        ConsoleLog("mongodb client error", "E");
     }
     return cond;
 }
 
 /*
-* ±NMongoDB≈™®˙®Ï™∫Bson¬‡¥´¶®Dicom¿x¶sÆÊ¶°IdxRecord
+* Â∞áMongoDBËÆÄÂèñÂà∞ÁöÑBsonËΩâÊèõÊàêDicomÂÑ≤Â≠òÊ†ºÂºèIdxRecord
 */
 IdxRecord* bson_to_idx_record(const bson_t* i_bson, IdxRecord& theRec)
 {
@@ -578,23 +716,16 @@ IdxRecord* bson_to_idx_record(const bson_t* i_bson, IdxRecord& theRec)
             (strcmp(bson_iter_key(&iter), "IssuerOfPatientID") == 0) ? strcpy(theRec.IssuerOfPatientID, bson_iter_utf8(&iter, 0)) : "";
             (strcmp(bson_iter_key(&iter), "InstanceDescription") == 0) ? strcpy(theRec.InstanceDescription, bson_iter_utf8(&iter, 0)) : "";
             (strcmp(bson_iter_key(&iter), "SpecificCharacterSet") == 0) ? strcpy(theRec.SpecificCharacterSet, bson_iter_utf8(&iter, 0)) : "";
-
-            //printf("Found a field named: %s\nvalue:%s\n", bson_iter_key(&iter), bson_iter_utf8(&iter, 0));
         }
     }
     DB_IdxInitRecord(&theRec, 1);
 
-    std::string ccc(theRec.filename);
-    printf("theRec Filename=%s\n", theRec.filename);
-    std::cout << "StudyInstanceUID=" << theRec.StudyInstanceUID << std::endl;
-    std::cout << "StudyInstanceUID=" << theRec.param[RECORDIDX_StudyInstanceUID].PValueField.ptr.p << std::endl;
-    std::cout << "theRec FILENAME=" << theRec.filename << "\n";
+    ConsoleLog("File:" + std::string(theRec.filename), "");
     return &theRec;
 }
 
-
 /*
-* ±qMongoDBßQ•ŒC-Find™∫∞—º∆ß‰¥M∏ÍÆ∆
+* ÂæûMongoDBÂà©Áî®C-FindÁöÑÂèÉÊï∏ÊâæÂ∞ãË≥áÊñô
 */
 OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle* phandle, IdxRecord& idxRec, DB_LEVEL level, DB_LEVEL infLevel, int* match, CharsetConsideringMatcher& dbmatch)
 {
@@ -603,30 +734,27 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle*
     DB_ElementList* plist;
     DB_LEVEL    XTagLevel = PATIENT_LEVEL; // DB_GetTagLevel() will set this correctly
     OFBool foundAnything = OFFalse;
+    ConsoleLog("Start MongoDB C-FIND", "");
 
-    std::cout << "start mongodb find" << "" << std::endl;
+    ReadMongoConfig();
 
-    // MongoDB≥s±µ
+    // MongoDBÈÄ£Êé•
     mongoc_client_t* mongoClient;
     mongoc_database_t* db;
     mongoc_uri_t* uri;
     bson_error_t mongoError;
 
     mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
     if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
-        std::cout << "mongodb uri error" << "" << std::endl;
+        ConsoleLog("failed to parse URI:" + conn_string, "E");
+        ConsoleLog("error message:" + std::string(mongoError.message), "E");
     }
 
     mongoClient = mongoc_client_new_from_uri(uri);
     if (mongoClient)
     {
-        // ±Nquery¬‡bson
+        // Â∞áqueryËΩâbson
         bson_t* query;
         query = bson_new();
         for (plist = phandle->findRequestList; plist; plist = plist->next)
@@ -636,18 +764,17 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle*
                 std::string queryKey = "param.";
                 std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
                 queryKey = queryKey + xtag + ".PValueField.p";
-                std::cout << "query++=" << queryKey << std::endl;
-                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
-                std::cout << "LEVEL=" << XTagLevel << std::endl;
+
                 std::string queryValue = plist->elem.PValueField.ptr.p;
                 queryValue = "^" + queryValue;
                 queryValue = ReplaceString(queryValue, "*", ".*");
                 queryValue = ReplaceString(queryValue, "?", ".");
-                std::cout << "queryVal++=" << queryValue << std::endl;
+
+                ConsoleLog("QueryKey[" + queryKey + "]", "");
+                ConsoleLog("QueryValue[" + queryValue + "]", "");
+
                 if (strcmp(xtag.c_str(), "0020,000d") != 0)
                 {
-
-                    //BSON_APPEND_UTF8(query, queryKey.c_str(), plist->elem.PValueField.ptr.p);
                     bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
                 }
                 else
@@ -658,24 +785,20 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle*
         }
 
         mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
         mongoc_cursor_t* cursor;
         const bson_t* resultBson;
         resultBson = bson_new();
         char* str;
-        //BSON_APPEND_REGEX
-        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
+
         cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
         while (mongoc_cursor_next(cursor, &resultBson)) {
             str = bson_as_canonical_extended_json(resultBson, NULL);
-            //printf("%s\n", str);
-            //std::cout << str << std::endl;
             bson_free(str);
+
             // Convert Bson to IdxRecord.
             bson_to_idx_record(resultBson, idxRec);
-            //idxRec = bson_to_idx_record(resultBson);
-            std::cout << "idxRec FILENAME=" << idxRec.filename << "\n";
-            //break;
+
             if (DB_UIDAlreadyFound(handle_, &idxRec))
             {
                 continue;
@@ -686,11 +809,11 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle*
                 break;
             }
         }
-        std::cout << "ending mongodb find" << "" << std::endl;
+        ConsoleLog("End MongoDB C-FIND", "");
     }
     else
     {
-        std::cout << "mongodb client error" << "" << std::endl;
+        ConsoleLog("MongoDB Client Error", "E");
     }
     return foundAnything;
 
@@ -699,14 +822,16 @@ OFBool DcmQueryRetrieveIndexDatabaseHandle::mongoDBFindRecord(DB_Private_Handle*
 OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_ElementList* plist, DB_CounterList* pidxlist, DB_CounterList* lastidxlist, DcmQueryRetrieveDatabaseStatus* status)
 {
     // Find and get Records from mongodb
-// MongoDB≥s±µ
+// MongoDBÈÄ£Êé•
 
     mongoc_client_t* mongoClient;
     mongoc_database_t* db;
     mongoc_uri_t* uri;
     bson_error_t mongoError;
+    ConsoleLog("Start MongoDB C-MOVE", "");
+    ReadMongoConfig();
     mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
     if (!uri) {
         fprintf(stderr,
             "failed to parse URI: %s\n"
@@ -719,7 +844,7 @@ OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_Elemen
     mongoClient = mongoc_client_new_from_uri(uri);
     if (mongoClient)
     {
-        // ±Nquery¬‡bson
+        // Â∞áqueryËΩâbson
         bson_t* query;
         query = bson_new();
         for (plist = handle_->findRequestList; plist; plist = plist->next)
@@ -729,13 +854,16 @@ OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_Elemen
                 std::string queryKey = "param.";
                 std::string xtag = int_to_hex(plist->elem.XTag.key[0]) + "," + int_to_hex(plist->elem.XTag.key[1]);
                 queryKey = queryKey + xtag + ".PValueField.p";
-                std::cout << "query++=" << queryKey << std::endl;
-                std::cout << "query++=" << plist->elem.PValueField.ptr.p << std::endl;
-                std::string queryValue = plist->elem.PValueField.ptr.p;
+
+                std::string queryValue = "";
+                queryValue = queryValue + plist->elem.PValueField.ptr.p;
                 queryValue = "^" + queryValue;
                 queryValue = ReplaceString(queryValue, "*", ".*");
                 queryValue = ReplaceString(queryValue, "?", ".");
-                std::cout << "queryVal++=" << queryValue << std::endl;
+
+                ConsoleLog("QueryKey[" + queryKey + "]", "");
+                ConsoleLog("QueryValue[" + queryValue + "]", "");
+
                 if (strcmp(xtag.c_str(), "0020,000d") != 0)
                 {
                     bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
@@ -748,7 +876,7 @@ OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_Elemen
         }
 
         mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
         mongoc_cursor_t* cursor;
         const bson_t* resultBson;
         resultBson = bson_new();
@@ -766,7 +894,7 @@ OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_Elemen
 
             pidxlist->rec = new IdxRecord();
             bson_to_idx_record(resultBson, *pidxlist->rec);
-            std::cout << "Move idxRec FILENAME=" << pidxlist->rec->filename << "\n";
+            ConsoleLog("Start Moving File:" + std::string(pidxlist->rec->filename), "");
 
             pidxlist->next = NULL;
             //pidxlist->idxCounter = handle_->idxCounter;
@@ -781,11 +909,12 @@ OFConditionConst mongoDBFindRecordsForMove(DB_Private_Handle* handle_, DB_Elemen
                 lastidxlist = pidxlist;
             }
         }
-        std::cout << "ending mongodb find" << "" << std::endl;
+        ConsoleLog("End MongoDB C-MOVE", "");
+        std::cout << "" << std::endl;
     }
     else
     {
-        std::cout << "mongodb client error" << "" << std::endl;
+        ConsoleLog("MongoDB Client Error", "E");
     }
 }
 
@@ -797,27 +926,23 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(const char
 {
 
     // Find dupes using filename
-    // MongoDB≥s±µ
+    // MongoDBÈÄ£Êé•
     mongoc_client_t* mongoClient;
     mongoc_database_t* db;
     mongoc_uri_t* uri;
     bson_error_t mongoError;
 
     mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string, &mongoError);
+    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
     if (!uri) {
-        fprintf(stderr,
-            "failed to parse URI: %s\n"
-            "error message:       %s\n",
-            conn_string,
-            mongoError.message);
-        std::cout << "mongodb uri error" << "" << std::endl;
+        ConsoleLog("failed to parse URI:" + conn_string, "E");
+        ConsoleLog("error message:" + std::string(mongoError.message), "E");
     }
 
     mongoClient = mongoc_client_new_from_uri(uri);
     if (mongoClient)
     {
-        // ±Nquery¬‡bson
+        // Â∞áqueryËΩâbson
         bson_t* query;
         query = bson_new();
 
@@ -825,15 +950,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(const char
         BSON_APPEND_UTF8(query, queryKey.c_str(), SOPInstanceUID);
 
         mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name, collection_name);
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
 
         // delete the file first.
 
         mongoc_cursor_t* cursor;
         const bson_t* resultBson;
         resultBson = bson_new();
-        //BSON_APPEND_REGEX
-        //std::cout << "findquery:" << std::endl << bson_as_canonical_extended_json(query, NULL) << std::endl;
         cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
         while (mongoc_cursor_next(cursor, &resultBson)) {
             bson_iter_t iter;
@@ -841,6 +964,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(const char
                 while (bson_iter_next(&iter)) {
                     if (strcmp(bson_iter_key(&iter), "filename") == 0)
                     {
+                        ConsoleLog("MongoDB Deleting Duplicate Record:" + std::string(bson_iter_utf8(&iter, 0)), "");
                         deleteImageFile(strdup(bson_iter_utf8(&iter, 0)));
                     }
                 }
@@ -851,52 +975,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(const char
         bson_error_t error;
         if (!mongoc_collection_delete_many(collection, query, NULL, NULL, &error))
         {
-            printf("%s\n", error.message);
+            ConsoleLog("MongoDB Delete Duplicate Record Failed, Error Message=" + std::string(error.message), "E");
         }
 
-        std::cout << "ending mongodb delete dupes" << "" << std::endl;
+        ConsoleLog("MongoDB Deleted Duplicated Record", "");
     }
     else
     {
-        std::cout << "mongodb client error" << "" << std::endl;
+        ConsoleLog("MongoDB Client Error", "E");
     }
-
-
-
-    /*int idx = 0;
-    IdxRecord idxRec ;
-    int studyIdx = 0;
-
-    studyIdx = matchStudyUIDInStudyDesc (pStudyDesc, (char*)StudyInstanceUID,
-                        (int)(handle_ -> maxStudiesAllowed)) ;
-
-    if ( pStudyDesc[studyIdx].NumberofRegistratedImages == 0 ) {
-    /* no study images, cannot be any old images */
-    //return EC_Normal;
-    //}
-    /*
-    while (DB_IdxRead(idx, &idxRec) == EC_Normal) {
-
-    if (strcmp(idxRec.SOPInstanceUID, SOPInstanceUID) == 0) {
-
-#ifdef DEBUG
-        DCMQRDB_DEBUG("--- Removing Existing DB Image Record: " << idxRec.filename);
-#endif
-        // remove the idx record
-        DB_IdxRemove (idx);
-        // only remove the image file if it is different than that
-        // being entered into the database.
-        //
-        if (strcmp(idxRec.filename, newImageFileName) != 0) {
-            deleteImageFile(idxRec.filename);
-        }
-        // update the study info
-        pStudyDesc[studyIdx].NumberofRegistratedImages--;
-        pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
-    }
-    idx++;
-    }*/
-    /* the study record should be written to file later */
     return EC_Normal;
 }
 
@@ -1545,7 +1632,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
     /*** For each element in Request identifier
     **/
-    std::cout << "add file to res:" << idxRec->filename << std::endl;
+    ConsoleLog("Adding file to response:" + std::string(idxRec->filename), "");
     for (pRequestList = phandle->findRequestList ; pRequestList ; pRequestList = pRequestList->next) {
 
         /*** Find Corresponding Tag in index record
@@ -1573,8 +1660,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
             return;
         }
         DB_DuplicateElement(&idxRec->param[i], &plist->elem);
-        std::cout << "param[" << i << "]=" << idxRec->param[i].PValueField.ptr.p << std::endl;
-        std::cout << "elem=" << plist->elem.PValueField.ptr.p << std::endl;
+        ConsoleLog("Adding to Response : param[" + std::to_string(i) + "][" + std::string(idxRec->param[i].PValueField.ptr.p) + "]", "");
 
         if (phandle->findResponseList == NULL) {
             phandle->findResponseList = last = plist ;
@@ -1592,6 +1678,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
     if (idxRec->param[RECORDIDX_SpecificCharacterSet].ValueLength) {
         plist = new DB_ElementList ;
         if (plist == NULL) {
+            ConsoleLog("makeResponseList: out of memory", "E");
             DCMQRDB_ERROR("makeResponseList: out of memory");
             return;
         }
@@ -2064,7 +2151,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         }
     }
 
-    // ∂}©l±q∏ÍÆ∆Æwß‰¥M∏ÍÆ∆
+    // ÈñãÂßãÂæûË≥áÊñôÂ∫´ÊâæÂ∞ãË≥áÊñô
     /**** Goto the beginning of Index File
     **** Then find the first matching image
     ***/
@@ -2079,29 +2166,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     
     MatchFound = mongoDBFindRecord(handle_, idxRec, qLevel, qLevel, &MatchFound, dbmatch);
     dbmatch.setRecord(idxRec);
-    std::cout << "Find Request Filename:" << idxRec.filename << "\n";
-    
-
-    /*
-    while (1) {
-
-        // Exit loop if read error (or end of file)
-        
-
-        if (DB_IdxGetNext(&(handle_->idxCounter), &idxRec) != EC_Normal)
-            break ;
-
-        // Exit loop if error or matching OK
-        
-
-        dbmatch.setRecord(idxRec);
-        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
-        if (cond != EC_Normal)
-            break;
-        if (MatchFound)
-            break;
-    }
-    */
 
     /**** If an error occurred in Matching function
     ****    return a failed status
@@ -2352,30 +2416,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
     CharsetConsideringMatcher dbmatch(*handle_);
     MatchFound = mongoDBFindRecord(handle_, idxRec, qLevel, qLevel, &MatchFound, dbmatch);
-    /**
-    while (1) {
-
-        // Exit loop if read error (or end of file) 
-
-        if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
-            break ;
-
-        // If Response already found
-
-        if (DB_UIDAlreadyFound (handle_, &idxRec))
-            continue ;
-
-        // Exit loop if error or matching OK 
-
-        dbmatch.setRecord(idxRec);
-        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
-        if (cond != EC_Normal)
-            break ;
-        if (MatchFound)
-            break ;
-
-    }
-    **/
 
     /**** If an error occurred in Matching function
     ****    return status is pending
@@ -2400,7 +2440,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ****    prepare Response List in handle
     ***/
 
-    std::cout << "nextMatchFound=" << MatchFound << "\n";
+    ConsoleLog("Next Match Found = " + std::to_string(MatchFound), "");
     if (MatchFound) {
         DB_UIDAddFound (handle_, &idxRec) ;
         makeResponseList (handle_, &idxRec) ;
@@ -2717,6 +2757,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_MOVE_Error_DataSetDoesNotMatchSOPClass);
         DCMQRDB_WARN("DB_startMoveRequest(): missing Query/Retrieve Level");
+        ConsoleLog("C-MOVE missing Query/Retrieve Level", "E");
         handle_->idxCounter = -1 ;
         DB_FreeElementList (handle_->findRequestList) ;
         handle_->findRequestList = NULL ;
@@ -2757,7 +2798,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         }
     }
 
-    // ∂}©l±q∏ÍÆ∆Æw¥Mß‰
+    // ÈñãÂßãÂæûË≥áÊñôÂ∫´Â∞ãÊâæ
 
     MatchFound = OFFalse ;
     handle_->moveCounterList = NULL ;
@@ -2772,40 +2813,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     mongoDBFindRecordsForMove(handle_, plist, pidxlist, lastidxlist, status);
 
-    /*
-    DB_IdxInitLoop(&(handle_->idxCounter));
-    while (1) {
-
-        // Exit loop if read error (or end of file)
-        
-
-        if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
-            break ;
-
-        // If matching found
-        
-
-        dbmatch.setRecord(idxRec);
-        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound, dbmatch) ;
-        if (MatchFound) {
-            pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
-            if (pidxlist == NULL) {
-                status->setStatus(STATUS_FIND_Refused_OutOfResources);
-                return (QR_EC_IndexDatabaseError) ;
-            }
-
-            pidxlist->next = NULL ;
-            pidxlist->idxCounter = handle_->idxCounter ;
-            handle_->NumberRemainOperations++ ;
-            if ( handle_->moveCounterList == NULL )
-                handle_->moveCounterList = lastidxlist = pidxlist ;
-            else {
-                lastidxlist->next = pidxlist ;
-                lastidxlist = pidxlist ;
-            }
-        }
-    }
-    */
     DB_FreeElementList (handle_->findRequestList) ;
     handle_->findRequestList = NULL ;
 
@@ -3207,7 +3214,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
 
 /*************************
 **  Add data from imageFileName to database
-* ¶b¿…Æ◊¿x¶sßπ¶®´·°A±Ndicom∏ÍÆ∆±q¿…Æ◊¨ˆø˝®Ï∏ÍÆ∆Æw°C
+* Âú®Ê™îÊ°àÂÑ≤Â≠òÂÆåÊàêÂæåÔºåÂ∞ádicomË≥áÊñôÂæûÊ™îÊ°àÁ¥ÄÈåÑÂà∞Ë≥áÊñôÂ∫´„ÄÇ
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
@@ -3230,7 +3237,6 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     DB_IdxInitRecord (&idxRec, 0) ;
 
     strncpy(idxRec.filename, imageFileName, DBC_MAXSTRING);
-    std::cout << "DB_storeRequest () : storage request of file" << "" << std::endl;
 #ifdef DEBUG
     DCMQRDB_DEBUG("DB_storeRequest () : storage request of file : " << idxRec.filename);
 #endif
@@ -3378,7 +3384,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 #endif
 
     /**** Goto the end of IndexFile, and write the record
-    * ±N∏ÍÆ∆ºg§J∏ÍÆ∆Æw
+    * Â∞áË≥áÊñôÂØ´ÂÖ•Ë≥áÊñôÂ∫´
     ***/
 
     DB_lock(OFTrue);
@@ -3421,7 +3427,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     free (pStudyDesc) ;
 
-    // ∞ı¶Êºg§J(DB_IdxAdd)
+    // Âü∑Ë°åÂØ´ÂÖ•(DB_IdxAdd)
     if (DB_IdxAdd (handle_, &i, &idxRec) == EC_Normal)
     {
         status->setStatus(STATUS_Success);

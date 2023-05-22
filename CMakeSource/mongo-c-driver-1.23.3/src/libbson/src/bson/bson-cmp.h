@@ -24,7 +24,7 @@
 #if DEBUG
     #ifdef _WIN32
     #include <basetsd.h>
-    typedef SSIZE_T ssize_t;
+    //typedef SSIZE_T ssize_t;
     #endif // _WIN32
 #endif
 

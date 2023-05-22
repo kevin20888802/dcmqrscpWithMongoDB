@@ -259,7 +259,6 @@ OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_Ec
         OFString temp_str;
         DCMQRDB_ERROR("echoSCP: Echo Response Failed: " << DimseCondition::dump(temp_str, cond));
     }
-    std::cout << "Received Echo SCP" << std::endl;
     return cond;
 }
 
@@ -269,7 +268,6 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
         DcmQueryRetrieveDatabaseHandle& dbHandle)
 
 {
-    std::cout << "Received Find SCP" << std::endl;
     OFCondition cond = EC_Normal;
     DcmQueryRetrieveFindContext context(dbHandle, options_, STATUS_Pending, config_->getCharacterSetOptions());
 
@@ -287,7 +285,6 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
         std::cout << "Find SCP Failed" << std::endl;
         DCMQRDB_ERROR("Find SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
-    std::cout << "Received Find SCP End" << std::endl;
     return cond;
 }
 
@@ -311,7 +308,6 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
     if (cond.bad()) {
         DCMQRDB_ERROR("Get SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
-    std::cout << "Received Get SCP" << std::endl;
     return cond;
 }
 
@@ -335,7 +331,6 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     if (cond.bad()) {
         DCMQRDB_ERROR("Move SCP Failed: " << DimseCondition::dump(temp_str, cond));
     }
-    std::cout << "Received Move SCP" << std::endl;
     return cond;
 }
 
@@ -435,7 +430,6 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
       dbHandle.pruneInvalidRecords();
     }
     fflush(stdout);
-    std::cout << "Received Store SCP" << "" << std::endl;
     
 
 #ifdef LOCK_IMAGE_FILES

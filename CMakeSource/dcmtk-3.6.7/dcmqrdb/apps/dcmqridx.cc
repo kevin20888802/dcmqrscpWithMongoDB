@@ -188,7 +188,6 @@ int main (int argc, char *argv[])
                     break;
                 //hdl.DB_IdxRemove(0);
                 //hdl.DB_IdxRead(i, &idxRec);
-                COUT << "record[" << i << "].filename = " << idxRec.filename << OFendl;
                 if (idxRec.filename == opt_delFilename) {
                     COUT << "deleting record " << i << OFendl;
                     hdl.DB_IdxRemove(i);
