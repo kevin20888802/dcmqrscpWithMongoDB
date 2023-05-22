@@ -11,11 +11,15 @@ MongoDB
 
 ### How to use
 
-1.Go to Export/{Your platform}/
-2.Edit the dcmqrscpMongoConfig to fit your mongoDB Settings.
-3.Edit the dcmqrscp.cfg like how you do it in dcmtk's original dcmqrscp.
-4.Start it like how you do it in dcmtk's original dcmqrscp.
-Done.
+1. Go to Export/{Your platform}/  
+
+2. Edit the dcmqrscpMongoConfig to fit your mongoDB Settings.  
+
+3. Edit the dcmqrscp.cfg like how you do it in dcmtk's original dcmqrscp.  
+
+4. Start it like how you do it in dcmtk's original dcmqrscp.  
+
+Done. 
 
 ### Generate the project to Visual Studio for editing the source code
 1. Launch the CMake GUI application.
