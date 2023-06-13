@@ -45,6 +45,7 @@
 #include "dcmtk/dcmwlm/wlmactmg.h"
 #include "dcmtk/ofstd/ofstdinc.h"
 #include <ctime>
+#include <dcmtk/dcmdata/dcjson.h>
 
 
 
@@ -1247,6 +1248,9 @@ static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, c
   if (outputStream.good())
   {
     DcmObject::PrintHelper printer(request);
+    std::ostringstream oss;
+    printer.dcmobj_.writeJson(oss, DcmJsonFormatPretty(OFTrue));
+
     outputStream << printer;
     outputStream.close();
   }

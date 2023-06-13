@@ -182,16 +182,273 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
   return( OFTrue );
 }
 
+#pragma region ConsoleLog
+
+std::string getCurrentTimeAsString()
+{
+    // 取得目前時間
+    std::time_t currentTime = std::time(nullptr);
+
+    // 轉換為目前時區
+    std::tm* localTime = std::localtime(&currentTime);
+
+    // 轉換成string
+    std::ostringstream oss;
+    oss << std::put_time(localTime, "[%Y/%m/%d %H:%M:%S]");
+    return oss.str();
+}
+
+/*
+* msg=訊息
+* msgType--> E=ERROR
+*            D=DEBUG
+*            W=WARN
+*           ""=INFO
+*/
+static void ConsoleLog(std::string msg, std::string msgType)
+{
+    if (strcmp(msgType.c_str(), "E") == 0)
+    {
+        std::cout << "[ERROR]";
+    }
+    else if (strcmp(msgType.c_str(), "D") == 0)
+    {
+        std::cout << "[DEBUG]";
+    }
+    else if (strcmp(msgType.c_str(), "W") == 0)
+    {
+        std::cout << "[WARN]";
+    }
+    else
+    {
+        std::cout << "[INFO]";
+    }
+
+    std::string currentTime = getCurrentTimeAsString();
+    std::cout << currentTime;
+    std::cout << " ";
+    std::cout << msg << std::endl;
+}
+
+#pragma endregion
+
+
+#pragma region MongoDB
+
+/**
+* MongoDB設定
+*/
+
+// Mongo 連線網址
+std::string conn_string = "mongodb://127.0.0.1/?appname=dcmqrscp4raccoon";
+std::string mongoDB_name = "raccoon_polka";
+std::string collection_name = "dicom";
+
+#ifdef _WIN32 // Windows
+
+#include <windows.h>
+
+std::string getExecutablePath() {
+    char exePath[MAX_PATH];
+    DWORD pathLength = GetModuleFileName(NULL, exePath, MAX_PATH);
+
+    if (pathLength == 0) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#elif defined(__linux__) // Linux
+
+#include <unistd.h>
+#include <limits.h>
+
+std::string getExecutablePath() {
+    char exePath[PATH_MAX];
+    ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath));
+
+    if (pathLength == -1) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath, pathLength);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#else
+#error Unsupported platform
+#endif
+
+void ReadMongoConfig()
+{
+    std::string exeDirectory = getExecutablePath();
+    std::string configFilePath = exeDirectory + "dcmqrscpMongoConfig.cfg";
+
+    std::ifstream config_file(configFilePath);
+
+    if (!config_file.is_open()) {
+        ConsoleLog("MongoDB Config File Path:" + configFilePath, "");
+        ConsoleLog("Failed to open mongo config file.", "E");
+    }
+
+    std::string line;
+    while (std::getline(config_file, line))
+    {
+        size_t delimiter_pos = line.find('=');
+        if (delimiter_pos != std::string::npos)
+        {
+            std::string key = line.substr(0, delimiter_pos);
+            std::string value = line.substr(delimiter_pos + 1);
+
+            if (key == "conn_string")
+            {
+                conn_string = value;
+            }
+            else if (key == "mongoDB_name")
+            {
+                mongoDB_name = value;
+            }
+            else if (key == "collection_name")
+            {
+                collection_name = value;
+            }
+        }
+    }
+    ConsoleLog("MongoDB conn_string:" + conn_string, "");
+    ConsoleLog("MongoDB mongoDB_name:" + mongoDB_name, "");
+    ConsoleLog("MongoDB collection_name:" + collection_name, "");
+
+    config_file.close();
+}
+
+
+/*
+* 將十進位數字轉十六進位字串
+*/
+std::string int_to_hex(Uint16 i)
+{
+    std::stringstream stream;
+    //stream << "0x"
+    stream << ""
+        << std::setfill('0') << std::setw(sizeof(Uint16) * 2)
+        << std::hex << i;
+    return stream.str();
+}
+
+/*
+* C++版的字串替換Replace
+*/
+std::string ReplaceString(std::string subject, const std::string& search, const std::string& replace)
+{
+    size_t pos = 0;
+    while ((pos = subject.find(search, pos)) != std::string::npos) {
+        subject.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+    return subject;
+}
+
+/*
+* MongoDB worklist 搜尋所有檔案並檢查他們是否符合的function
+*/
+size_t WlmFileSystemInteractionManager::DetermineMatchingRecordsMongoDB(DcmDataset searchMask)
+{
+    assert(&searchMask);
+    //matchingRecords.clear();
+    
+    // 取得MongoDB查詢
+    MatchingKeys matchingKeys = MatchingKeys::root;
+    for (OFVector<OFPair<DcmTagKey, OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it)
+    {
+        const OFPair<DcmTagKey, OFBool>& key = *it;
+        DcmElement* query = OFnullptr;
+        if (searchMask.findAndGetElement(key.first, query, OFFalse).good() && query)
+        {
+            char* queryValue;
+            if (query->isaString())
+            {
+                OFString _s;
+                query->getOFString(_s, 0);
+                queryValue = strdup(_s.c_str());
+            }
+            ConsoleLog("key=" + std::string(it->first.toString().c_str()) + ",Value=" + std::string(queryValue), "D");
+        }
+    }
+
+    // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+    for (OFVector<OFPair<DcmTagKey, DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it)
+    {
+        const OFPair<DcmTagKey, DcmTagKey>& combinedKey = *it;
+        DcmElement* query = OFnullptr;
+        if (searchMask.findAndGetElement(combinedKey.first, query, OFFalse).good() && query && !query->isUniversalMatch())
+        {
+            DcmElement* secondQuery = OFnullptr;
+            if (searchMask.findAndGetElement(combinedKey.second, secondQuery, OFFalse).good() && secondQuery && !secondQuery->isUniversalMatch())
+            {
+                DcmElement* secondCandidate = OFnullptr;
+            }
+        }
+        else if (searchMask.findAndGetElement(combinedKey.second, query, OFFalse).good() && query && !query->isUniversalMatch())
+        {
+            DcmElement* candidate = OFnullptr;
+        }
+    }
+
+    // seq
+    for (OFVector<OFPair<DcmTagKey, MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it)
+    {
+        const OFPair<DcmTagKey, MatchingKeys>& sequenceKey = *it;
+        DcmElement* query = OFnullptr;
+        if (searchMask.findAndGetElement(sequenceKey.first, query, OFFalse).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch(OFstatic_cast(DcmSequenceOfItems&, *query), sequenceKey.second))
+        {
+            DcmElement* candidate = OFnullptr;
+        }
+    }
+
+
+    return matchingRecords.size();
+}
+
+#pragma endregion
+
+
 // ----------------------------------------------------------------------------
 
+/*
+* dcmtk原先 worklist 搜尋所有檔案並檢查他們是否符合的function
+*/
 size_t WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmDataset* searchMask )
 {
     assert( searchMask );
     matchingRecords.clear();
     OFdirectory_iterator it( dfPath / calledApplicationEntityTitle );
+
+    // 1.   使用FindNextWorklistFile依序查找檔案
     if( FindNextWorklistFile( it ) != OFdirectory_iterator() )
     {
+        // 2.   MatchWorklistFile檢查檔案是否符合，會先將檔案使用OFshared_ptr<DcmDataset>( file.getAndRemoveDataset() )轉換成DcmDataset之後檢查，
+        //      如果符合，會將該檔案push_back到matchingRecords。
         MatchWorklistFile( *searchMask, *it );
+
+        // 3.   重複 1以及2 的步驟
         while( FindNextWorklistFile( ++it ) != OFdirectory_iterator() )
             MatchWorklistFile( *searchMask, *it );
     }
@@ -720,6 +977,8 @@ OFBool WlmFileSystemInteractionManager::MatchSequences( DcmSequenceOfItems& cand
         return OFTrue;
   return OFFalse;
 }
+
+
 
 // ----------------------------------------------------------------------------
 

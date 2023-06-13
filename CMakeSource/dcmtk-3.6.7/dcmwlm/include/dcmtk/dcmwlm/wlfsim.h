@@ -214,6 +214,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  @return The number of matching records.
        */
     size_t DetermineMatchingRecords( DcmDataset* searchMask );
+    size_t DetermineMatchingRecordsMongoDB(DcmDataset searchMask);
 
       /** Determine whether a Worklist file matches the search mask.
        *  @param searchMask A reference to the search mask.
