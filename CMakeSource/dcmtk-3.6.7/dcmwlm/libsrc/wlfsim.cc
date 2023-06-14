@@ -235,6 +235,7 @@ static void ConsoleLog(std::string msg, std::string msgType)
 
 #pragma region MongoDB
 
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
 /**
 * MongoDB設定
 */
@@ -300,7 +301,7 @@ std::string getExecutablePath() {
 void ReadMongoConfig()
 {
     std::string exeDirectory = getExecutablePath();
-    std::string configFilePath = exeDirectory + "dcmqrscpMongoConfig.cfg";
+    std::string configFilePath = exeDirectory + "wlmscpfsMongoConfig.cfg";
 
     std::ifstream config_file(configFilePath);
 
@@ -366,6 +367,160 @@ std::string ReplaceString(std::string subject, const std::string& search, const 
     return subject;
 }
 
+std::string DcmElementToString(DcmElement* query)
+{
+    char* queryValue;
+    if (query->isaString())
+    {
+        OFString _s;
+        query->getOFString(_s, 0);
+        queryValue = strdup(_s.c_str());
+    }
+    return std::string(queryValue);
+}
+
+std::string queryValueAppendRegex(std::string q)
+{
+    std::string queryValue = q;
+    queryValue = "^" + queryValue;
+    queryValue = ReplaceString(queryValue, "*", ".*");
+    queryValue = ReplaceString(queryValue, "?", ".");
+    return queryValue;
+}
+
+bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
+{
+    bson_t* query;
+    query = bson_new();
+
+    // 取得MongoDB查詢
+    MatchingKeys matchingKeys = MatchingKeys::root;
+    for (OFVector<OFPair<DcmTagKey, OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it)
+    {
+        const OFPair<DcmTagKey, OFBool>& key = *it;
+        DcmElement* queryDCM = OFnullptr;
+        if (searchMask.findAndGetElement(key.first, queryDCM, OFFalse).good() && queryDCM)
+        {
+            std::string queryKey = "(" + std::string(key.first.toString().c_str()) + ")";
+            std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
+            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+        }
+    }
+
+    // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
+    for (OFVector<OFPair<DcmTagKey, DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it)
+    {
+        const OFPair<DcmTagKey, DcmTagKey>& combinedKey = *it;
+        DcmElement* queryDCM = OFnullptr;
+        if (searchMask.findAndGetElement(combinedKey.first, queryDCM, OFFalse).good() && queryDCM && !queryDCM->isUniversalMatch())
+        {
+            std::string queryKey = "(" + std::string(combinedKey.first.toString().c_str()) + ")";
+            std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
+            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+
+            DcmElement* secondQueryDCM = OFnullptr;
+            if (searchMask.findAndGetElement(combinedKey.second, secondQueryDCM, OFFalse).good() && secondQueryDCM && !secondQueryDCM->isUniversalMatch())
+            {
+                std::string queryKey = "(" + std::string(combinedKey.second.toString().c_str()) + ")";
+                std::string queryValue = queryValueAppendRegex(DcmElementToString(secondQueryDCM));
+                ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+                bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+            }
+        }
+        else if (searchMask.findAndGetElement(combinedKey.second, queryDCM, OFFalse).good() && queryDCM && !queryDCM->isUniversalMatch())
+        {
+            std::string queryKey = "(" + std::string(combinedKey.second.toString().c_str()) + ")";
+            std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
+            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+        }
+    }
+
+    // seq
+    for (OFVector<OFPair<DcmTagKey, MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it)
+    {
+        const OFPair<DcmTagKey, MatchingKeys>& sequenceKey = *it;
+        DcmElement* queryDCM = OFnullptr;
+        if (searchMask.findAndGetElement(sequenceKey.first, queryDCM, OFFalse).good() && queryDCM && queryDCM->ident() == EVR_SQ && !IsUniversalMatch(OFstatic_cast(DcmSequenceOfItems&, *queryDCM), sequenceKey.second))
+        {
+            std::string queryKey = "(" + std::string(sequenceKey.first.toString().c_str()) + ")";
+            std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
+            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
+        }
+    }
+    return query;
+}
+
+#include <vector>
+std::vector<std::string> GetTagKeysFromBson(std::string input)
+{
+    // 去除括號
+    input.erase(std::remove(input.begin(), input.end(), '('), input.end());
+    input.erase(std::remove(input.begin(), input.end(), ')'), input.end());
+
+    // 以逗號分割
+    std::vector<std::string> tokens;
+    std::stringstream ss(input);
+    std::string token;
+    while (std::getline(ss, token, ',')) {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
+
+DcmDataset bson_to_dcm_dataset(const bson_t* i_bson)
+{
+    DcmDataset rec;
+    bson_iter_t iter;
+    if (bson_iter_init(&iter, i_bson)) {
+        while (bson_iter_next(&iter)) {
+            std::string key = bson_iter_key(&iter);
+            ConsoleLog("key=" + key, "");
+            if (key.rfind("filename", 0) != 0)
+            {
+                std::vector<std::string> TagKeys = GetTagKeysFromBson(key);
+                // 存入變數
+                std::string g_str = TagKeys[0];
+                std::string e_str = TagKeys[1];
+                // 轉換成UINT16
+                int g = (int)strtol(g_str.c_str(), NULL, 16);
+                int e = (int)strtol(e_str.c_str(), NULL, 16);
+
+                DcmTag tagKey = DcmTag(g, e);
+                // create the tag element
+                DcmElement *tagElement = DcmItem::newDicomElement(tagKey);
+
+                bson_iter_t tagIter;
+                const uint8_t* nested_doc_data; 
+                uint32_t nested_doc_len;
+                bson_iter_document(&iter, &nested_doc_len, &nested_doc_data);
+                bson_t* nested_doc = bson_new_from_data(nested_doc_data, nested_doc_len);
+                if (bson_iter_init(&tagIter, nested_doc)) {
+                    std::string vr = "SH";
+                    std::string Value = "";
+                    while (bson_iter_next(&tagIter)) {
+                        if (strcmp(bson_iter_key(&iter), "vr") == 0)
+                        {
+                            vr = bson_iter_utf8(&iter, 0);
+                        }
+                        else if (strcmp(bson_iter_key(&iter), "value") == 0)
+                        {
+                            Value = bson_iter_utf8(&iter, 0);
+                        }
+                    }
+                    tagElement->setVR(DcmVR(vr.c_str()).getEVR());
+                    ConsoleLog("vr=" + vr + ",Value=" + std::string(), "");
+                }
+            }
+        }
+    }
+    return rec;
+}
+
 /*
 * MongoDB worklist 搜尋所有檔案並檢查他們是否符合的function
 */
@@ -374,56 +529,44 @@ size_t WlmFileSystemInteractionManager::DetermineMatchingRecordsMongoDB(DcmDatas
     assert(&searchMask);
     //matchingRecords.clear();
     
-    // 取得MongoDB查詢
-    MatchingKeys matchingKeys = MatchingKeys::root;
-    for (OFVector<OFPair<DcmTagKey, OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it)
-    {
-        const OFPair<DcmTagKey, OFBool>& key = *it;
-        DcmElement* query = OFnullptr;
-        if (searchMask.findAndGetElement(key.first, query, OFFalse).good() && query)
-        {
-            char* queryValue;
-            if (query->isaString())
-            {
-                OFString _s;
-                query->getOFString(_s, 0);
-                queryValue = strdup(_s.c_str());
-            }
-            ConsoleLog("key=" + std::string(it->first.toString().c_str()) + ",Value=" + std::string(queryValue), "D");
-        }
+    ReadMongoConfig();
+
+    // MongoDB連接
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
+    if (!uri) {
+        ConsoleLog("failed to parse URI:" + conn_string, "E");
+        ConsoleLog("error message:" + std::string(mongoError.message), "E");
     }
 
-    // remove this bloated version of the code if C++11 ever becomes a requirement of DCMTK
-    for (OFVector<OFPair<DcmTagKey, DcmTagKey> >::const_iterator it = matchingKeys.combinedKeys.begin(); it != matchingKeys.combinedKeys.end(); ++it)
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
     {
-        const OFPair<DcmTagKey, DcmTagKey>& combinedKey = *it;
-        DcmElement* query = OFnullptr;
-        if (searchMask.findAndGetElement(combinedKey.first, query, OFFalse).good() && query && !query->isUniversalMatch())
-        {
-            DcmElement* secondQuery = OFnullptr;
-            if (searchMask.findAndGetElement(combinedKey.second, secondQuery, OFFalse).good() && secondQuery && !secondQuery->isUniversalMatch())
-            {
-                DcmElement* secondCandidate = OFnullptr;
-            }
+        bson_t* query;
+        query = GetFindQuery(searchMask);
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        char* str;
+
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            str = bson_as_canonical_extended_json(resultBson, NULL);
+            bson_free(str);
+
+            // Convert Bson to DcmDataset.
+            bson_to_dcm_dataset(resultBson);
         }
-        else if (searchMask.findAndGetElement(combinedKey.second, query, OFFalse).good() && query && !query->isUniversalMatch())
-        {
-            DcmElement* candidate = OFnullptr;
-        }
+
     }
-
-    // seq
-    for (OFVector<OFPair<DcmTagKey, MatchingKeys> >::const_iterator it = matchingKeys.sequenceKeys.begin(); it != matchingKeys.sequenceKeys.end(); ++it)
-    {
-        const OFPair<DcmTagKey, MatchingKeys>& sequenceKey = *it;
-        DcmElement* query = OFnullptr;
-        if (searchMask.findAndGetElement(sequenceKey.first, query, OFFalse).good() && query && query->ident() == EVR_SQ && !IsUniversalMatch(OFstatic_cast(DcmSequenceOfItems&, *query), sequenceKey.second))
-        {
-            DcmElement* candidate = OFnullptr;
-        }
-    }
-
-
     return matchingRecords.size();
 }
 

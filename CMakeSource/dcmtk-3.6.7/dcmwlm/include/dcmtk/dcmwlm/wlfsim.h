@@ -22,6 +22,7 @@
 #ifndef WlmFileSystemInteractionManager_h
 #define WlmFileSystemInteractionManager_h
 
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
@@ -206,6 +207,7 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     OFBool IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev );
 
+    bson_t* GetFindQuery(DcmDataset searchMask);
       /** This function determines the records from the Worklist files that match
        *  the given search mask and returns the number of matching records. Also,
        *  this function will store the matching records inside the member variable
