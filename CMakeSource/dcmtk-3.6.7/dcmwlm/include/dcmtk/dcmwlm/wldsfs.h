@@ -39,8 +39,6 @@ class DcmItem;
 class DCMTK_DCMWLM_EXPORT WlmDataSourceFileSystem : public WlmDataSource
 {
   protected:
-    /// manager for file system interaction
-    WlmFileSystemInteractionManager fileSystemInteractionManager;
     /// path to database files
     OFString dfPath;
     /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
@@ -94,6 +92,8 @@ class DCMTK_DCMWLM_EXPORT WlmDataSourceFileSystem : public WlmDataSource
 
 
   public:
+      /// manager for file system interaction
+      WlmFileSystemInteractionManager fileSystemInteractionManager;
       /** default constructor.
        */
     WlmDataSourceFileSystem();

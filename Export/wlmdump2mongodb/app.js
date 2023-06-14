@@ -47,10 +47,15 @@ async function createCollection(db, collectionName) {
 }
 
 // 儲存資料到 MongoDB
-async function saveKeysToMongoDB(db, collectionName, fileName, keys) {
+async function saveKeysToMongoDB(db, collectionName, fileName, folderName, keys) {
   try {
     const collection = db.collection(collectionName);
-    const result = await collection.insertOne({ fileName, ...keys });
+    const document = {
+      fileName,
+      folderName,
+      ...keys
+    };
+    const result = await collection.insertOne(document);
     console.log(`儲存資料成功: ${result.insertedId}`);
   } catch (error) {
     console.error('儲存資料到 MongoDB 時發生錯誤:', error);
@@ -58,7 +63,7 @@ async function saveKeysToMongoDB(db, collectionName, fileName, keys) {
 }
 
 // 掃描檔案並儲存資料到 MongoDB
-async function scanAndSaveFiles(db, collectionName, directory) {
+async function scanAndSaveFiles(db, collectionName, directory, folderName) {
   const files = fs.readdirSync(directory, { withFileTypes: true });
 
   for (const file of files) {
@@ -86,12 +91,12 @@ async function scanAndSaveFiles(db, collectionName, directory) {
         }
       }
 
-      await saveKeysToMongoDB(db, collectionName, file.name, keys);
+      await saveKeysToMongoDB(db, collectionName, file.name, folderName, keys);
 
       console.log('完成處理檔案:', filePath);
     } else if (file.isDirectory()) {
       const subDirectory = path.join(directory, file.name);
-      await scanAndSaveFiles(db, collectionName, subDirectory);
+      await scanAndSaveFiles(db, collectionName, subDirectory, file.name);
     }
   }
 }
@@ -108,7 +113,7 @@ async function main() {
 
   if (db) {
     await createCollection(db, collection_name);
-    await scanAndSaveFiles(db, collection_name, './wlistdb/');
+    await scanAndSaveFiles(db, collection_name, './wlistdb/', '');
     client.close();
   }
 }

@@ -945,14 +945,21 @@ DIMSE_sendMessage(
             DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
               << dataFileName << "' from '" << originalXferSyntax.getXferName()
               << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'");
+            std::cout << DIMSE_warn_str(assoc) << "sendMessage: unable to convert DICOM file '"
+                << dataFileName << "' from '" << originalXferSyntax.getXferName()
+                << "' transfer syntax to '" << writeXferSyntax.getXferName() << "'" << std::endl;
           } else {
             DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
               << originalXferSyntax.getXferName() << "' transfer syntax to '"
               << writeXferSyntax.getXferName() << "'");
+            std::cout << DIMSE_warn_str(assoc) << "sendMessage: unable to convert dataset from '"
+                << originalXferSyntax.getXferName() << "' transfer syntax to '"
+                << writeXferSyntax.getXferName() << "'" << std::endl;
           }
           cond = DIMSE_SENDFAILED;
         }
       } else {
+          std::cout << "aaaaawdawdwad22222" << std::endl;
         /* if there is neither a data object nor a file name, create a warning, since */
         /* the information in msg specified that instance data should be present. */
         DCMNET_WARN(DIMSE_warn_str(assoc) << "sendMessage: no dataset to send");

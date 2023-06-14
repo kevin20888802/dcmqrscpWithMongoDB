@@ -1171,9 +1171,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   if (DCM_dcmwlmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
     DCMWLM_INFO("Worklist Find SCP Response " << responseCount << " (" << DU_cfindStatusString((Uint16)dbstatus) << ")");
-    if( *responseIdentifiers != NULL && (*responseIdentifiers)->card() > 0 )
+    //if( *responseIdentifiers != NULL && (*responseIdentifiers)->card() > 0 )
+    if (*responseIdentifiers != NULL)
     {
-      DCMWLM_INFO(DcmObject::PrintHelper(**responseIdentifiers) << OFendl << "-----------------------------");
+      //DCMWLM_INFO(DcmObject::PrintHelper(**responseIdentifiers) << OFendl << "-----------------------------");
     }
   }
 
@@ -1207,9 +1208,6 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 }
 
 // ----------------------------------------------------------------------------
-/*
-* Àx¦sworklist¸ê®Æ
-*/
 static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, const OFString& calledAE, const OFString& reqFilePath, const OFString& reqFileFormat)
 {
   OFString fileName = reqFileFormat;

@@ -305,6 +305,7 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
     ** Start the find request.
     */
     status = wdb.StartFindRequest(*dcmff.getDataset());
+    std::cout << "responseCount++ aaaaaaaaa" << std::endl;
 
     while (isaPendingStatus(status)) {
 

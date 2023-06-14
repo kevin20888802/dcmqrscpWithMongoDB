@@ -65,8 +65,6 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
     OFBool enableRejectionOfIncompleteWlFiles;
     /// called AE title
     OFString calledApplicationEntityTitle;
-    /// matching records
-    OFVector<OFshared_ptr<DcmDataset> > matchingRecords;
 
       /** Increment the given directory iterator until it refers to a worklist file (or past-the-end).
        *  @param it A reference to an OFdirectory_iterator.
@@ -182,6 +180,8 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        */
     ~WlmFileSystemInteractionManager();
 
+    /// matching records
+    OFVector<OFshared_ptr<DcmDataset> > matchingRecords;
       /** Set value in member variable.
        *  @param value The value to set.
        */
@@ -216,7 +216,6 @@ class DCMTK_DCMWLM_EXPORT WlmFileSystemInteractionManager
        *  @return The number of matching records.
        */
     size_t DetermineMatchingRecords( DcmDataset* searchMask );
-    size_t DetermineMatchingRecordsMongoDB(DcmDataset searchMask);
 
       /** Determine whether a Worklist file matches the search mask.
        *  @param searchMask A reference to the search mask.

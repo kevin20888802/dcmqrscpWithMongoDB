@@ -1819,6 +1819,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                 /* dump some information if required */
                 DCMDATA_TRACE("DcmItem::insert() Element " << elem->getTag()
                     << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted");
+                //std::cout << "DcmItem::insert() Element " << elem->getTag() << " VR=\"" << DcmVR(elem->getVR()).getVRName() << "\" inserted";
                 /* check whether the new element already has a parent */
                 if (elem->getParent() != NULL)
                 {
@@ -2349,8 +2350,10 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
     {
         element = OFstatic_cast(DcmElement *, stack.top());
         /* should never happen but ... */
-        if (element == NULL)
+        if (element == NULL) {
+            std::cout << "data broke" << std::endl;
             status = EC_CorruptedData;
+        }
         else if (createCopy)
         {
             /* create a copy of the element */

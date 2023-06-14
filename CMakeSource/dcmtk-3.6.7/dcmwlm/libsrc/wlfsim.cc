@@ -181,179 +181,6 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
   // if we get to here, the path is existent and we need to return OFTrue
   return( OFTrue );
 }
-
-#pragma region ConsoleLog
-
-std::string getCurrentTimeAsString()
-{
-    // 取得目前時間
-    std::time_t currentTime = std::time(nullptr);
-
-    // 轉換為目前時區
-    std::tm* localTime = std::localtime(&currentTime);
-
-    // 轉換成string
-    std::ostringstream oss;
-    oss << std::put_time(localTime, "[%Y/%m/%d %H:%M:%S]");
-    return oss.str();
-}
-
-/*
-* msg=訊息
-* msgType--> E=ERROR
-*            D=DEBUG
-*            W=WARN
-*           ""=INFO
-*/
-static void ConsoleLog(std::string msg, std::string msgType)
-{
-    if (strcmp(msgType.c_str(), "E") == 0)
-    {
-        std::cout << "[ERROR]";
-    }
-    else if (strcmp(msgType.c_str(), "D") == 0)
-    {
-        std::cout << "[DEBUG]";
-    }
-    else if (strcmp(msgType.c_str(), "W") == 0)
-    {
-        std::cout << "[WARN]";
-    }
-    else
-    {
-        std::cout << "[INFO]";
-    }
-
-    std::string currentTime = getCurrentTimeAsString();
-    std::cout << currentTime;
-    std::cout << " ";
-    std::cout << msg << std::endl;
-}
-
-#pragma endregion
-
-
-#pragma region MongoDB
-
-#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
-/**
-* MongoDB設定
-*/
-
-// Mongo 連線網址
-std::string conn_string = "mongodb://127.0.0.1/?appname=dcmqrscp4raccoon";
-std::string mongoDB_name = "raccoon_polka";
-std::string collection_name = "dicom";
-
-#ifdef _WIN32 // Windows
-
-#include <windows.h>
-
-std::string getExecutablePath() {
-    char exePath[MAX_PATH];
-    DWORD pathLength = GetModuleFileName(NULL, exePath, MAX_PATH);
-
-    if (pathLength == 0) {
-        ConsoleLog("Failed to retrieve executable path.", "E");
-        exit(1);
-    }
-
-    std::string exeDirectory = std::string(exePath);
-    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
-
-    if (lastSlashPos == std::string::npos) {
-        ConsoleLog("Invalid executable path.", "E");
-        exit(1);
-    }
-
-    return exeDirectory.substr(0, lastSlashPos + 1);
-}
-
-#elif defined(__linux__) // Linux
-
-#include <unistd.h>
-#include <limits.h>
-
-std::string getExecutablePath() {
-    char exePath[PATH_MAX];
-    ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath));
-
-    if (pathLength == -1) {
-        ConsoleLog("Failed to retrieve executable path.", "E");
-        exit(1);
-    }
-
-    std::string exeDirectory = std::string(exePath, pathLength);
-    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
-
-    if (lastSlashPos == std::string::npos) {
-        ConsoleLog("Invalid executable path.", "E");
-        exit(1);
-    }
-
-    return exeDirectory.substr(0, lastSlashPos + 1);
-}
-
-#else
-#error Unsupported platform
-#endif
-
-void ReadMongoConfig()
-{
-    std::string exeDirectory = getExecutablePath();
-    std::string configFilePath = exeDirectory + "wlmscpfsMongoConfig.cfg";
-
-    std::ifstream config_file(configFilePath);
-
-    if (!config_file.is_open()) {
-        ConsoleLog("MongoDB Config File Path:" + configFilePath, "");
-        ConsoleLog("Failed to open mongo config file.", "E");
-    }
-
-    std::string line;
-    while (std::getline(config_file, line))
-    {
-        size_t delimiter_pos = line.find('=');
-        if (delimiter_pos != std::string::npos)
-        {
-            std::string key = line.substr(0, delimiter_pos);
-            std::string value = line.substr(delimiter_pos + 1);
-
-            if (key == "conn_string")
-            {
-                conn_string = value;
-            }
-            else if (key == "mongoDB_name")
-            {
-                mongoDB_name = value;
-            }
-            else if (key == "collection_name")
-            {
-                collection_name = value;
-            }
-        }
-    }
-    ConsoleLog("MongoDB conn_string:" + conn_string, "");
-    ConsoleLog("MongoDB mongoDB_name:" + mongoDB_name, "");
-    ConsoleLog("MongoDB collection_name:" + collection_name, "");
-
-    config_file.close();
-}
-
-
-/*
-* 將十進位數字轉十六進位字串
-*/
-std::string int_to_hex(Uint16 i)
-{
-    std::stringstream stream;
-    //stream << "0x"
-    stream << ""
-        << std::setfill('0') << std::setw(sizeof(Uint16) * 2)
-        << std::hex << i;
-    return stream.str();
-}
-
 /*
 * C++版的字串替換Replace
 */
@@ -366,7 +193,14 @@ std::string ReplaceString(std::string subject, const std::string& search, const 
     }
     return subject;
 }
-
+std::string queryValueAppendRegex(std::string q)
+{
+    std::string queryValue = q;
+    queryValue = "^" + queryValue;
+    queryValue = ReplaceString(queryValue, "*", ".*");
+    queryValue = ReplaceString(queryValue, "?", ".");
+    return queryValue;
+}
 std::string DcmElementToString(DcmElement* query)
 {
     char* queryValue;
@@ -378,16 +212,6 @@ std::string DcmElementToString(DcmElement* query)
     }
     return std::string(queryValue);
 }
-
-std::string queryValueAppendRegex(std::string q)
-{
-    std::string queryValue = q;
-    queryValue = "^" + queryValue;
-    queryValue = ReplaceString(queryValue, "*", ".*");
-    queryValue = ReplaceString(queryValue, "?", ".");
-    return queryValue;
-}
-
 bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
 {
     bson_t* query;
@@ -401,9 +225,10 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
         DcmElement* queryDCM = OFnullptr;
         if (searchMask.findAndGetElement(key.first, queryDCM, OFFalse).good() && queryDCM)
         {
-            std::string queryKey = "(" + std::string(key.first.toString().c_str()) + ")";
+            std::string queryKey = "" + std::string(key.first.toString().c_str()) + "";
+            queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
         }
     }
@@ -415,25 +240,28 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
         DcmElement* queryDCM = OFnullptr;
         if (searchMask.findAndGetElement(combinedKey.first, queryDCM, OFFalse).good() && queryDCM && !queryDCM->isUniversalMatch())
         {
-            std::string queryKey = "(" + std::string(combinedKey.first.toString().c_str()) + ")";
+            std::string queryKey = "" + std::string(combinedKey.first.toString().c_str()) + "";
+            queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
 
             DcmElement* secondQueryDCM = OFnullptr;
             if (searchMask.findAndGetElement(combinedKey.second, secondQueryDCM, OFFalse).good() && secondQueryDCM && !secondQueryDCM->isUniversalMatch())
             {
-                std::string queryKey = "(" + std::string(combinedKey.second.toString().c_str()) + ")";
+                std::string queryKey = "" + std::string(combinedKey.second.toString().c_str()) + "";
+                queryKey += ".value";
                 std::string queryValue = queryValueAppendRegex(DcmElementToString(secondQueryDCM));
-                ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+                //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
                 bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
             }
         }
         else if (searchMask.findAndGetElement(combinedKey.second, queryDCM, OFFalse).good() && queryDCM && !queryDCM->isUniversalMatch())
         {
-            std::string queryKey = "(" + std::string(combinedKey.second.toString().c_str()) + ")";
+            std::string queryKey = "" + std::string(combinedKey.second.toString().c_str()) + "";
+            queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
         }
     }
@@ -445,133 +273,15 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
         DcmElement* queryDCM = OFnullptr;
         if (searchMask.findAndGetElement(sequenceKey.first, queryDCM, OFFalse).good() && queryDCM && queryDCM->ident() == EVR_SQ && !IsUniversalMatch(OFstatic_cast(DcmSequenceOfItems&, *queryDCM), sequenceKey.second))
         {
-            std::string queryKey = "(" + std::string(sequenceKey.first.toString().c_str()) + ")";
+            std::string queryKey = "" + std::string(sequenceKey.first.toString().c_str()) + "";
+            queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
         }
     }
     return query;
 }
-
-#include <vector>
-std::vector<std::string> GetTagKeysFromBson(std::string input)
-{
-    // 去除括號
-    input.erase(std::remove(input.begin(), input.end(), '('), input.end());
-    input.erase(std::remove(input.begin(), input.end(), ')'), input.end());
-
-    // 以逗號分割
-    std::vector<std::string> tokens;
-    std::stringstream ss(input);
-    std::string token;
-    while (std::getline(ss, token, ',')) {
-        tokens.push_back(token);
-    }
-
-    return tokens;
-}
-
-DcmDataset bson_to_dcm_dataset(const bson_t* i_bson)
-{
-    DcmDataset rec;
-    bson_iter_t iter;
-    if (bson_iter_init(&iter, i_bson)) {
-        while (bson_iter_next(&iter)) {
-            std::string key = bson_iter_key(&iter);
-            ConsoleLog("key=" + key, "");
-            if (key.rfind("filename", 0) != 0)
-            {
-                std::vector<std::string> TagKeys = GetTagKeysFromBson(key);
-                // 存入變數
-                std::string g_str = TagKeys[0];
-                std::string e_str = TagKeys[1];
-                // 轉換成UINT16
-                int g = (int)strtol(g_str.c_str(), NULL, 16);
-                int e = (int)strtol(e_str.c_str(), NULL, 16);
-
-                DcmTag tagKey = DcmTag(g, e);
-                // create the tag element
-                DcmElement *tagElement = DcmItem::newDicomElement(tagKey);
-
-                bson_iter_t tagIter;
-                const uint8_t* nested_doc_data; 
-                uint32_t nested_doc_len;
-                bson_iter_document(&iter, &nested_doc_len, &nested_doc_data);
-                bson_t* nested_doc = bson_new_from_data(nested_doc_data, nested_doc_len);
-                if (bson_iter_init(&tagIter, nested_doc)) {
-                    std::string vr = "SH";
-                    std::string Value = "";
-                    while (bson_iter_next(&tagIter)) {
-                        if (strcmp(bson_iter_key(&iter), "vr") == 0)
-                        {
-                            vr = bson_iter_utf8(&iter, 0);
-                        }
-                        else if (strcmp(bson_iter_key(&iter), "value") == 0)
-                        {
-                            Value = bson_iter_utf8(&iter, 0);
-                        }
-                    }
-                    tagElement->setVR(DcmVR(vr.c_str()).getEVR());
-                    ConsoleLog("vr=" + vr + ",Value=" + std::string(), "");
-                }
-            }
-        }
-    }
-    return rec;
-}
-
-/*
-* MongoDB worklist 搜尋所有檔案並檢查他們是否符合的function
-*/
-size_t WlmFileSystemInteractionManager::DetermineMatchingRecordsMongoDB(DcmDataset searchMask)
-{
-    assert(&searchMask);
-    //matchingRecords.clear();
-    
-    ReadMongoConfig();
-
-    // MongoDB連接
-    mongoc_client_t* mongoClient;
-    mongoc_database_t* db;
-    mongoc_uri_t* uri;
-    bson_error_t mongoError;
-
-    mongoc_init();
-    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
-    if (!uri) {
-        ConsoleLog("failed to parse URI:" + conn_string, "E");
-        ConsoleLog("error message:" + std::string(mongoError.message), "E");
-    }
-
-    mongoClient = mongoc_client_new_from_uri(uri);
-    if (mongoClient)
-    {
-        bson_t* query;
-        query = GetFindQuery(searchMask);
-
-        mongoc_collection_t* collection;
-        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
-        mongoc_cursor_t* cursor;
-        const bson_t* resultBson;
-        resultBson = bson_new();
-        char* str;
-
-        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
-        while (mongoc_cursor_next(cursor, &resultBson)) {
-            str = bson_as_canonical_extended_json(resultBson, NULL);
-            bson_free(str);
-
-            // Convert Bson to DcmDataset.
-            bson_to_dcm_dataset(resultBson);
-        }
-
-    }
-    return matchingRecords.size();
-}
-
-#pragma endregion
-
 
 // ----------------------------------------------------------------------------
 
@@ -721,7 +431,7 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
   OFCondition cond;
   DcmSequenceOfItems *sequenceElement = NULL, *tmp = NULL;
   unsigned long i;
-  const char *val = NULL;
+  const char* val = "";
   Uint16 v;
   size_t len = 0;
 
@@ -751,7 +461,9 @@ void WlmFileSystemInteractionManager::GetAttributeValueForMatchingRecord( DcmTag
     }
     else
     {
+        std::cout << "idx=" << idx << std::endl;
       cond = matchingRecords[idx]->findAndGetString( tag, val, OFFalse );
+      std::cout << tag.getGroup() << "," << tag.getElement() << std::endl;
       if( cond.good() && val != NULL )
       {
         len = strlen( val ) + 1;

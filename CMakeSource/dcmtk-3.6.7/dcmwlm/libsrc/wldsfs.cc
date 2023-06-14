@@ -239,6 +239,319 @@ void WlmDataSourceFileSystem::HandleExistentButEmptyReferencedStudyOrPatientSequ
   }
 }
 
+#pragma region ConsoleLog
+
+std::string getCurrentTimeAsString()
+{
+    // 取得目前時間
+    std::time_t currentTime = std::time(nullptr);
+
+    // 轉換為目前時區
+    std::tm* localTime = std::localtime(&currentTime);
+
+    // 轉換成string
+    std::ostringstream oss;
+    oss << std::put_time(localTime, "[%Y/%m/%d %H:%M:%S]");
+    return oss.str();
+}
+
+/*
+* msg=訊息
+* msgType--> E=ERROR
+*            D=DEBUG
+*            W=WARN
+*           ""=INFO
+*/
+static void ConsoleLog(std::string msg, std::string msgType)
+{
+    if (strcmp(msgType.c_str(), "E") == 0)
+    {
+        std::cout << "[ERROR]";
+    }
+    else if (strcmp(msgType.c_str(), "D") == 0)
+    {
+        std::cout << "[DEBUG]";
+    }
+    else if (strcmp(msgType.c_str(), "W") == 0)
+    {
+        std::cout << "[WARN]";
+    }
+    else
+    {
+        std::cout << "[INFO]";
+    }
+
+    std::string currentTime = getCurrentTimeAsString();
+    std::cout << currentTime;
+    std::cout << " ";
+    std::cout << msg << std::endl;
+}
+
+#pragma endregion
+
+
+#pragma region MongoDB
+
+#include "../../../mongo-c-driver-1.23.3/src/libmongoc/src/mongoc/mongoc.h"
+/**
+* MongoDB設定
+*/
+
+// Mongo 連線網址
+std::string conn_string = "mongodb://127.0.0.1/?appname=dcmqrscp4raccoon";
+std::string mongoDB_name = "raccoon_polka";
+std::string collection_name = "dicom";
+
+#ifdef _WIN32 // Windows
+
+#include <windows.h>
+
+std::string getExecutablePath() {
+    char exePath[MAX_PATH];
+    DWORD pathLength = GetModuleFileName(NULL, exePath, MAX_PATH);
+
+    if (pathLength == 0) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#elif defined(__linux__) // Linux
+
+#include <unistd.h>
+#include <limits.h>
+
+std::string getExecutablePath() {
+    char exePath[PATH_MAX];
+    ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath));
+
+    if (pathLength == -1) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath, pathLength);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#else
+#error Unsupported platform
+#endif
+
+void ReadMongoConfig()
+{
+    std::string exeDirectory = getExecutablePath();
+    std::string configFilePath = exeDirectory + "wlmscpfsMongoConfig.cfg";
+
+    std::ifstream config_file(configFilePath);
+
+    if (!config_file.is_open()) {
+        ConsoleLog("MongoDB Config File Path:" + configFilePath, "");
+        ConsoleLog("Failed to open mongo config file.", "E");
+    }
+
+    std::string line;
+    while (std::getline(config_file, line))
+    {
+        size_t delimiter_pos = line.find('=');
+        if (delimiter_pos != std::string::npos)
+        {
+            std::string key = line.substr(0, delimiter_pos);
+            std::string value = line.substr(delimiter_pos + 1);
+
+            if (key == "conn_string")
+            {
+                conn_string = value;
+            }
+            else if (key == "mongoDB_name")
+            {
+                mongoDB_name = value;
+            }
+            else if (key == "collection_name")
+            {
+                collection_name = value;
+            }
+        }
+    }
+    ConsoleLog("MongoDB conn_string:" + conn_string, "");
+    ConsoleLog("MongoDB mongoDB_name:" + mongoDB_name, "");
+    ConsoleLog("MongoDB collection_name:" + collection_name, "");
+
+    config_file.close();
+}
+
+
+/*
+* 將十進位數字轉十六進位字串
+*/
+std::string int_to_hex(Uint16 i)
+{
+    std::stringstream stream;
+    //stream << "0x"
+    stream << ""
+        << std::setfill('0') << std::setw(sizeof(Uint16) * 2)
+        << std::hex << i;
+    return stream.str();
+}
+
+
+#include <vector>
+std::vector<std::string> GetTagKeysFromBson(std::string input)
+{
+    // 去除括號
+    input.erase(std::remove(input.begin(), input.end(), '('), input.end());
+    input.erase(std::remove(input.begin(), input.end(), ')'), input.end());
+
+    // 以逗號分割
+    std::vector<std::string> tokens;
+    std::stringstream ss(input);
+    std::string token;
+    while (std::getline(ss, token, ',')) {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
+
+DcmDataset bson_to_dcm_dataset(const bson_t* i_bson)
+{
+    DcmDataset rec;
+    bson_iter_t iter;
+    if (bson_iter_init(&iter, i_bson)) {
+        while (bson_iter_next(&iter)) {
+            std::string key = bson_iter_key(&iter);
+            if (key.rfind("_id", 0) != 0 && key.rfind("fileName", 0) != 0 && key.rfind("folderName", 0) != 0)
+            {
+                std::vector<std::string> TagKeys = GetTagKeysFromBson(key);
+                // 存入變數
+                std::string g_str = TagKeys[0];
+                std::string e_str = TagKeys[1];
+                // 轉換成UINT16
+                int g = (int)strtol(g_str.c_str(), NULL, 16);
+                int e = (int)strtol(e_str.c_str(), NULL, 16);
+
+                DcmTag tagKey = DcmTag(g, e);
+                // create the tag element
+                DcmElement* tagElement = DcmItem::newDicomElement(tagKey);
+
+                bson_iter_t tagIter;
+                const uint8_t* nested_doc_data;
+                uint32_t nested_doc_len;
+                bson_iter_document(&iter, &nested_doc_len, &nested_doc_data);
+                bson_t* nested_doc = bson_new_from_data(nested_doc_data, nested_doc_len);
+                if (bson_iter_init(&tagIter, nested_doc))
+                {
+                    std::string vr = "SH";
+                    std::string Value = "";
+                    while (bson_iter_next(&tagIter))
+                    {
+                        if (strcmp(bson_iter_key(&tagIter), "vr") == 0)
+                        {
+                            vr = bson_iter_utf8(&tagIter, 0);
+                        }
+                        else if (strcmp(bson_iter_key(&tagIter), "value") == 0)
+                        {
+                            Value = bson_iter_utf8(&tagIter, 0);
+                        }
+                    }
+                    tagElement->setVR(DcmVR(vr.c_str()).getEVR());
+                    if (key == "(0008,0005)")
+                    {
+                        tagElement->putString("ISO_IR 100");
+                    }
+                    else
+                    {
+                        tagElement->putString(Value.c_str());
+                    }
+                    ConsoleLog("key=" + std::to_string(tagElement->getTag().getXTag().getGroup()) + "," + std::to_string(tagElement->getTag().getXTag().getElement()) + ",vr=" + vr + ",Value=" + Value, "");
+                    //std::cout << "elementVR=" << tagElement->getVR() << std::endl;
+                    //std::cout << "checkValue=" << tagElement->checkValue().condition().theStatus << std::endl;
+                    if (tagElement->checkValue().good())
+                    {
+                        rec.insert(tagElement, true);
+                        /*rec.findAndGetElement(tagKey, el);
+                        char* aa;
+                        el->getString(aa);
+                        ConsoleLog("Element.value=" + std::string(aa),"");*/
+                    }
+                }
+            }
+        }
+    }
+    ConsoleLog("DcmDatasetLoaded", "");
+    return rec;
+}
+
+std::vector<DcmDataset> matches;
+/*
+* MongoDB worklist 搜尋所有檔案並檢查他們是否符合的function
+*/
+std::vector<DcmDataset> DetermineMatchingRecordsMongoDB(WlmFileSystemInteractionManager &fileSystemInteractionManager,DcmDataset searchMask)
+{
+    assert(&searchMask);
+    matches.clear();
+    ReadMongoConfig();
+
+    // MongoDB連接
+    mongoc_client_t* mongoClient;
+    mongoc_database_t* db;
+    mongoc_uri_t* uri;
+    bson_error_t mongoError;
+
+    mongoc_init();
+    uri = mongoc_uri_new_with_error(conn_string.c_str(), &mongoError);
+    if (!uri) {
+        ConsoleLog("failed to parse URI:" + conn_string, "E");
+        ConsoleLog("error message:" + std::string(mongoError.message), "E");
+    }
+
+    mongoClient = mongoc_client_new_from_uri(uri);
+    if (mongoClient)
+    {
+        bson_t* query;
+        query = fileSystemInteractionManager.GetFindQuery(searchMask);
+
+        mongoc_collection_t* collection;
+        collection = mongoc_client_get_collection(mongoClient, mongoDB_name.c_str(), collection_name.c_str());
+        mongoc_cursor_t* cursor;
+        const bson_t* resultBson;
+        resultBson = bson_new();
+        char* str;
+
+        cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+        while (mongoc_cursor_next(cursor, &resultBson)) {
+            str = bson_as_canonical_extended_json(resultBson, NULL);
+            bson_free(str);
+
+            // Convert Bson to DcmDataset.
+            DcmDataset theDataset = bson_to_dcm_dataset(resultBson);
+            fileSystemInteractionManager.matchingRecords.push_back(OFshared_ptr<DcmDataset>(&theDataset));
+            matches.push_back(theDataset);
+        }
+
+    }
+    ConsoleLog("matches=" + std::to_string(matches.size()), "");
+    return matches;
+}
+
+#pragma endregion
 
 // ----------------------------------------------------------------------------
 /*
@@ -316,8 +629,11 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   DCMWLM_INFO("Determining matching records from worklist files");
 
   // Determine records from worklist files which match the search mask
-  unsigned long numOfMatchingRecords1 = OFstatic_cast(unsigned long, fileSystemInteractionManager.DetermineMatchingRecordsMongoDB(*identifiers));
-  unsigned long numOfMatchingRecords = OFstatic_cast(unsigned long, fileSystemInteractionManager.DetermineMatchingRecords( identifiers ));
+  //unsigned long numOfMatchingRecords = OFstatic_cast(unsigned long, );
+  std::vector<DcmDataset> matchRecs = DetermineMatchingRecordsMongoDB(fileSystemInteractionManager,*identifiers);
+  unsigned long numOfMatchingRecords = matchRecs.size();
+  
+  //unsigned long numOfMatchingRecords = OFstatic_cast(unsigned long, fileSystemInteractionManager.DetermineMatchingRecords( identifiers ));
 
 
 
@@ -337,26 +653,34 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
     {
       // For every matching record ID, add one result dataset to result list and
       // initialize it with search mask
-      DcmDataset *resultRecord = new DcmDataset(*identifiers);
+      DcmDataset* resultRecord = new DcmDataset(*identifiers);
       matchingDatasets.push_back(resultRecord);
 
       // dump some information if required
       DCMWLM_INFO("  Processing matching result no. " << i);
-
       // Determine the number of elements in matchingDatasets[i].
       unsigned long numOfElementsInDataset = resultRecord->card();
-
+      ConsoleLog("NumberOfValues=" + std::to_string(resultRecord->card()), "");
       // Go through all the elements in matchingDatasets[i].
       for( j=0 ; j < numOfElementsInDataset ; j++ )
       {
         // Determine the current element.
         DcmElement *element = resultRecord->getElement(j);
-
+        char* aa;
+        DcmElement* el;
+        matchRecs.at(i).findAndGetElement(element->getTag(),el); 
+        el->getString(aa);
+        ConsoleLog("Element.value=" + std::string(aa), "");
+        element->putString(aa);
         // Depending on if the current element is a sequence or not, process this element.
-        if( element->ident() != EVR_SQ )
-          HandleNonSequenceElementInResultDataset( element, i );
-        else
-          HandleSequenceElementInResultDataset( element, i );
+        std::cout << "asdasdawd" << std::endl;
+        /*if (element->ident() != EVR_SQ) {
+            HandleNonSequenceElementInResultDataset( element, i );
+        }
+        else {
+            HandleSequenceElementInResultDataset( element, i );
+        }*/
+
       }
 
       // if the ScheduledProcedureStepSequence can be found in the current dataset, handle
@@ -392,7 +716,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
         // third option: use character set from worklist file
         else if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE )
         {
-          char *value = NULL;
+          char* value = NULL;
           fileSystemInteractionManager.GetAttributeValueForMatchingRecord( DCM_SpecificCharacterSet, NULL, 0, i, value );
           if( (value != NULL) && (strlen(value) > 0) )
           {
@@ -414,13 +738,13 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
   }
 
   // forget the matching records in the fileSystemInteractionManager (free memory)
-  fileSystemInteractionManager.ClearMatchingRecords();
+  //fileSystemInteractionManager.ClearMatchingRecords();
 
   // Now all the resulting data sets are contained in the member array matchingDatasets.
   // The variable numOfMatchingDatasets specifies the number of array fields.
 
   // Release the read lock which was set on the database tables.
-  ReleaseReadlock();
+  //ReleaseReadlock();
 
   // return result
   return( status );
@@ -442,7 +766,6 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
 //                there are no more matching datasets in the worklist database files.
 {
   DcmDataset *resultDataset = NULL;
-
   // If there are no more datasets that can be returned, do the following
   if( matchingDatasets.empty() )
   {
@@ -452,6 +775,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
   }
   else
   {
+      std::cout << "asdasd" << std::endl;
     // We want to return the last array element and forget the pointer to this dataset here
     resultDataset = matchingDatasets.back();
     matchingDatasets.pop_back();
@@ -495,6 +819,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     // get a value for the current element from database; note that all values for return key
     // attributes are returned as strings by GetAttributeValueForMatchingRecord().
     char *value = NULL;
+    std::cout << "aaaa" << std::endl;
     fileSystemInteractionManager.GetAttributeValueForMatchingRecord( tag, superiorSequenceArray, numOfSuperiorSequences, idx, value );
 
     // put value in element
@@ -509,8 +834,11 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     }
     else
       cond = element->putString( value );
-    if( cond.bad() )
-      DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element");
+    if (cond.bad())
+    {
+        DCMWLM_WARN("WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element");
+        std::cout << "WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset: Could not set value in result element" << std::endl;
+    }
 
     // free memory
     delete[] value;
