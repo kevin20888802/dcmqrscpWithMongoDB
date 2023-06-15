@@ -153,8 +153,165 @@ OFCondition WlmFileSystemInteractionManager::DisconnectFromFileSystem()
   return( EC_Normal );
 }
 
-// ----------------------------------------------------------------------------
+#pragma region ConsoleLog
 
+std::string getCurrentTimeAsStringFSIM()
+{
+    // 取得目前時間
+    std::time_t currentTime = std::time(nullptr);
+
+    // 轉換為目前時區
+    std::tm* localTime = std::localtime(&currentTime);
+
+    // 轉換成string
+    std::ostringstream oss;
+    oss << std::put_time(localTime, "[%Y/%m/%d %H:%M:%S]");
+    return oss.str();
+}
+
+/*
+* msg=訊息
+* msgType--> E=ERROR
+*            D=DEBUG
+*            W=WARN
+*           ""=INFO
+*/
+static void ConsoleLogFSIM(std::string msg, std::string msgType)
+{
+    if (strcmp(msgType.c_str(), "E") == 0)
+    {
+        std::cout << "[ERROR]";
+    }
+    else if (strcmp(msgType.c_str(), "D") == 0)
+    {
+        std::cout << "[DEBUG]";
+    }
+    else if (strcmp(msgType.c_str(), "W") == 0)
+    {
+        std::cout << "[WARN]";
+    }
+    else
+    {
+        std::cout << "[INFO]";
+    }
+
+    std::string currentTime = getCurrentTimeAsStringFSIM();
+    std::cout << currentTime;
+    std::cout << " ";
+    std::cout << msg << std::endl;
+}
+
+#pragma endregion
+#pragma region MongoDB
+/**
+* MongoDB設定
+*/
+
+// Mongo 連線網址
+std::string conn_stringFSIM = "mongodb://127.0.0.1/?appname=dcmqrscp4raccoon";
+std::string mongoDB_nameFSIM = "raccoon_polka";
+std::string collection_nameFSIM = "dicom";
+
+#ifdef _WIN32 // Windows
+
+#include <windows.h>
+
+std::string getExecutablePathFSIM() {
+    char exePath[MAX_PATH];
+    DWORD pathLength = GetModuleFileName(NULL, exePath, MAX_PATH);
+
+    if (pathLength == 0) {
+        ConsoleLogFSIM("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLogFSIM("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#elif defined(__linux__) // Linux
+
+#include <unistd.h>
+#include <limits.h>
+
+std::string getExecutablePath() {
+    char exePath[PATH_MAX];
+    ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath));
+
+    if (pathLength == -1) {
+        ConsoleLog("Failed to retrieve executable path.", "E");
+        exit(1);
+    }
+
+    std::string exeDirectory = std::string(exePath, pathLength);
+    std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
+
+    if (lastSlashPos == std::string::npos) {
+        ConsoleLog("Invalid executable path.", "E");
+        exit(1);
+    }
+
+    return exeDirectory.substr(0, lastSlashPos + 1);
+}
+
+#else
+#error Unsupported platform
+#endif
+
+void ReadMongoConfigFSIM()
+{
+    std::string exeDirectory = getExecutablePathFSIM();
+    std::string configFilePath = exeDirectory + "wlmscpfsMongoConfig.cfg";
+
+    std::ifstream config_file(configFilePath);
+
+    if (!config_file.is_open()) {
+        ConsoleLogFSIM("MongoDB Config File Path:" + configFilePath, "");
+        ConsoleLogFSIM("Failed to open mongo config file.", "E");
+    }
+
+    std::string line;
+    while (std::getline(config_file, line))
+    {
+        size_t delimiter_pos = line.find('=');
+        if (delimiter_pos != std::string::npos)
+        {
+            std::string key = line.substr(0, delimiter_pos);
+            std::string value = line.substr(delimiter_pos + 1);
+
+            if (key == "conn_string")
+            {
+                conn_stringFSIM = value;
+            }
+            else if (key == "mongoDB_name")
+            {
+                mongoDB_nameFSIM = value;
+            }
+            else if (key == "collection_name")
+            {
+                collection_nameFSIM = value;
+            }
+        }
+    }
+    ConsoleLogFSIM("MongoDB conn_string:" + conn_stringFSIM, "");
+    ConsoleLogFSIM("MongoDB mongoDB_name:" + mongoDB_nameFSIM, "");
+    ConsoleLogFSIM("MongoDB collection_name:" + collection_nameFSIM, "");
+
+    config_file.close();
+}
+#pragma endregion
+
+// ----------------------------------------------------------------------------
+/*
+* 檢查資料庫是否存在該aetitle的任一筆資料。
+*/
 OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
@@ -168,18 +325,45 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
   // copy value
   calledApplicationEntityTitle = calledApplicationEntityTitlev;
 
-  // Determine complete path to the files that make up the data source.
-  OFString fullPath( dfPath );
-  if( !fullPath.empty() && fullPath[fullPath.length()-1] != PATH_SEPARATOR )
-    fullPath += PATH_SEPARATOR;
-  fullPath += calledApplicationEntityTitle;
+  ReadMongoConfigFSIM();
+  // MongoDB連接
+  mongoc_client_t* mongoClient;
+  mongoc_database_t* db;
+  mongoc_uri_t* uri;
+  bson_error_t mongoError;
 
-  // in case the path is not existent, we need to return OFFalse
-  if( !( OFStandard::dirExists( OFString( fullPath ) ) ) )
-    return( OFFalse );
+  mongoc_init();
+  uri = mongoc_uri_new_with_error(conn_stringFSIM.c_str(), &mongoError);
+  if (!uri) {
+      ConsoleLogFSIM("failed to parse URI:" + conn_stringFSIM, "E");
+      ConsoleLogFSIM("error message:" + std::string(mongoError.message), "E");
+  }
 
-  // if we get to here, the path is existent and we need to return OFTrue
-  return( OFTrue );
+  mongoClient = mongoc_client_new_from_uri(uri);
+  if (mongoClient)
+  {
+      bson_t* query;
+      query = bson_new();            
+      std::string queryKey = "AETitle";
+      std::string queryValue = std::string(calledApplicationEntityTitle.c_str());
+      ConsoleLogFSIM("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+      bson_append_utf8(query, queryKey.c_str(), -1, queryValue.c_str(), -1);
+
+      mongoc_collection_t* collection;
+      collection = mongoc_client_get_collection(mongoClient, mongoDB_nameFSIM.c_str(), collection_nameFSIM.c_str());
+      mongoc_cursor_t* cursor;
+      const bson_t* resultBson;
+      resultBson = bson_new();
+
+      cursor = mongoc_collection_find_with_opts(collection, query, NULL, NULL);
+      //mongoc_cursor_set_limit(cursor, 2);
+      if (mongoc_cursor_next(cursor, &resultBson)) {
+          ConsoleLogFSIM("Called AETitle " + std::string(calledApplicationEntityTitle.c_str()) + " Exists","");
+          return (OFTrue);
+      }
+  }
+  ConsoleLogFSIM("Called AETitle " + std::string(calledApplicationEntityTitle.c_str()) + " Did Not Exist", "");
+  return (OFFalse);
 }
 /*
 * C++版的字串替換Replace
@@ -218,6 +402,10 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
     query = bson_new();
 
     // 取得MongoDB查詢
+
+    // 先限制AETitle
+    bson_append_utf8(query, "AETitle", -1, calledApplicationEntityTitle.c_str(), -1);
+
     MatchingKeys matchingKeys = MatchingKeys::root;
     for (OFVector<OFPair<DcmTagKey, OFBool> >::const_iterator it = matchingKeys.keys.begin(); it != matchingKeys.keys.end(); ++it)
     {
@@ -228,7 +416,7 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
             std::string queryKey = "" + std::string(key.first.toString().c_str()) + "";
             queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLogFSIM("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
         }
     }
@@ -243,7 +431,7 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
             std::string queryKey = "" + std::string(combinedKey.first.toString().c_str()) + "";
             queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLogFSIM("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
 
             DcmElement* secondQueryDCM = OFnullptr;
@@ -252,7 +440,7 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
                 std::string queryKey = "" + std::string(combinedKey.second.toString().c_str()) + "";
                 queryKey += ".value";
                 std::string queryValue = queryValueAppendRegex(DcmElementToString(secondQueryDCM));
-                //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+                //ConsoleLogFSIM("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
                 bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
             }
         }
@@ -261,7 +449,7 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
             std::string queryKey = "" + std::string(combinedKey.second.toString().c_str()) + "";
             queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLogFSIM("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
         }
     }
@@ -276,7 +464,7 @@ bson_t* WlmFileSystemInteractionManager::GetFindQuery(DcmDataset searchMask)
             std::string queryKey = "" + std::string(sequenceKey.first.toString().c_str()) + "";
             queryKey += ".value";
             std::string queryValue = queryValueAppendRegex(DcmElementToString(queryDCM));
-            //ConsoleLog("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
+            //ConsoleLogFSIM("QueryKey[" + queryKey + "]  ,  " + "QueryValue[" + queryValue + "]", "");
             bson_append_regex(query, queryKey.c_str(), -1, queryValue.c_str(), "");
         }
     }

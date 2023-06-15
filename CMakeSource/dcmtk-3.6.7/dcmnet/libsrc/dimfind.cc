@@ -424,7 +424,6 @@ DIMSE_findProvider(
                     /* send a C-FIND-RSP message over the network to the other DICOM application */
                     cond = DIMSE_sendFindResponse(assoc, presIdCmd, request,
                         &rsp, rspIds, statusDetail);
-                    std::cout << "aaaaawdawdwad" << std::endl;
 
                     /* if there are search results, delete them */
                     if (rspIds != NULL) {

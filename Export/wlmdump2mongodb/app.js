@@ -47,12 +47,12 @@ async function createCollection(db, collectionName) {
 }
 
 // 儲存資料到 MongoDB
-async function saveKeysToMongoDB(db, collectionName, fileName, folderName, keys) {
+async function saveKeysToMongoDB(db, collectionName, fileName, AETitle, keys) {
   try {
     const collection = db.collection(collectionName);
     const document = {
       fileName,
-      folderName,
+      AETitle,
       ...keys
     };
     const result = await collection.insertOne(document);

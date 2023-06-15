@@ -145,9 +145,6 @@ OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
   // Check if calledApplicationEntityTitle does not have a valid value
-  if( calledApplicationEntityTitle.empty() )
-    return( OFFalse );
-  else
     return( fileSystemInteractionManager.IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
 }
 
@@ -288,7 +285,6 @@ static void ConsoleLog(std::string msg, std::string msgType)
 }
 
 #pragma endregion
-
 
 #pragma region MongoDB
 
@@ -437,7 +433,7 @@ DcmDataset bson_to_dcm_dataset(const bson_t* i_bson)
     if (bson_iter_init(&iter, i_bson)) {
         while (bson_iter_next(&iter)) {
             std::string key = bson_iter_key(&iter);
-            if (key.rfind("_id", 0) != 0 && key.rfind("fileName", 0) != 0 && key.rfind("folderName", 0) != 0)
+            if (key.rfind("_id", 0) != 0 && key.rfind("fileName", 0) != 0 && key.rfind("AETitle", 0) != 0)
             {
                 std::vector<std::string> TagKeys = GetTagKeysFromBson(key);
                 // 存入變數
@@ -480,16 +476,11 @@ DcmDataset bson_to_dcm_dataset(const bson_t* i_bson)
                     {
                         tagElement->putString(Value.c_str());
                     }
-                    ConsoleLog("key=" + std::to_string(tagElement->getTag().getXTag().getGroup()) + "," + std::to_string(tagElement->getTag().getXTag().getElement()) + ",vr=" + vr + ",Value=" + Value, "");
-                    //std::cout << "elementVR=" << tagElement->getVR() << std::endl;
-                    //std::cout << "checkValue=" << tagElement->checkValue().condition().theStatus << std::endl;
+                    //ConsoleLog("key=" + std::to_string(tagElement->getTag().getXTag().getGroup()) + "," + std::to_string(tagElement->getTag().getXTag().getElement()) + ",vr=" + vr + ",Value=" + Value, "");
+
                     if (tagElement->checkValue().good())
                     {
                         rec.insert(tagElement, true);
-                        /*rec.findAndGetElement(tagKey, el);
-                        char* aa;
-                        el->getString(aa);
-                        ConsoleLog("Element.value=" + std::string(aa),"");*/
                     }
                 }
             }
@@ -622,8 +613,8 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
     << "=============================");
 
   // Set a read lock on the worklist files which shall be read from.
-  if (!SetReadlock())
-    return(WLM_REFUSED_OUT_OF_RESOURCES);
+  //if (!SetReadlock())
+    //return(WLM_REFUSED_OUT_OF_RESOURCES);
 
   // dump some information if required
   DCMWLM_INFO("Determining matching records from worklist files");
@@ -666,14 +657,15 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
       {
         // Determine the current element.
         DcmElement *element = resultRecord->getElement(j);
-        char* aa;
-        DcmElement* el;
-        matchRecs.at(i).findAndGetElement(element->getTag(),el); 
-        el->getString(aa);
-        ConsoleLog("Element.value=" + std::string(aa), "");
-        element->putString(aa);
+
+        char* oldElementVal;
+        DcmElement* oldElement;
+        matchRecs.at(i).findAndGetElement(element->getTag(), oldElement);
+        oldElement->getString(oldElementVal);
+        ConsoleLog("Element.value=" + std::string(oldElementVal), "");
+        element->putString(oldElementVal);
+
         // Depending on if the current element is a sequence or not, process this element.
-        std::cout << "asdasdawd" << std::endl;
         /*if (element->ident() != EVR_SQ) {
             HandleNonSequenceElementInResultDataset( element, i );
         }
@@ -775,7 +767,6 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
   }
   else
   {
-      std::cout << "asdasd" << std::endl;
     // We want to return the last array element and forget the pointer to this dataset here
     resultDataset = matchingDatasets.back();
     matchingDatasets.pop_back();
