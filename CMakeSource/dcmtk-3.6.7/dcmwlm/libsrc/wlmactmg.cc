@@ -479,6 +479,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   // Condition 5: if the called application entity title is not supported
   // within the data source we want to refuse the association request
   dataSource->SetCalledApplicationEntityTitle( assoc->params->DULparams.calledAPTitle );
+  std::cout << "Call AE Title=" << assoc->params->DULparams.calledAPTitle << std::endl;
   if( !dataSource->IsCalledApplicationEntityTitleSupported() )
   {
     RefuseAssociation( &assoc, WLM_BAD_AE_SERVICE );
@@ -1247,7 +1248,8 @@ static void storeRequestToFile(DcmDataset& request, const OFString& callingAE, c
   {
     DcmObject::PrintHelper printer(request);
     std::ostringstream oss;
-    printer.dcmobj_.writeJson(oss, DcmJsonFormatPretty(OFTrue));
+    DcmJsonFormatPretty jsonFormat = DcmJsonFormatPretty(OFTrue);
+    printer.dcmobj_.writeJson(oss, jsonFormat);
 
     outputStream << printer;
     outputStream.close();

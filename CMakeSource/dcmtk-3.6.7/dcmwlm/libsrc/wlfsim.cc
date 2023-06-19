@@ -241,12 +241,12 @@ std::string getExecutablePathFSIM() {
 #include <unistd.h>
 #include <limits.h>
 
-std::string getExecutablePath() {
+std::string getExecutablePathFSIM() {
     char exePath[PATH_MAX];
     ssize_t pathLength = readlink("/proc/self/exe", exePath, sizeof(exePath));
 
     if (pathLength == -1) {
-        ConsoleLog("Failed to retrieve executable path.", "E");
+        ConsoleLogFSIM("Failed to retrieve executable path.", "E");
         exit(1);
     }
 
@@ -254,7 +254,7 @@ std::string getExecutablePath() {
     std::size_t lastSlashPos = exeDirectory.find_last_of("\\/");
 
     if (lastSlashPos == std::string::npos) {
-        ConsoleLog("Invalid executable path.", "E");
+        ConsoleLogFSIM("Invalid executable path.", "E");
         exit(1);
     }
 
@@ -324,7 +324,7 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 {
   // copy value
   calledApplicationEntityTitle = calledApplicationEntityTitlev;
-
+  ConsoleLogFSIM("Checking any file with AETtitle " + std::string(calledApplicationEntityTitlev.c_str()), "");
   ReadMongoConfigFSIM();
   // MongoDB³s±µ
   mongoc_client_t* mongoClient;

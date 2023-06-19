@@ -39,7 +39,7 @@
 /*
  * Define to 1 for POSIX-like systems, 2 for Windows.
  */
-#define BSON_OS 2
+#define BSON_OS 1
 
 
 /*
@@ -108,7 +108,7 @@
 /*
  * Define to 1 if you have rand_r available on your platform.
  */
-#define BSON_HAVE_RAND_R 0
+#define BSON_HAVE_RAND_R 1
 #if BSON_HAVE_RAND_R != 1
 # undef BSON_HAVE_RAND_R
 #endif
